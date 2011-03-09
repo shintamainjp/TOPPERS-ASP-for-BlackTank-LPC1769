@@ -1,0 +1,271 @@
+===============================================================
+ Natural Tiny Shell(NT-Shell)のポーティング事例。
+ LPCXpressoとTOPPERS/ASPで小規模組み込みシステムの開発を
+ もっと便利に！
+===============================================================
+
+[はじめに]
+
+前回VT100仮想端末を小規模組み込みシステムで実現するための
+ライブラリを公開しました。
+
+中には「これが何の役に立つのだろう？」と疑問に思われた方も
+少なくないでしょう。
+この手のツールは実際の開発作業が進むにつれて利便性を再認識
+することが少なくありません。
+(逆に言うと実際に開発作業で相当に困らないと不便な事に
+気付かない事が多いのです。)
+
+今回はLPCXpresso上でTOPPERS/ASPを動作させるシステムを実際に
+開発するシステムと見立てて、Natural Tiny Shell(NT-Shell)を
+ポーティングして活用した時のメリットについて御紹介します。
+
+
+[TOPPERS/ASPでNatural Tiny Shell(NT-Shell)を使う]
+
+今回はRTOS上にシェルを実装することでシステム開発をもっと
+便利にしてみましょう。
+
+題して「LPCXpressoとTOPPERS/ASPで小規模組み込みシステムの
+開発をもっと便利に！」です。
+
+小規模組み込みシステムでありがちな「この程度の規模だからいいや。」
+と諦めている方におすすめです。
+きちんと動作するデバッグ用シェルがあるだけでシステムが
+見違えるように良くなったように感じます。
+デバッグも楽しくなって作業効率が向上すること間違いなし！
+是非皆さんも挑戦してみませんか？
+
+
+[エコーバックを行わないようにする]
+
+受信した文字列をエコーバックする設定を取り除きます。
+TOPPERS/ASPでは受信した文字列をエコーバックすることが
+できるようになっています。
+Natural Tiny Shell(NT-Shell)を使用する時、エコーバックは
+都合が悪いので設定を外します。
+これはシリアルインターフェースドライバで行うことができます。
+
+syssvc/serial.c の serial_opn_por 関数でIOCTL_ECHOの指定を取り除きます。
+serial.cの240行目付近です。
+
+
+/*
+ *  変数の初期化
+ *  エコーバックさせたい時にはIOCTL_ECHOを追加すると良い。
+ */
+p_spcb->ioctl = (IOCTL_CRLF | IOCTL_FCSND | IOCTL_FCRCV);
+
+
+なぜ受信した文字列をそのまま返してはいけないかという話です。
+
+システムに接続されたシリアル端末が送信してくるコードの中には
+制御コードが含まれる事があります。
+今回のシェルを設計実装した目的の１つは「制御コードをうまく
+処理してシリアル端末ユーザに便利な機能を提供しよう」です。
+
+受信したコードをそのまま送信した結果、シリアル端末上で制御コードが
+解釈されてしまっては従来と何も変わらない事になってしまいます。
+これを避ける為にエコーバックをしないようにします。
+
+例えば、「おっ。上方向キーだな。じゃあ、過去のコマンドを表示して
+あげよう。」といった具合です。
+
+[システム]
+
+今回のシステムは以下のようになっています。
+実際に開発するシステムに見立てていると考えてみて下さい。
+
++----+               +--------------------+
+|    | <----USB----> | LPCXpresso LPC1768 |
+|    |               +--------------------+
+|    |                          |
+|HOST|                          |UART
+| PC |                          |
+|    |               +--------------------+
+|    | <----USB----> | USB-UART Converter |
++----+               +--------------------+
+
+システムと開発用ホストは２つのUSBで接続されています。
+
+１つはLPCXpresso用でこれはLPCXpresso上のデバッガに接続されています。
+実際に開発するシステムによってはここは他のデバッガに置き換わる事も
+あるでしょう。
+
+もう１つは開発対象システムのUARTをUSBで入出力するための変換器との接続です。
+今回は秋月電子通商で販売されているFT2232Dを使った変換器を使用しました。
+
+実際の接続した状態は以下のようになっています。
+
+
+[内部タスクの構成]
+
+今回の内部タスク構成を以下のようにしました。
+
+* task_ledblink: LEDを一定間隔でトグルするLED点滅タスク
+* task_ntshll: Natural Tiny Shellをフロントエンドとするシェルタスク
+
+
+[LED点滅タスクを作る]
+
+LED点滅タスクは一定時間間隔で動作しLEDの状態をトグルさせるタスクです。
+点滅の間隔は100[ms]ですが、データキューから値を受け取って変化させる
+ことができるようにしてあります。
+外部からデータキュー経由で点滅の速度（正確にいうとタスクの動作間隔）
+を変化させることができるようにしてあります。
+
+void task_ledblink(intptr_t exinf)
+{
+    syslog(LOG_NOTICE, "task_ledblink: Started.");
+
+    int ledspd = 100;
+    while(1)
+    {
+        uint_t value;
+        while (prcv_dtq(DTQ_LEDSPD, (intptr_t *)&value) == E_OK) {
+            if (value > 0) {
+                ledspd = value;
+                // syslog(LOG_NOTICE, "new value is %d.", value);
+            }
+        }
+        LPC_GPIO0->FIOPIN ^= ACTLED;
+        tslp_tsk(ledspd);
+    }
+}
+
+
+[シェルタスクを作る]
+
+次にNatural Tiny Shell(NT-Shell)を組み込んだシェルタスクを立てます。
+シェルタスクはUARTに対する入出力を管理しながら、ユーザの要求を
+システムに伝達する役目を果たします。
+
+
+void task_ntshell(intptr_t exinf)
+{
+    syslog(LOG_NOTICE, "task_ntshell: Started.");
+    serial_opn_por(SIO_PORTID);
+
+    ntshell_execute(&parser,
+            &editor, &history,
+            func_read, func_write, func_cb);
+}
+
+
+ntshell_executeは処理を戻さない関数です。
+UARTからの入出力関数を受け取って処理を行ないます。
+
+今回の例ではfunc_readは以下のようになっています。
+
+
+int func_read(void *buf, int cnt)
+{
+    return serial_rea_dat(SIO_PORTID, buf, cnt);
+}
+
+
+同様にfunc_writeは以下のようになっています。
+
+
+int func_write(const void *buf, int cnt)
+{
+    return serial_wri_dat(SIO_PORTID, buf, cnt);
+}
+
+
+ユーザが操作を決定するとコールバック関数(上記ではfunc_cb)が
+呼ばれるようになっています。
+ユーザが入力を完了後、エンターキーを押した時の入力文字列が
+渡されるようになっています。
+
+ここでユーザの要求に応じて処理を行えば良い事になります。
+
+
+int func_cb(const unsigned char *text)
+{
+    // TODO 入力されたコマンドに応じて処理を行う。
+}
+
+
+ちなみに、この関数内部の実行スレッドはシェルタスクのスレッドです。
+今回のアプリケーションでは以下のように実装してみました。
+ntopt_compareはNatural Tiny Shellに含まれるユティリティ関数で、
+文字列の比較を行うものです。
+
+
+int func_cb(const unsigned char *text)
+{
+    static int ledspd = 100;
+    if (ntopt_compare(text, "INTERVAL UP") == 0) {
+        if (ledspd < 500) {
+            ledspd++;
+            snd_dtq(DTQ_LEDSPD, (intptr_t)ledspd);
+        }
+    } else if (ntopt_compare(text, "INTERVAL DOWN") == 0) {
+        if (ledspd > 1) {
+            ledspd--;
+            snd_dtq(DTQ_LEDSPD, (intptr_t)ledspd);
+        }
+    } else if ((ntopt_compare(text, "HELP") == 0)
+            || (ntopt_compare(text, "?") == 0)) {
+        text_puts("\r\nINTERVAL UP   : Task interval time increase.");
+        text_puts("\r\nINTERVAL DOWN : Task interval time decrease.");
+    } else {
+        if (ntopt_get_count(text) > 0) {
+            text_puts("\r\nUnknown command found. (HELP: display help.)");
+        }
+    }
+
+    return 0;
+}
+
+
+[実際に使ってみる]
+
+実際に使用している様子を動画で御紹介します。
+http://www.youtube.com/watch?v=4v47XPAijbE
+
+
+[リソース]
+
+今回は３千円で楽しめるARMマイコンとRTOSの世界(TOPPERS/ASP on LPCXpresso
+LPC1768)のプロジェクトに小規模組み込みシステムデバッグ用シェル
+Natural Tiny Shell (NT-Shell)を追加する形で作業しました。
+
+
+[まとめ]
+
+ターゲットに対して対話型で操作要求ができるとちょっとした確認をする
+時に非常に便利です。
+今回はLPCXpresso(Cortex-M3搭載)でRTOS(TOPPERS/ASP)を動作させるという
+比較的小さな組み込みシステムでの応用例を示しました。
+
+システム内部の値を外部から変更することは当然デバッガなどでも可能です。
+しかし、ちょっとしたパラメータを変更したい場合や複数のパラメータを
+同時に変更したい時には不便です。
+
+対話型のシェルインターフェースがあれば、開発ホスト並の利便性を確保する
+ことも可能になります。
+
+
+[補足]
+念の為補足しておくと、LEDの点灯間隔を変化させるという行為が主眼では
+ありません。
+おそらく点灯間隔を変えるための実装にはもっと相応しいものがあるでしょう。
+
+今回はあくまでシステム内部の挙動をシェルを介して変化させるという
+ところに視点をおいてあります。
+今回の実装では点灯間隔が狭くなるにつれてプロセッサの使用率も
+相当上がります。
+システムがどの程度の負荷を許容するのかを外部でパラメータを変更させながら
+見ることもできるでしょう。
+
+
+[連絡先]
+ このプロジェクトに関するお問い合せは下記までお願いします。
+
+ Shinichiro Nakamura
+
+ shinta.main.jp@gmail.com
+ http://shinta-main-jp.blogspot.com/
+

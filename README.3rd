@@ -1,0 +1,122 @@
+===============================================================
+ TOPPERS/ASPを使ってもっと便利に小規模組み込み開発
+ TraceLogVisualizer(TLV)を使ってカーネル動作を確認しよう
+===============================================================
+
+[はじめに]
+README.1stとREADME.2ndで示したように、Cortex-M3を使った小規模
+組み込みシステムの実現に関する幾つかのトピックを扱いました。
+
+ここでは先に取り上げたLPCXpresso IDE上での開発、Natural Tiny
+Shellを使ったデバッグ環境に加えて、TOPPERSプロジェクトが公開
+しているTraceLog Visualizer(TLV)を使った動作確認方法について
+ご紹介します。
+
+
+[謝辞]
+TraceLogVisualizerの企画、開発、公開を行なってくださった方々に
+感謝致します。このような興味深いツールを無償で公開して頂いた事
+に大変感謝しております。
+
+
+[カーネルに対する設定]
+ベースとなっているのは@suikan_blackfinさんがポーティングされた
+TOPPERS/ASP for LPCです。
+これに加えて公開されている最新のTLVを組み込む形をとっています。
+
+* http://www.toppers.jp/tlv.htmlからTLV_1.2.zipをダウンロード。
+    (http://www.toppers.jp/download.cgi/TLV_1.2.zip)
+* ダウンロードしたファイルを展開してlogtrace/aspの内容をコピー。
+* コピーしたファイルのtrace_config.hの中で定義されているトレース
+  ログバッファのサイズをCortex-M3のRAMサイズを考慮して小さくする。
+* kernel.tfの最後に以下を追加。
+    $INCLUDE"arch/logtrace/tlv.tf"$
+* Makefileのトレースを有効にする。
+    ENABLE_TRACE = true
+* コンフィギュレーションファイルに以下を追加。
+    #include "logtrace/trace_config.h"
+    ATT_INI({ TA_NULL, TRACE_STOP, trace_initialize });
+    ATT_TER({ TA_NULL, target_fput_log, trace_dump });
+* trace_config.hで指定されているLOG_TEX_LEAVEの引数を１つに修正。
+    LOG_TEX_LEAVE(p_tcb)
+* trace_config.hで定義されている以下の定義をコメントアウト。
+  これはGUIで「指定されたリソース(CPUExceptionHandler(id==21))が
+  見つかりません。」といった内容の例外が発生する事に対する暫定的
+  な対策です。
+  本来正しくはルールファイルの修正が必要と思う。
+    #define LOG_EXC_ENTER(excno) trace_1(LOG_TYPE_EXC|LOG_ENTER, excno)
+    #define LOG_EXC_LEAVE(excno) trace_1(LOG_TYPE_EXC|LOG_LEAVE, excno)
+* syssvc/syslog.hのTCNT_SYSLOG_BUFFERを64に変更。
+* syssvc/logtask.hのLOGTASK_STACK_SIZEを512に変更。
+
+
+[どうやって使うの？]
+トレースをするのは簡単です。
+
+trace_sta_log(TRACE_AUTOSTOP);を呼ぶとトレースが開始されます。
+バッファサイズが一杯になった時点で自動的に停止します。
+ext_ker();を呼ぶとカーネルを終了させることができます。
+この時、コンフィギュレーションファイルでATT_TERしたtrace_dumpが
+呼ばれ、システムコンソールにトレース結果が出力されます。
+
+(トレース結果の例 - 一部抜粋)
+    [37182007] task 1 becomes RUNNABLE.
+    [37182019] dispatch to task 1.
+    [37182026] leave from dly_tsk ercd=0.
+    [37182034] enter to dly_tsk dlytim=10.
+    [37182047] task 1 becomes WAITING.
+    [37182053] dispatch from task 1.
+    [37193007] task 1 becomes RUNNABLE.
+    [37193019] dispatch to task 1.
+    [37193026] leave from dly_tsk ercd=0.
+    [37193034] enter to dly_tsk dlytim=10.
+    [37193047] task 1 becomes WAITING.
+    [37193053] dispatch from task 1.
+    [37204007] task 1 becomes RUNNABLE.
+
+システムコンソールに出力されたトレース結果をテキストファイルと
+して保存して下さい。例えば、kernel.logのような感じです。
+
+トレース機能を組み込んだカーネルをビルドするとリソースファイル
+というものが生成されています。これはkernel.resのような名前で
+存在します。
+
+(リソースファイルの例 - 一部抜粋)
+    "TASK_LEDBLINK":{
+        "Type":"Task",
+        "Attributes":
+        {
+            "id"    :2,
+            "atr"   :"TA_ACT",
+            "pri"   :5,
+            "exinf" :"0",
+            "task"  :"task_ledblink",
+            "stksz" :1024,
+            "stk"   :"NULL",
+            "state" :"RUNNABLE"
+        }
+    },
+
+上記の「トレース結果のファイル」と「リソースが記述されたファイル」
+をTOPPERSプロジェクトが公開しているファイルに読み込ませることで
+カーネル動作を可視化させることができるようになっています。
+
+
+[お勧めの開発方法]
+* LinuxホストとWindowsホストを用意します。
+  (あるいはWindows上でVMware Playerを使ってLinuxを動作させます。)
+* LPCXpresso IDEはLinux上で動作させます。
+* ビルド時に生成されたリソースファイルをWindowsホストにコピーします。
+* UART出力をUSB-シリアル変換ケーブルを利用してWindowsホストに接続
+  します。
+* 出力されたトレースログをファイル化してGUIで観察します。
+
+
+[連絡先]
+ このプロジェクトに関するお問い合せは下記までお願いします。
+
+ Shinichiro Nakamura
+
+ shinta.main.jp@gmail.com
+ http://shinta-main-jp.blogspot.com/
+

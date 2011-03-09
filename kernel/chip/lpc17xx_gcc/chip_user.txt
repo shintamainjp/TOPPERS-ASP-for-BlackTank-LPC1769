@@ -1,0 +1,172 @@
+=====================================================================
+                CHIP_LPC17XXチップ依存部 (asp-1.6.0対応）
+                            Last Modified: 2010/Oct/23
+=====================================================================
+
+このチップ依存部は、TOPPERS/ASP 1.3.2対応 CQ-STARM依存部を元に開発した。
+
+(1) 対応しているターゲットシステムの種類・構成，バージョン番号
+
+	・ターゲットハードウェア（ボード等）の名称と対応している構成
+		NXP製LPC17シリーズに共有のチップ依存部
+
+	・ターゲット略称
+		lpc17xx_gcc
+	
+	・ターゲット非依存部のバージョン番号
+		1.6
+	
+	・プロセッサ，チップ，開発環境依存部の構成とバージョン番号
+		1.6.1
+		
+	・使用するPDICとバージョン番号
+		ターゲットに選択は任せてあるが、標準でpdic/uartを用意している。
+
+(2) 使用する開発環境と動作検証した条件（バージョン，オプション等）
+
+	・言語処理系（コンパイラ，アセンブラ，リンカ等）
+		gcc version 4.4.1 (Sourcery G++ Lite 2010q1-188)  
+	
+	・デバッグ環境
+		GNU gdb (Sourcery G++ Lite 2010q1-188) 7.0.50.20100218-cvs
+		Open On-Chip Debugger 0.4.0 (2010-08-12-22:40)
+		HJ/LINK USB
+
+(3) ターゲット定義事項の規定
+(3-1) データ型に関する規定
+(3-2) 割込み処理に関する規定
+
+	以下の割り込みベクトル用インデックスを使用している。INHNO_XXXおよびINTNO_XXXも同じ値を持つ。
+
+#define IRQ_VECTOR_WDT		(16+WDT_IRQn)
+#define IRQ_VECTOR_TIMER0		(16+TIMER0_IRQn)
+#define IRQ_VECTOR_TIMER1		(16+TIMER1_IRQn)
+#define IRQ_VECTOR_TIMER2		(16+TIMER2_IRQn)
+#define IRQ_VECTOR_TIMER3		(16+TIMER3_IRQn)
+#define IRQ_VECTOR_UART0		(16+UART0_IRQn)
+#define IRQ_VECTOR_UART1		(16+UART1_IRQn)
+#define IRQ_VECTOR_UART2		(16+UART2_IRQn)
+#define IRQ_VECTOR_UART3		(16+UART3_IRQn)
+#define IRQ_VECTOR_PWM1		(16+PWM1_IRQn)
+#define IRQ_VECTOR_I2C0		(16+I2C0_IRQn)
+#define IRQ_VECTOR_I2C1		(16+I2C1_IRQn)
+#define IRQ_VECTOR_I2C2		(16+I2C2_IRQn)
+#define IRQ_VECTOR_SPI		(16+SPI_IRQn)
+#define IRQ_VECTOR_SSP0		(16+SSP0_IRQn)
+#define IRQ_VECTOR_SSP1		(16+SSP1_IRQn)
+#define IRQ_VECTOR_PLL0		(16+PLL0_IRQn)
+#define IRQ_VECTOR_RTC		(16+RTC_IRQn)
+#define IRQ_VECTOR_EINT0		(16+EINT0_IRQn)
+#define IRQ_VECTOR_EINT1		(16+EINT1_IRQn)
+#define IRQ_VECTOR_EINT2		(16+EINT2_IRQn)
+#define IRQ_VECTOR_EINT3		(16+EINT3_IRQn)
+#define IRQ_VECTOR_ADC		(16+ADC_IRQn)
+#define IRQ_VECTOR_BOD		(16+BOD_IRQn)
+#define IRQ_VECTOR_USB		(16+USB_IRQn)
+#define IRQ_VECTOR_CAN		(16+CAN_IRQn)
+#define IRQ_VECTOR_DMA		(16+DMA_IRQn)
+#define IRQ_VECTOR_I2S		(16+I2S_IRQn)
+#define IRQ_VECTOR_ENET		(16+ENET_IRQn)
+#define IRQ_VECTOR_RIT		(16+RIT_IRQn)
+#define IRQ_VECTOR_MCPWM		(16+MCPWM_IRQn)
+#define IRQ_VECTOR_QEI		(16+QEI_IRQn)
+#define IRQ_VECTOR_PLL1		(16+PLL1_IRQn)
+#define IRQ_VECTOR_USBActivity		(16+USBActivity_IRQn)
+#define IRQ_VECTOR_CANActivity		(16+CANActivity_IRQn)
+
+(3-3) カーネル管理外の割込みに関する規定
+(3-4) CPU例外処理に関する規定
+(3-5) 性能評価用システム時刻の参照に関する規定
+(3-6) オーバランハンドラ機能拡張のサポートに関する規定
+(3-7) その他
+
+(4) カーネルの起動／終了処理に関する情報
+	・用意しているスタートアップモジュールの処理内容
+		chip_initialize()では、prc_initialize()を呼び出してプロセッサを初期化する。
+		
+	・hardware_init_hook
+		SCB_CCR_STKALIGN_Mskをクリアして、例外割り込みのアライメントをCORETX-M3 rev 1に
+		あわせている。
+		
+	・カーネルを終了した後の振舞い
+		chip_exit()はprc_terminate()を呼ぶ。
+		
+
+(5) メモリマップ
+	ターゲット依存部で決定するので、チップ依存部はメモリマップを操作しない。
+
+(6) タイマドライバ関連の情報
+
+	・タイムティックの周期，その変更方法
+		タイムティックはchip_timer.hによって変更できる。周期を変更した場合、
+		chip_kernel.hのTIC_NUME, TIC_DENOを変更して1mSを生成する方法をカーネルに知らせる。	
+	
+	・使用するリソース（タイマ）
+		SYSTICKタイマーを使う。
+	
+	・タイマ割込みの割込み優先度の変更方法
+		chip_timer.hのINTPRI_TIMERを変更する。
+		
+	・オーバランタイマ割込みの割込み優先度の変更方法
+
+(7) シリアルインタフェースドライバの情報
+
+	target_user.txtを参照。
+
+(8) システムログ機能の情報
+
+	・システムログの低レベル出力の実現方法
+		target_config.hのtarget_fput_log()が使用できるよう、chip_fput_log()を用意している。
+		
+(9) システム構築手順
+
+	target_user.txt参照
+
+(10) ターゲットシステム固有の注意事項
+
+(10) 類似のターゲットにポーティングする開発者向けの参考情報
+	CORTEX-M3を使った他のチップにポーティングする場合には、以下のオブジェクトを修正する
+	
+	lpc17xx.h				(名前をチップ識別名に変更する)
+		CMSIS						インクルードするCMSISヘッダファイルを変更する
+		TMAX_INTNO					最大の割り込みインデックス番号
+		TBITW_IPRI					NVICの割り込み優先順位のビット幅
+		TBITW_SUBIPRI				NVICのサブプライオリティのビット幅
+		割り込みベクトル番号			チップに沿った宣言に変更する。
+		
+	chip_config.h
+		initPLL0()					PLL初期化シーケンスはチップ依存である
+		
+	target_config.c
+		chip_initilaize()			初期火事にチップ依存の特殊処理が必要なら変更する
+		chip_exit()				終了時にチップ依存の特殊処理が必要なら変更する
+		chip_fput_log()			使用するSIOドライバが変わるなら変更する
+		initPLL0()					PLL初期化シーケンスはチップ依存である
+		hardware_init_hook		チップに強く依存するので必ず変更する
+		
+	chip_stddef.h
+		TOPPERS_CHIP_LPC17XX		ターゲット識別マクロ。ターゲット識別名を大文字にし、頭に
+									TOPPERS_CHIP_をつける。
+			
+	chip_syssvc.h
+		SIO_UART_CLOCK			pdc/uartを使用する場合、UARTに入力されるクロックの周波数を宣言する
+		CHIP_COPYRIGHT			チップ依存部の著作権表示文字列
+		
+	chip_timer.h
+		TIMER_CLOCK				CPUクロックとタイマー周期の比
+
+	LPC1700では、SYS_CLOCKを「CPUコアへの入力」としているが、チップによっては「PLLの出力」とする
+	ほうがよい。
+
+(12) ディレクトリ構成・ファイル構成
+	target_user.txtを参照。
+
+(13) バージョン履歴
+
+2010/Oct/23
+	ver 1.6.0
+
+
+
+
+

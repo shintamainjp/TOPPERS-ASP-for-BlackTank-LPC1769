@@ -1,0 +1,7 @@
+PACKAGE asp_pdic_uart
+VERSION 1.6.0
+
+MANIFEST
+serial_user.txt
+uart.c
+uart.h

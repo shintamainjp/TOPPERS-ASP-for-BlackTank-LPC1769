@@ -1,0 +1,79 @@
+#
+#		Makefile のチップ依存部（LPC17xx用）
+#
+
+#
+# ディレクトリの定義
+#
+CHIPDIR = $(SRCDIR)/chip/$(CHIP)_$(TOOL)
+
+#
+#  GNU開発環境のターゲットアーキテクチャの定義
+#
+GCC_TARGET = arm-none-eabi
+
+#
+#  コンパイルオプション
+#
+INCLUDES := $(INCLUDES) -I$(CHIPDIR) -I$(CHIPDIR)/cmsis
+CDEFS := $(CDEFS)
+COPTS := $(COPTS) -mcpu=cortex-m3
+
+#
+#  カーネルに関する定義
+#
+KERNEL_DIR := $(KERNEL_DIR) $(CHIPDIR)
+KERNEL_ASMOBJS := $(KERNEL_ASMOBJS)
+KERNEL_COBJS := $(KERNEL_COBJS)  chip_config.o prc_timer.o
+KERNEL_CFLAGS := $(KERNEL_CFLAGS) -fno-strict-aliasing -mcpu=cortex-m3
+
+#
+#  システムサービスに関する定義
+#
+SYSSVC_DIR := $(SYSSVC_DIR) $(SRCDIR)/pdic/uart
+SYSSVC_COBJS := $(SYSSVC_COBJS) uart.o
+
+
+#
+#  トレースログに関する設定
+#
+ifeq ($(ENABLE_TRACE),true)
+	COPTS := $(COPTS) -DTOPPERS_ENABLE_TRACE
+	KERNEL_DIR := $(KERNEL_DIR) $(SRCDIR)/arch/logtrace
+	KERNEL_COBJS := $(KERNEL_COBJS) trace_config.o trace_dump.o
+endif
+
+#
+#  ROM化時は ROM_BOOTをtrueに定義する
+#
+ifeq ($(ROM_BOOT),true)
+	CDEFS := $(CDEFS) -DROM_BOOT
+endif
+
+#
+#  スタートアップモジュールに関する定義
+#
+#  ldファイルに「STARTUP(start.o)」を記述したため，スタートアップモジュー
+#  ルの名前をHIDDEN_OBJSに定義する．また，LDFLAGSに-nostdlibを追加している．
+#
+HIDDEN_OBJS = start.o
+
+$(HIDDEN_OBJS): %.o: %.S
+	$(CC) -c $(CFLAGS) $(KERNEL_CFLAGS) $<
+
+$(HIDDEN_OBJS:.o=.d): %.d: %.S
+	@$(PERL) $(SRCDIR)/utils/makedep -C $(CC) \
+		-O "$(CFLAGS) $(KERNEL_CFLAGS)" $< >> Makefile.depend
+
+LDFLAGS := -nostdlib $(LDFLAGS)
+
+#
+#  依存関係の定義
+#
+kernel_cfg.timestamp: $(CHIPDIR)/chip.tf
+$(OBJFILE): $(CHIPDIR)/chip_check.tf
+
+#
+#  プロセッサ依存部のインクルード
+#
+include $(SRCDIR)/arch/$(PRC)_$(TOOL)/Makefile.prc

@@ -1,0 +1,158 @@
+===============================================================
+ ３千円で楽しめるARMマイコンとRTOSの世界
+ TOPPERS/ASP on LPCXpresso LPC1768
+===============================================================
+
+
+0. 謝辞
+ TOPPERS/ASP for LPCは@suikan_blackfinさんによってポーティング
+ されました。
+ 氏は様々な鋭い洞察力で過去にも沢山の偉業を成し遂げている方です。
+ ここに過去の沢山の偉業を挙げることは出来ませんが、素晴らしい
+ ポーティングに感謝すると共に、厚くお礼を申し上げます。
+ ありがとうございます。
+
+ 氏のウェブサイトはhttp://d.hatena.ne.jp/suikan+embedded/にあります。
+
+ また、LPCXpressoはNXPセミコンダクターズジャパンさんが積極的に
+ 国内市場への展開を行って下さっています。
+ このような安価で優れたツールを手に入れることのできるのは、
+ 嬉しい限りです。
+ NXPセミコンダクターズジャパンさんが運営されている日本語サイト
+ (LPCZone)はhttp://www.nxp-lpc.com/cgi-bin/linkv.htmlにあります。
+
+ いずれのサイトも沢山の面白い情報が盛り沢山ですので是非ご覧下さい。
+
+
+1. はじめに
+ TOPPERS/ASP for LPCはTOPPERS/ASPをNXPセミコンダクターズのLPCシリーズ上で
+ 動作するようにしたもので@suikan_blackfinさんがメインテナンスされています。
+ http://sourceforge.jp/projects/toppersasp4lpc/
+
+ 公開当初から完成度が高く、私にも簡単に動作させて楽しむことができました。
+ そこで、今回は更に沢山の方にTOPPERS/ASP for LPCを楽しんで頂くために
+ LPCXpressoさえあれば楽しめるようにしようと考えました。
+ 従来は評価用ボードに加えて、JTAGデバッガ、環境構築など様々な準備が必要
+ でしたが、TOPPERS/ASP on LPCXpressoを使えばLPCXpresso上で簡単に動作させる
+ ことができるようになります。
+
+
+2. 対応環境について
+ 2-1. ホストのOS
+  環境はLPCXpressoが対応しているLinux環境に今回は限定しました。
+  TOPPERS/ASPのビルドシステムにはシェルとperlに依存する箇所があります。
+  Windowsでも様々な外部ツールを使って、依存する環境に近い状況を作り出す事が
+  可能ですが、今回は作業負担を軽減させるために割愛しました。
+
+  最近ですとVMware Player上で簡単にLinux環境が構築できますし、Windowsと
+  Linuxの両環境で対応できるように沢山の時間をかけるよりも、早く提供したいと
+  いう思いが先行した結果でもあります。
+
+ 2-2. 動作を確認した環境
+  参考までに動作を確認した環境を記します。
+
+  * Ubuntu 10.10
+  * LPCXpresso 3.8.2 [Build 129][31/01/2011]
+  * LPCXpresso LPC1768 REV A
+
+
+3. オリジナルからの変更点
+ @suikan_blackfinさんがお作りになったオリジナルから行った変更に
+ ついて記します。
+
+ 変更は
+  * デバッグをIDE上でできるようにすること。
+  * 極力TOPPERS/ASPのオリジナルとの差分を小さくすること。
+  * LPCXpressoのみで実現可能なこと。
+ を念頭に作業しました。
+
+ ソースコードとビルド用ファイルについては以下の変更を行っています。
+  * 元々あったlpc1768_sram.ldとlpc1768_rom.ldを削除しました。
+  * LPCXpressoが生成したDebugとReleaseのリンカスクリプトを使用しました。
+   -> ENTRY(ResetISR)をENTRY(_start)に変更しました。
+   -> STARTUP(start.o)を追加しました。
+   -> __bss_start, __bss_endを追加しました。
+   -> __idata_start, __idata_end, __data_startを追加しました。
+   -> init_hook関数をPROVIDEで追加しました。
+   -> .isr_vectorを.vectorに名称を変更しました。
+  * kernel/target/lpc1768_generic_gcc/Makefile.targetに以下を追加しました。
+   -> CDEFS=-DDEBUG -D__CODE_RED -D__REDLIB__
+  * Makefileで生成されるオブジェクトの名称を変更しました。
+  * Makefileで生成されるオブジェクトの拡張子を変更しました。
+  * LPCXpresso IDE上でアーカイブプロジェクトzipファイルをインポートすると
+    全てのファイルの実行権限が落ちてしまいます。
+    そこでMakefileにpermissionというターゲットを追加し、ビルド時に実行権限
+    を立てるようにしてあります。（暫定対策）
+
+ LPCXpressoのプロジェクトに対しては以下の変更を行っています。
+  * Debug ConfigurationsのDebuggerタブでStop on startup at: sta_kerに変更
+    しました。これはLPCXpresso IDE上でデバッグを開始した時に実行を停止
+    させる関数を指定するものです。
+  * Debug ConfigurationsのDebuggerタブでVector catch: Trueに変更しました。
+  * PropertiesのC/C++ BuildでGenerate Makefiles automaticallyのチェックを
+    外しました。これによりLPCXpressoは外部Makefileを参照するようになります。
+  * PropertiesのC/C++ BuildでBuild directoryからDebugとReleaseを削除しました。
+    これによりプロジェクトのルートディレクトリを参照する形になりMakefileと
+    の整合性が確保されます。
+
+ バグ修正
+  * SIO_PORTIDで1以外の値を選択した時にビルドできない問題を修正しました。
+     kernel/pdic/uart/uart.h
+      63: SIO_PORID -> SIO_PORTID
+      66: SIO_PORID -> SIO_PORTID
+      69: SIO_PORID -> SIO_PORTID
+
+ その他変更点
+  * ledblink.cfgに以下を追加しました。
+    INCLUDE("syssvc/syslog.cfg");
+    INCLUDE("syssvc/banner.cfg");
+    INCLUDE("syssvc/logtask.cfg");
+  * ファイル名の命名規則を変更しました。
+    app_init: アプリケーションに関する初期化。
+    task_xxx: タスクに関するファイル。１ソース１タスクを基本としました。
+              TOPPERS/ASPが提供しているサービス名と同じ名称は避けて
+              名称を決めて下さい。
+
+    システムログがUART0(LPCXpressoの21, 22ピンに相当)に出力されます。
+    LPCXpressoの21番ピンはLPC1768のP0[1]/TXD0/AD0[7]ピンに接続されています。
+    同様に22番ピンはLPC1768のP0[3]/RXD0/AD0[6]ピンに接続されています。
+
+    シリアルポートの設定はボーレート57600、８ビット、ノンパリティ、
+    ストップビット１です。
+
+
+4. 使い方
+ 展開するとzipファイルとREADME(このファイル)が現れます。
+ zipファイルは展開せずにLPCXpressoの「Import Example project(s)」で
+ 使用します。
+
+ Import Example project(s)でzipファイルを選択するとワークスペースに
+ プロジェクトがインポートされます。
+ インポートができたらLPCXpresso上でビルドして下さい。
+
+ 場合によって、コンフィギュレータのビルドが必要かもしれません。
+ 展開したディレクトリのトップにconfigureがありますので、必要に応じて
+ 実行して下さい。
+
+ ビルドが完了したらDebug 'TOPPERS-ASP_LPCXpresso-LPC1768'でデバッグできます。
+ Resume, Suspendがソースコード表示と共に楽しめます。
+
+
+5. 最後に
+ 今回の対応は既存のTOPPERS/ASPのビルドの枠組みを超えない形で行ないました。
+ 本来であれば、LPCXpresso上のプリビルドやポストビルドを駆使してカーネルに
+ 対するコンフィギュレーションなどを行うのが筋ですが、先に述べたとおり早めの
+ 公開を目指して割愛したものです。
+
+ もし、何かシンプルな方法でコンフィギュレータまでを包括的に処理させることが
+ できる方法を思いついた場合、是非ご一報頂ければと思います。
+
+
+6. 連絡先
+ このプロジェクトに関するお問い合せは下記までお願いします。
+
+ Shinichiro Nakamura
+
+ shinta.main.jp@gmail.com
+ http://shinta-main-jp.blogspot.com/
+

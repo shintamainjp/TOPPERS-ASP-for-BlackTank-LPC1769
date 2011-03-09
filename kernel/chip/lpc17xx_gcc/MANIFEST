@@ -1,0 +1,26 @@
+PACKAGE asp_arch_arm_m_gcc
+
+cmsis/LPC17xx.h
+cmsis/core_cm3.h
+cmsis/system_LPC17xx.h
+MANIFEST
+Makefile.chip
+chip.tf
+chip_cfg1_out.h
+chip_check.tf
+chip_config.c
+chip_config.h
+chip_kernel.h
+chip_serial.cfg
+chip_serial.h
+chip_sil.h
+chip_stddef.h
+chip_syssvc.h
+chip_test.h
+chip_timer.cfg
+chip_timer.h
+chip_user.txt
+lpc17xx.h
+chip_rename.def
+chip_rename.h
+chip_unrename.h

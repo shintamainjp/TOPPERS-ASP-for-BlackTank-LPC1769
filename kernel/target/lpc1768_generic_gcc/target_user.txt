@@ -1,0 +1,241 @@
+=====================================================================
+             LPC1768 GENERICターゲット依存部 (asp-1.6.0対応）
+                                  Last Modified: 2010/Oct/23
+=====================================================================
+
+(1) 対応しているターゲットシステムの種類・構成，バージョン番号
+
+	・ターゲットハードウェア（ボード等）の名称と対応している構成
+		NXP製LPC1768を使用したボード一般。発振器は内蔵発振器を使う。
+		
+	・ターゲット略称
+		lpc1768_generic_gcc
+	
+	・ターゲット非依存部のバージョン番号
+		1.6
+	
+	・プロセッサ，チップ，開発環境依存部の構成とバージョン番号
+		1.6.1
+		
+	・使用するPDICとバージョン番号
+		pdic/uart
+
+(2) 使用する開発環境と動作検証した条件（バージョン，オプション等）
+
+	・言語処理系（コンパイラ，アセンブラ，リンカ等）
+		gcc version 4.4.1 (Sourcery G++ Lite 2010q1-188)  
+	
+	・デバッグ環境
+		GNU gdb (Sourcery G++ Lite 2010q1-188) 7.0.50.20100218-cvs
+		Open On-Chip Debugger 0.4.0 (2010-08-12-22:40)
+		HJ/LINK USB
+
+(3) ターゲット定義事項の規定
+(3-1) データ型に関する規定
+(3-2) 割込み処理に関する規定
+(3-3) カーネル管理外の割込みに関する規定
+(3-4) CPU例外処理に関する規定
+(3-5) 性能評価用システム時刻の参照に関する規定
+(3-6) オーバランハンドラ機能拡張のサポートに関する規定
+(3-7) その他
+
+(4) カーネルの起動／終了処理に関する情報
+	・用意しているスタートアップモジュールの処理内容
+		target_initialize()では、PLLの設定、GPIOの設定、シリアル・ポートの設定を行う。
+		
+	・スタートアップモジュールからhardware_init_hookを呼び出している場
+	　合には，hardware_init_hookをアプリケーションで用意する場合の作成
+	　方法や制限事項など
+		chip_user.txtを参照。
+		
+	・カーネルを終了した後の振舞い
+		target_exit()はchip_exit()を呼び出したあと、無限ループを実行する。
+
+(5) メモリマップ
+
+	・SRAM版のメモリマップ
+		rom (rwx) : ORIGIN = 0x00000000, LENGTH = 512K
+		ram (rx) :  ORIGIN = 0x10000000, LENGTH = 32K
+			.vector, .text, .rodata, .data, .bss
+			
+	・ROM版のメモリマップ
+		rom_vector (rwx) : ORIGIN = 0x00000000, LENGTH = 256
+			.vector
+		rom (rwx)        : ORIGIN = 0x00000100, LENGTH = 511K
+			.text, .rodata
+		ram (rx)         : ORIGIN = 0x10000000, LENGTH = 32K
+  			.data, .bss
+
+	メモリマップを変更するには、*.ldの内容を変更する。
+
+(6) タイマドライバ関連の情報
+
+	chip_user.txtを参照
+
+(7) シリアルインタフェースドライバの情報
+
+	・使用するリソース（SIOコントローラ）
+		UART0を使用する。
+	
+	・通信パラメータ（ボーレート，ビット数，パリティの有無，ストップビット）
+		57600baud, 8data bit, none-parity, 1stop bit
+
+(8) システムログ機能の情報
+
+	・システムログの低レベル出力の実現方法
+		target_config.hのtarget_fput_log()からUART0へポーリングをかけて出力している。
+		
+	・通信パラメータ（ボーレート，ビット数，パリティの有無，ストップビット）
+		57600baud, 8data bit, none-parity, 1stop bit	
+
+(9) システム構築手順
+
+	カーネルツリーが、アプリケーションのkernelサブディレクトリにあると仮定する。
+	
+	$ cd kernel/cfg
+	$ ./configure
+	$ make
+	$ cd ../..
+	$ kernel configure -T lpc1768_generic_gcc
+	$ make depend
+	$ make
+	
+	以上のコマンド列により、ROM化コードが生成される。SRAM実行用コードを生成するには最後のコマンドを
+	以下に変更する。
+	
+	$ make sram
+
+(10) ターゲットシステム固有の注意事項
+
+(10) 類似のターゲットにポーティングする開発者向けの参考情報
+	LPC1768を使った他のボードにポーティングする場合には、以下のオブジェクトを修正する
+	
+	lpc1768_generic.h		(名前をターゲット識別名に変更する)
+		SYS_CLOCK					CPUコアへの入力周波数[Hz]
+		
+	target_config.h
+		DEFAULT_ISTKSZ			割り込みスタックの領域のサイズ[BYTE]
+		
+	target_config.c
+		target_initialize()		PLLやピンの初期化を行う。
+		
+	target_stddef.h
+		TOPPERS_LPC1768_GENERIC	ターゲット識別マクロ。ターゲット識別名を大文字にし、頭に
+									TOPPERS_をつける。
+			
+	target_syssvc.h
+		TARGET_NAME				著作権表示用のターゲット識別文字列
+		SIO_PORTID					SIOとして使うポート番号(1から始まる整数)
+		SIO_BAUD_RATE_DEFAULT	ボーレートを変更したい場合
+		TARGET_COPYRIGHT			著作権表示文字列
+
+	LPC1700シリーズの他のプロセッサにポーティングするには、上の修正に加えてターゲットのLDファイルの
+	MEMORY宣言を変更する。一般にLPC1700シリーズはメモリ構成以外のプログラミングモデルは同じである。
+
+(12) ディレクトリ構成・ファイル構成
+asp:
+	arch:
+		arm_m_gcc:
+			MANIFEST
+			Makefile.prc
+			arm_m.h
+			makeoffset.c
+			prc.tf
+			prc_cfg1_out.h
+			prc_check.tf
+			prc_config.c
+			prc_config.h
+			prc_def.csv
+			prc_design.txt
+			prc_insn.h
+			prc_kernel.h
+			prc_rename.def
+			prc_rename.h
+			prc_sil.h
+			prc_stddef.h
+			prc_support.S
+			prc_test.h
+			prc_timer.c
+			prc_timer.cfg
+			prc_timer.h
+			prc_unrename.h
+			prc_user.txt
+			prc_user_annex.txt
+			start.S
+	chip:
+		lpc17xx_gcc:
+			MANIFEST
+			Makefile.chip
+			chip.tf
+			chip_cfg1_out.h
+			chip_check.tf
+			chip_config.c
+			chip_config.h
+			chip_kernel.h
+			chip_rename.def
+			chip_rename.h
+			chip_serial.cfg
+			chip_serial.h
+			chip_sil.h
+			chip_stddef.h
+			chip_syssvc.h
+			chip_test.h
+			chip_timer.cfg
+			chip_timer.h
+			chip_unrename.h
+			chip_user.txt
+			cmsis
+			lpc17xx.h
+
+			msis:
+				LPC17xx.h
+				core_cm3.h
+				system_LPC17xx.h
+
+	pdic:
+		uart:
+			MANIFEST
+			serial_user.txt
+			uart.c
+			uart.h
+
+	target:
+		lpc1768_generic_gcc:
+			E_PACKAGE
+			MANIFEST
+			Makefile.target
+			asp.doxyfile
+			doxygen.css
+			html
+			lpc1768_generic.h
+			lpc1768_rom.ld
+			lpc1768_sram.ld
+			target.tf
+			target_cfg1_out.h
+			target_check.tf
+			target_config.c
+			target_config.h
+			target_def.csv
+			target_kernel.h
+			target_rename.def
+			target_rename.h
+			target_serial.cfg
+			target_serial.h
+			target_sil.h
+			target_stddef.h
+			target_syssvc.h
+			target_test.h
+			target_timer.cfg
+			target_timer.h
+			target_unrename.h
+			target_user.txt
+
+
+(13) バージョン履歴
+
+2010/Oct/23
+	ver 1.6.0
+
+
+
+

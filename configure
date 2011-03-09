@@ -1,0 +1,7 @@
+cd kernel/cfg
+./configure
+make
+cd ../..
+kernel/configure -T lpc1768_generic_gcc -A application
+make depend
+make
