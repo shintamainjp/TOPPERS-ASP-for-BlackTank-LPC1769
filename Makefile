@@ -100,7 +100,7 @@ CFG = $(SRCDIR)/cfg/cfg/cfg
 #
 #  オブジェクトファイル名の定義
 #
-OBJNAME = TOPPERS-ASP-for-BlackTank-LPC1769
+OBJNAME = TOPPERS-ASP_BlackTank-LPC1769
 ifdef OBJEXT
   OBJFILE = $(OBJNAME).$(OBJEXT)
   CFG1_OUT = cfg1_out.$(OBJEXT)

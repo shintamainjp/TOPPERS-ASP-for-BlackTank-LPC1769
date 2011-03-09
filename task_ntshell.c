@@ -131,7 +131,7 @@ int func_cb(const unsigned char *text)
  */
 void task_ntshell(intptr_t exinf)
 {
-    syslog(LOG_NOTICE, "task_ntshell: Started.");
+    // syslog(LOG_NOTICE, "task_ntshell: Started.");
     serial_opn_por(SIO_PORTID);
 
     ntshell_execute(&parser,

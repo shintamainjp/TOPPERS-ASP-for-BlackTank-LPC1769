@@ -15,12 +15,12 @@
 <stringAttribute key="org.eclipse.cdt.launch.DEBUGGER_STOP_AT_MAIN_SYMBOL" value="sta_ker"/>
 <booleanAttribute key="org.eclipse.cdt.launch.ENABLE_REGISTER_BOOKKEEPING" value="false"/>
 <booleanAttribute key="org.eclipse.cdt.launch.ENABLE_VARIABLE_BOOKKEEPING" value="false"/>
-<stringAttribute key="org.eclipse.cdt.launch.PROGRAM_NAME" value="TOPPERS-ASP-for-BlackTank-LPC1769.axf"/>
-<stringAttribute key="org.eclipse.cdt.launch.PROJECT_ATTR" value="TOPPERS-ASP-for-BlackTank-LPC1769"/>
+<stringAttribute key="org.eclipse.cdt.launch.PROGRAM_NAME" value="TOPPERS-ASP_BlackTank-LPC1769.axf"/>
+<stringAttribute key="org.eclipse.cdt.launch.PROJECT_ATTR" value="TOPPERS-ASP_BlackTank-LPC1769"/>
 <stringAttribute key="org.eclipse.cdt.launch.PROJECT_BUILD_CONFIG_ID_ATTR" value="com.crt.advproject.config.exe.release.700661640"/>
 <booleanAttribute key="org.eclipse.cdt.launch.use_terminal" value="false"/>
 <listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_PATHS">
-<listEntry value="/TOPPERS-ASP-for-BlackTank-LPC1769"/>
+<listEntry value="/TOPPERS-ASP_BlackTank-LPC1769"/>
 </listAttribute>
 <listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_TYPES">
 <listEntry value="4"/>
