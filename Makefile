@@ -89,7 +89,7 @@ KERNEL_FUNCOBJS =
 #
 #  トレースログを取得するかどうかの定義
 #
-ENABLE_TRACE = true
+ENABLE_TRACE = 
 
 #
 #  ユーティリティプログラムの名称

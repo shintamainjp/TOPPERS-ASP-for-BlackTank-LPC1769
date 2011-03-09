@@ -15,7 +15,7 @@ GCC_TARGET = arm-none-eabi
 #
 #  コンパイルオプション
 #
-INCLUDES := $(INCLUDES) -I$(CHIPDIR) -I$(CHIPDIR)/cmsis
+INCLUDES := $(INCLUDES) -I$(CHIPDIR) -I$(CHIPDIR)/cmsis/core -I$(CHIPDIR)/cmsis/device -I$(SRCDIR)/pdic/common -I$(SRCDIR)/pdic/i2c -I$(SRCDIR)/pdic/spi -I$(SRCDIR)/pdic/uart
 CDEFS := $(CDEFS)
 COPTS := $(COPTS) -mcpu=cortex-m3
 
@@ -24,14 +24,14 @@ COPTS := $(COPTS) -mcpu=cortex-m3
 #
 KERNEL_DIR := $(KERNEL_DIR) $(CHIPDIR)
 KERNEL_ASMOBJS := $(KERNEL_ASMOBJS)
-KERNEL_COBJS := $(KERNEL_COBJS)  chip_config.o prc_timer.o
+KERNEL_COBJS := $(KERNEL_COBJS)  chip_config.o prc_timer.o core_cm3.o system_LPC17xx.o
 KERNEL_CFLAGS := $(KERNEL_CFLAGS) -fno-strict-aliasing -mcpu=cortex-m3
 
 #
 #  システムサービスに関する定義
 #
-SYSSVC_DIR := $(SYSSVC_DIR) $(SRCDIR)/pdic/uart
-SYSSVC_COBJS := $(SYSSVC_COBJS) uart.o
+SYSSVC_DIR := $(SYSSVC_DIR) $(SRCDIR)/pdic/common $(SRCDIR)/pdic/i2c $(SRCDIR)/pdic/spi $(SRCDIR)/pdic/uart
+SYSSVC_COBJS := $(SYSSVC_COBJS) lpc17xx_clkpwr.o lpc17xx_libcfg_default.o lpc17xx_pinsel.o lpc17xx_i2c.o lpc17xx_spi.o uart.o
 
 
 #

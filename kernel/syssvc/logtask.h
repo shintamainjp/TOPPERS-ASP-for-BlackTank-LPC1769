@@ -61,7 +61,7 @@ extern "C" {
 #endif /* LOGTASK_PRIORITY */
 
 #ifndef LOGTASK_STACK_SIZE
-#define LOGTASK_STACK_SIZE	512	/* スタック領域のサイズ */
+#define LOGTASK_STACK_SIZE	1024	/* スタック領域のサイズ */
 #endif /* LOGTASK_STACK_SIZE */
 
 #ifndef LOGTASK_PORTID
