@@ -13,14 +13,21 @@
 #include "task_ntshell.h"
 #include "ntshell.h"
 #include "ntopt.h"
+#include "pff.h"
+#include "diskio.h"
 
-static vtparse_t parser;
-static text_editor_t editor;
-static text_history_t history;
-static int ledspd = 100;
+FATFS fs;
+DIR dir;
+FILINFO fno;
+vtparse_t parser;
+text_editor_t editor;
+text_history_t history;
+int ledspd = 100;
 
 void cmd_intval_up(void);
 void cmd_intval_down(void);
+void cmd_fs_init(void);
+void cmd_fs_ls(void);
 void cmd_trace(void);
 void cmd_exit(void);
 void cmd_help(void);
@@ -39,6 +46,8 @@ typedef struct {
 const command_table_t table[] = {
     {"intval up", "Increse task interval time.", cmd_intval_up},
     {"intval down", "Decrese task interval time.", cmd_intval_down},
+    {"fs init", "Initialize disk and mount it.", cmd_fs_init},
+    {"fs ls", "List the FAT file system contents.", cmd_fs_ls},
     {"trace", "Trace the kernel conditions.", cmd_trace},
     {"exit", "Exit the kernel.", cmd_exit},
     {"help", "Display help.", cmd_help},
@@ -56,6 +65,36 @@ void cmd_intval_down(void) {
     if (ledspd > 1) {
         ledspd--;
         snd_dtq(DTQ_LEDSPD, (intptr_t)ledspd);
+    }
+}
+
+void cmd_fs_init(void) {
+    int a = disk_initialize();
+    int b = pf_mount(&fs);
+    syslog(LOG_NOTICE, "a=%d, b=%d", a, b);
+}
+
+void cmd_fs_ls(void) {
+    int r;
+    r = pf_opendir(&dir, "");
+    if (r) {
+        syslog(LOG_NOTICE, "Failure to open the director. (code=%d)", r);
+        return;
+    }
+    while (1) {
+        r = pf_readdir(&dir, &fno);
+        if (r != FR_OK) {
+            syslog(LOG_NOTICE, "Failure to read the director. (code=%d)", r);
+            return;
+        }
+        if (!fno.fname[0]) {
+            break;
+        }
+        if (fno.fattrib & AM_DIR) {
+            syslog(LOG_NOTICE, "<DIR>\t%s", fno.fname);
+        } else {
+            syslog(LOG_NOTICE, "%d\t%s", fno.fsize, fno.fname);
+        }
     }
 }
 

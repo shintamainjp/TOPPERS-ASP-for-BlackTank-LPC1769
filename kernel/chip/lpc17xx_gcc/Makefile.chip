@@ -15,7 +15,7 @@ GCC_TARGET = arm-none-eabi
 #
 #  コンパイルオプション
 #
-INCLUDES := $(INCLUDES) -I$(CHIPDIR) -I$(CHIPDIR)/cmsis/core -I$(CHIPDIR)/cmsis/device -I$(SRCDIR)/pdic/common -I$(SRCDIR)/pdic/i2c -I$(SRCDIR)/pdic/spi -I$(SRCDIR)/pdic/uart
+INCLUDES := $(INCLUDES) -I$(CHIPDIR) -I$(CHIPDIR)/cmsis/core -I$(CHIPDIR)/cmsis/device -I$(SRCDIR)/pdic/common -I$(SRCDIR)/pdic/i2c -I$(SRCDIR)/pdic/spi -I$(SRCDIR)/pdic/uart -I$(SRCDIR)/pdic/gpio -I$(SRCDIR)/pdic/ssp
 CDEFS := $(CDEFS)
 COPTS := $(COPTS) -mcpu=cortex-m3
 
@@ -30,8 +30,8 @@ KERNEL_CFLAGS := $(KERNEL_CFLAGS) -fno-strict-aliasing -mcpu=cortex-m3
 #
 #  システムサービスに関する定義
 #
-SYSSVC_DIR := $(SYSSVC_DIR) $(SRCDIR)/pdic/common $(SRCDIR)/pdic/i2c $(SRCDIR)/pdic/spi $(SRCDIR)/pdic/uart
-SYSSVC_COBJS := $(SYSSVC_COBJS) lpc17xx_clkpwr.o lpc17xx_libcfg_default.o lpc17xx_pinsel.o lpc17xx_i2c.o lpc17xx_spi.o uart.o
+SYSSVC_DIR := $(SYSSVC_DIR) $(SRCDIR)/pdic/common $(SRCDIR)/pdic/i2c $(SRCDIR)/pdic/spi $(SRCDIR)/pdic/uart $(SRCDIR)/pdic/gpio $(SRCDIR)/pdic/ssp
+SYSSVC_COBJS := $(SYSSVC_COBJS) lpc17xx_clkpwr.o lpc17xx_libcfg_default.o lpc17xx_pinsel.o lpc17xx_i2c.o lpc17xx_spi.o lpc17xx_gpio.o uart.o lpc17xx_ssp.o
 
 
 #

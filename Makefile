@@ -138,7 +138,7 @@ ifndef OMIT_OPTIMIZATION
   COPTS := $(COPTS) -O0
 endif
 CDEFS := $(CDEFS)
-INCLUDES := -I. -I$(SRCDIR)/include -I$(SRCDIR)/arch -I$(SRCDIR) $(INCLUDES)
+INCLUDES := -I. -I$(SRCDIR)/include -I$(SRCDIR)/arch -I$(SRCDIR) -I./drivers/pff $(INCLUDES)
 LDFLAGS := $(LDFLAGS)
 LIBS := $(LIBS) $(CXXLIBS)
 CFLAGS = $(COPTS) $(CDEFS) $(INCLUDES)
@@ -152,16 +152,22 @@ APPL_CFG = $(APPLNAME).cfg
 
 DIR_TASK = task
 MYOBJS = app_init.o \
+	 \
 	 vtparse.o \
 	 vtparse_table.o \
-	 ntshell.o \
-	 ntopt.o \
 	 text_history.o \
 	 text_editor.o \
+	 ntopt.o \
+	 ntshell.o \
+	 \
+	 pff.o \
+	 diskio_mmc.o \
+	 platform.o \
+	 \
 	 task_ledblink.o \
 	 task_ntshell.o
 
-APPL_DIR = $(APPLDIR) $(SRCDIR)/library
+APPL_DIR = $(APPLDIR) $(SRCDIR)/library ./drivers/pff
 APPL_ASMOBJS =
 ifdef USE_CXX
   APPL_CXXOBJS = $(MYOBJS)

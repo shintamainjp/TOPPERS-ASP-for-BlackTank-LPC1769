@@ -8,3 +8,10 @@
 ２。Natural Tiny Shell (NT-Shell)を使った対話形式デバッグに対応する。
 ３。TraceLogVisualizer (TLV)を使ったロギングに対応する。
 
+===============================================================
+ OpenOCDを使ったデバッグ
+===============================================================
+halt
+flash probe 0
+flash write_image erase TOPPERS-ASP_BlackTank-LPC1769.bin
+
