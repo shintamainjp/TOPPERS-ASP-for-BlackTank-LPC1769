@@ -89,7 +89,7 @@ KERNEL_FUNCOBJS =
 #
 #  トレースログを取得するかどうかの定義
 #
-ENABLE_TRACE = 
+ENABLE_TRACE = true
 
 #
 #  ユーティリティプログラムの名称
@@ -341,6 +341,7 @@ permission:
 #
 $(OBJNAME).bin: $(OBJFILE)
 	$(OBJCOPY) -O binary -S $(OBJFILE) $(OBJNAME).bin
+	checksum -v -d $(OBJNAME).bin
 
 #
 #  Sレコードファイルの生成

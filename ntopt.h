@@ -31,8 +31,10 @@
 #ifndef _NTOPT_H_
 #define _NTOPT_H_
 
-int ntopt_get_count(const char *str);
-char *ntopt_get_text(const char *str, const int n, char *buf, int siz);
+#define NTOPT_MAXCNT_ARGC  16
+#define NTOPT_MAXLEN_ARGV  16
+
+int ntopt_parse(const char *str, void (*func)(int argc, char **argv));
 int ntopt_compare(const char *s1, const char *s2);
 
 #endif

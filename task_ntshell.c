@@ -24,57 +24,71 @@ text_editor_t editor;
 text_history_t history;
 int ledspd = 100;
 
-void cmd_intval_up(void);
-void cmd_intval_down(void);
-void cmd_fs_init(void);
-void cmd_fs_ls(void);
-void cmd_trace(void);
-void cmd_exit(void);
-void cmd_help(void);
+void cmd_intval(int argc, char **argv);
+void cmd_mount(int argc, char **argv);
+void cmd_ls(int argc, char **argv);
+void cmd_trace(int argc, char **argv);
+void cmd_exit(int argc, char **argv);
+void cmd_help(int argc, char **argv);
 
 int text_puts(const char *str);
 int func_read(void *buf, int cnt);
 int func_write(const void *buf, int cnt);
-int func_cb(const unsigned char *text);
+void func_ntopt(int argc, char **argv);
+int func_ntshell(const unsigned char *text);
 
 typedef struct {
     char *command;
     char *description;
-    void (*func)(void);
+    void (*func)(int argc, char **argv);
 } command_table_t;
 
 const command_table_t table[] = {
-    {"intval up", "Increse task interval time.", cmd_intval_up},
-    {"intval down", "Decrese task interval time.", cmd_intval_down},
-    {"fs init", "Initialize disk and mount it.", cmd_fs_init},
-    {"fs ls", "List the FAT file system contents.", cmd_fs_ls},
+    {"intval", "Set interval time.", cmd_intval},
+    {"mount", "Mount a SD card.", cmd_mount},
+    {"ls", "List contents on a SD card.", cmd_ls},
     {"trace", "Trace the kernel conditions.", cmd_trace},
     {"exit", "Exit the kernel.", cmd_exit},
     {"help", "Display help.", cmd_help},
     {NULL, NULL, NULL}
 };
 
-void cmd_intval_up(void) {
-    if (ledspd < 500) {
-        ledspd++;
-        snd_dtq(DTQ_LEDSPD, (intptr_t)ledspd);
+void cmd_intval(int argc, char **argv) {
+    switch (argc) {
+        case 1:
+            syslog(LOG_NOTICE, "%d", ledspd);
+            break;
+        case 2:
+            if (ntopt_compare(argv[1], "up") == 0) {
+                if (ledspd < 500) {
+                    ledspd++;
+                    snd_dtq(DTQ_LEDSPD, (intptr_t)ledspd);
+                }
+                syslog(LOG_NOTICE, "%d", ledspd);
+            } else if (ntopt_compare(argv[1], "down") == 0) {
+                if (ledspd > 1) {
+                    ledspd--;
+                    snd_dtq(DTQ_LEDSPD, (intptr_t)ledspd);
+                }
+                syslog(LOG_NOTICE, "%d", ledspd);
+            } else {
+                syslog(LOG_NOTICE, "Unknown sub command.");
+            }
+            break;
     }
 }
 
-void cmd_intval_down(void) {
-    if (ledspd > 1) {
-        ledspd--;
-        snd_dtq(DTQ_LEDSPD, (intptr_t)ledspd);
-    }
-}
-
-void cmd_fs_init(void) {
+void cmd_mount(int argc, char **argv) {
     int a = disk_initialize();
     int b = pf_mount(&fs);
-    syslog(LOG_NOTICE, "a=%d, b=%d", a, b);
+    if ((a == 0) && (b == 0)) {
+        syslog(LOG_NOTICE, "Mounted the SD card.");
+    } else {
+        syslog(LOG_NOTICE, "Failure to mount the SD card.");
+    }
 }
 
-void cmd_fs_ls(void) {
+void cmd_ls(int argc, char **argv) {
     int r;
     r = pf_opendir(&dir, "");
     if (r) {
@@ -98,7 +112,7 @@ void cmd_fs_ls(void) {
     }
 }
 
-void cmd_trace(void) {
+void cmd_trace(int argc, char **argv) {
 #ifdef TOPPERS_ENABLE_TRACE
     trace_sta_log(TRACE_STOP);
     trace_sta_log(TRACE_CLEAR);
@@ -109,12 +123,12 @@ void cmd_trace(void) {
 #endif
 }
 
-void cmd_exit(void) {
+void cmd_exit(int argc, char **argv) {
     ext_ker();
 }
 
-void cmd_help(void) {
-    command_table_t *p = &table[0];
+void cmd_help(int argc, char **argv) {
+    const command_table_t *p = &table[0];
     while (p->command != NULL) {
         text_puts("\r\n");
         text_puts(p->command);
@@ -145,22 +159,29 @@ int func_write(const void *buf, int cnt)
     return serial_wri_dat(SIO_PORTID, buf, cnt);
 }
 
-int func_cb(const unsigned char *text)
+void func_ntopt(int argc, char **argv)
 {
+    if (argc == 0) {
+        return;
+    }
+
     int execnt = 0;
-    command_table_t *p = &table[0];
+    const command_table_t *p = &table[0];
     while (p->command != NULL) {
-        if (ntopt_compare((const char *)text, p->command) == 0) {
-            p->func();
+        if (ntopt_compare((const char *)argv[0], p->command) == 0) {
+            p->func(argc, argv);
             execnt++;
         }
         p++;
     }
-    if ((execnt == 0) && (ntopt_get_count(text) > 0)) {
+    if (execnt == 0) {
         text_puts("\r\nFound unknown command. (help: display help.)");
     }
+}
 
-    return 0;
+int func_ntshell(const unsigned char *text)
+{
+    return ntopt_parse((const char *)text, func_ntopt);
 }
 
 /**
@@ -175,6 +196,6 @@ void task_ntshell(intptr_t exinf)
 
     ntshell_execute(&parser,
             &editor, &history,
-            func_read, func_write, func_cb);
+            func_read, func_write, func_ntshell);
 }
 

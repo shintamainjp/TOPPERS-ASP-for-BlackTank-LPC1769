@@ -33,6 +33,9 @@
 #define IS_DELIM(c) \
     (((c) == '\r') || ((c) == '\n') || ((c) == '\t') || ((c) == '\0') || ((c) == ' '))
 
+static int ntopt_get_count(const char *str);
+static char *ntopt_get_text(const char *str, const int n, char *buf, int siz);
+
 int ntopt_get_count(const char *str)
 {
     int cnt = 0;
@@ -63,7 +66,12 @@ char *ntopt_get_text(const char *str, const int n, char *buf, int siz)
             if ((wc == 1)) {
                 if (cnt == n) {
                     char *des = buf;
+                    int cc = 0;
                     while (!IS_DELIM(*p)) {
+                        cc++;
+                        if (siz <= cc) {
+                            break;
+                        }
                         *des = *p;
                         des++;
                         p++;
@@ -99,30 +107,64 @@ int ntopt_compare(const char *s1, const char *s2)
     }
 }
 
+int ntopt_parse(const char *str, void (*func)(int argc, char **argv))
+{
+    int argc;
+    char argv[NTOPT_MAXCNT_ARGC][NTOPT_MAXLEN_ARGV];
+    char *argvp[NTOPT_MAXCNT_ARGC];
+    int i;
+
+    argc = ntopt_get_count(str);
+    if (NTOPT_MAXCNT_ARGC <= argc) {
+        return -1;
+    }
+
+    for (i = 0; i < argc; i++) {
+        argvp[i] = ntopt_get_text(str, i, argv[i], sizeof(argv[i]));
+    }
+    func(argc, &argvp[0]);
+
+    return argc;
+}
+
 #if 0
+#include <stdio.h>
+void callback(int argc, char **argv)
+{
+    int i;
+    for (i = 0; i < argc; i++) {
+        printf("%d: %s\n", i, argv[i]);
+    }
+}
+
 int main(int argc, char **argv)
 {
     char *str1 = "  This is a test.\n   ";
-    char *str2 = "This is a test.\t  \r  \n  \t  It's good for you.  \n \n";
+    char *str2 = "This is a test.\t  \r  \n  \t  It's good for you.  \n \n The important thing is LIFE-IS-SO-MUCH-BEAUTIFUL.";
+    int i;
+    int n1, n2;
 
-    int n1 = ntopt_get_count(str1);
-    for (int i = 0; i < n1; i++) {
-        char buf[BUFSIZ];
+    n1 = ntopt_get_count(str1);
+    for (i = 0; i < n1; i++) {
+        char buf[64];
         printf("%d: %s\n", i, ntopt_get_text(str1, i, buf, sizeof(buf)));
     }
     printf("\n");
 
-    int n2 = ntopt_get_count(str2);
-    for (int i = 0; i < n2; i++) {
-        char buf[BUFSIZ];
+    n2 = ntopt_get_count(str2);
+    for (i = 0; i < n2; i++) {
+        char buf[64];
         printf("%d: %s\n", i, ntopt_get_text(str2, i, buf, sizeof(buf)));
     }
     printf("\n");
 
-    printf("Match1&2=%d\n", ntopt_match(str1, str2));
-    printf("Match1&1=%d\n", ntopt_match(str1, str1));
-    printf("Match2&2=%d\n", ntopt_match(str2, str2));
-    printf("Match2&1=%d\n", ntopt_match(str2, str1));
+    printf("compare1&2=%d\n", ntopt_compare(str1, str2));
+    printf("compare1&1=%d\n", ntopt_compare(str1, str1));
+    printf("compare2&2=%d\n", ntopt_compare(str2, str2));
+    printf("compare2&1=%d\n", ntopt_compare(str2, str1));
+
+    ntopt_parse(str1, callback);
+    ntopt_parse(str2, callback);
 
     return 0;
 }

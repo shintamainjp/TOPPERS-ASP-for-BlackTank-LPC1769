@@ -11,7 +11,10 @@
 ===============================================================
  OpenOCDを使ったデバッグ
 ===============================================================
+> telnet localhost 4444
 halt
 flash probe 0
-flash write_image erase TOPPERS-ASP_BlackTank-LPC1769.bin
+flash write_image erase TOPPERS-ASP_BlackTank-LPC1769.bin 0 bin
+
+> gdb
 
