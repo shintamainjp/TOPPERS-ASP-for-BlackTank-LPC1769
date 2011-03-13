@@ -18,3 +18,19 @@ flash write_image erase TOPPERS-ASP_BlackTank-LPC1769.bin 0 bin
 
 > gdb
 
+===============================================================
+ TODO
+===============================================================
+1. ブートに失敗する件
+http://blog.goo.ne.jp/sirius506/d/20100516 を参考に以下の問題を検証する。
+
+> reset
+JTAG tap: lpc1768.cpu tap/device found: 0x4ba00477 (mfg: 0x23b, part: 0xba00, ver: 0x4)
+Only resetting the Cortex-M3 core, use a reset-init event handler to reset any peripherals
+lpc1768.cpu -- clearing lockup after double fault
+target state: halted
+target halted due to debug-request, current mode: Handler HardFault
+xPSR: 0x21000003 pc: 0x0000cdb2 msp: 0x1000281c
+Polling target failed, GDB will be halted. Polling again in 100ms
+Polling succeeded again
+

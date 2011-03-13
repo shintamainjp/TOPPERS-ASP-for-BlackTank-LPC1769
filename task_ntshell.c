@@ -13,9 +13,11 @@
 #include "task_ntshell.h"
 #include "ntshell.h"
 #include "ntopt.h"
+#include "ntlibc.h"
 #include "pff.h"
 #include "diskio.h"
 
+char curdir[32];
 FATFS fs;
 DIR dir;
 FILINFO fno;
@@ -27,6 +29,7 @@ int ledspd = 100;
 void cmd_intval(int argc, char **argv);
 void cmd_mount(int argc, char **argv);
 void cmd_ls(int argc, char **argv);
+void cmd_cd(int argc, char **argv);
 void cmd_trace(int argc, char **argv);
 void cmd_exit(int argc, char **argv);
 void cmd_help(int argc, char **argv);
@@ -47,6 +50,7 @@ const command_table_t table[] = {
     {"intval", "Set interval time.", cmd_intval},
     {"mount", "Mount a SD card.", cmd_mount},
     {"ls", "List contents on a SD card.", cmd_ls},
+    {"cd", "Change the current directory.", cmd_cd},
     {"trace", "Trace the kernel conditions.", cmd_trace},
     {"exit", "Exit the kernel.", cmd_exit},
     {"help", "Display help.", cmd_help},
@@ -81,7 +85,9 @@ void cmd_intval(int argc, char **argv) {
 void cmd_mount(int argc, char **argv) {
     int a = disk_initialize();
     int b = pf_mount(&fs);
-    if ((a == 0) && (b == 0)) {
+    int c = pf_opendir(&dir, "");
+    strcpy(curdir, "");
+    if ((a == 0) && (b == 0) && (c == 0)) {
         syslog(LOG_NOTICE, "Mounted the SD card.");
     } else {
         syslog(LOG_NOTICE, "Failure to mount the SD card.");
@@ -90,7 +96,7 @@ void cmd_mount(int argc, char **argv) {
 
 void cmd_ls(int argc, char **argv) {
     int r;
-    r = pf_opendir(&dir, "");
+    r = pf_opendir(&dir, curdir);
     if (r) {
         syslog(LOG_NOTICE, "Failure to open the director. (code=%d)", r);
         return;
@@ -109,6 +115,31 @@ void cmd_ls(int argc, char **argv) {
         } else {
             syslog(LOG_NOTICE, "%d\t%s", fno.fsize, fno.fname);
         }
+    }
+}
+
+void cmd_cd(int argc, char **argv) {
+    int r;
+    switch (argc) {
+        case 1:
+            r = pf_opendir(&dir, "");
+            if (!r) {
+                strcpy(curdir, "");
+            }
+            break;
+        case 2:
+            r = pf_opendir(&dir, argv[1]);
+            if (!r) {
+                strcpy(curdir, argv[1]);
+            }
+            break;
+        default:
+            syslog(LOG_NOTICE, "cd [dir]");
+            return;
+    }
+    if (r) {
+        syslog(LOG_NOTICE, "Failure to open the director. (code=%d)", r);
+        return;
     }
 }
 

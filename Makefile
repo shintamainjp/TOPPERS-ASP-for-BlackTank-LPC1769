@@ -89,7 +89,7 @@ KERNEL_FUNCOBJS =
 #
 #  トレースログを取得するかどうかの定義
 #
-ENABLE_TRACE = true
+ENABLE_TRACE = 
 
 #
 #  ユーティリティプログラムの名称
@@ -159,6 +159,7 @@ MYOBJS = app_init.o \
 	 text_editor.o \
 	 ntopt.o \
 	 ntshell.o \
+	 ntlibc.o \
 	 \
 	 pff.o \
 	 diskio_mmc.o \
