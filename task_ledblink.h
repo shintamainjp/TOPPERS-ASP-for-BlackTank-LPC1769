@@ -14,7 +14,7 @@
  *  各タスクの優先度の定義
  */
 
-#define TSKPRI_LEDBLINK 5		/* メインタスクの優先度 */
+#define TSKPRI_LEDBLINK 10		/* メインタスクの優先度 */
 
 /*
  *  関数のプロトタイプ宣言

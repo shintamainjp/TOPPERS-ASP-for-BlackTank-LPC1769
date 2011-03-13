@@ -115,6 +115,7 @@ void cmd_ls(int argc, char **argv) {
         } else {
             syslog(LOG_NOTICE, "%d\t%s", fno.fsize, fno.fname);
         }
+        tslp_tsk(10);
     }
 }
 
@@ -222,7 +223,6 @@ int func_ntshell(const unsigned char *text)
  */
 void task_ntshell(intptr_t exinf)
 {
-    // syslog(LOG_NOTICE, "task_ntshell: Started.");
     serial_opn_por(SIO_PORTID);
 
     ntshell_execute(&parser,

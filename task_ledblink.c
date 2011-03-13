@@ -19,8 +19,6 @@
  */
 void task_ledblink(intptr_t exinf)
 {
-    //syslog(LOG_NOTICE, "task_ledblink: Started.");
-
     int ledspd = 100;
     while(1)
     {
