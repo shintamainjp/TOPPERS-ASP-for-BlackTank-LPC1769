@@ -56,8 +56,6 @@ void spi_init(void)
     PINSEL_ConfigPin(&PinCfg);
     PinCfg.Pinnum = 18;
     PINSEL_ConfigPin(&PinCfg);
-    //PinCfg.Pinnum = 16;
-    //PINSEL_ConfigPin(&PinCfg);
 
     // initialize SSP configuration structure to default
     SSP_ConfigStructInit(&SSP_ConfigStruct);
