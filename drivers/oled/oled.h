@@ -39,6 +39,8 @@ typedef struct color {
     unsigned char b;
 } Color;
 
+void oled_init(void);
+
 /**
  * Draw pixel.
  *

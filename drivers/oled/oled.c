@@ -32,23 +32,61 @@
  */
 #include "oled.h"
 
-#define RES_ENA()
-#define RES_DIS()
-#define CS_ENA()
-#define CS_DIS()
-#define DC_CMD()
-#define DC_DAT()
-#define SPI_WRITE(a)
-#define SPI_READ()  0
-#define WAIT_US(a)
+#include <lpc17xx_ssp.h>
+#include <lpc17xx_gpio.h>
+#include <lpc17xx_pinsel.h>
+#include <lpc17xx_libcfg.h>
+#include <kernel.h>
+
+#define CS_PORT_NUM 1
+#define CS_PIN_NUM 28
+
+#define DC_PORT_NUM 0
+#define DC_PIN_NUM 21
+
+#define RES_PORT_NUM 0
+#define RES_PIN_NUM 22
+
+#define RES_ENA() GPIO_SetValue(RES_PORT_NUM, (1 << RES_PIN_NUM))
+#define RES_DIS() GPIO_ClearValue(RES_PORT_NUM, (1 << RES_PIN_NUM))
+
+#define CS_ENA() GPIO_SetValue(CS_PORT_NUM, (1 << CS_PIN_NUM))
+#define CS_DIS() GPIO_ClearValue(CS_PORT_NUM, (1 << CS_PIN_NUM))
+
+#define DC_CMD() GPIO_SetValue(DC_PORT_NUM, (1 << DC_PIN_NUM))
+#define DC_DAT() GPIO_ClearValue(DC_PORT_NUM, (1 << DC_PIN_NUM))
+
+SSP_CFG_Type SSP_ConfigStruct;
+PINSEL_CFG_Type PinCfg;
+SSP_DATA_SETUP_Type xferConfig;
+
+static void oled_spi_tx(unsigned char c);
+static unsigned char oled_spi_rx(void);
+
+#define SPI_WRITE(c) oled_spi_tx(c)
+#define SPI_READ() oled_spi_rx()
+
+#define WAIT_MS(n) tslp_tsk(n)
+
 #define swap(a,b) {int c=a;a=b;b=c;}
 
-#if 0
-        io_spi(pin_mosi, pin_miso, pin_sclk),
-        io_res(pin_res),
-        io_cs(pin_cs),
-        io_dc(pin_dc) {
-#endif
+static void oled_spi_tx(unsigned char c)
+{
+    SSP_SendData(LPC_SSP1, c);
+    while (SSP_GetStatus(LPC_SSP1, SSP_SR_BSY) == SET)
+    {
+    }
+    SSP_ReceiveData(LPC_SSP1);
+}
+
+static unsigned char oled_spi_rx(void)
+{
+    SSP_SendData(LPC_SSP1, 0xff);
+    while (SSP_GetStatus(LPC_SSP1, SSP_SR_BSY) == SET)
+    {
+    }
+    return SSP_ReceiveData(LPC_SSP1);
+}
 
 /**
  * Reset.
@@ -256,6 +294,47 @@ static void oled_set_vcomh(int value);
  */
 static unsigned char oled_read_status_register();
 
+void oled_init(void)
+{
+    /*
+     * Initialize SPI pin connect
+     * P1.20 - SCLK;
+     * P1.23 - MISO
+     * P1.24 - MOSI
+     */
+    PinCfg.Funcnum = 2;
+    PinCfg.OpenDrain = 0;
+    PinCfg.Pinmode = 0;
+    PinCfg.Portnum = 1;
+    PinCfg.Pinnum = 20;
+    PINSEL_ConfigPin(&PinCfg);
+    PinCfg.Pinnum = 23;
+    PINSEL_ConfigPin(&PinCfg);
+    PinCfg.Pinnum = 24;
+    PINSEL_ConfigPin(&PinCfg);
+
+    // initialize SSP configuration structure to default
+    SSP_ConfigStructInit(&SSP_ConfigStruct);
+    // Initialize SSP peripheral with parameter given in structure above
+    SSP_Init(LPC_SSP1, &SSP_ConfigStruct);
+    // Enable SSP peripheral
+    SSP_Cmd(LPC_SSP1, ENABLE);
+
+    // CS(Chip Select)
+    GPIO_SetDir(CS_PORT_NUM, (1 << CS_PIN_NUM), 1);
+    GPIO_SetValue(CS_PORT_NUM, (1 << CS_PIN_NUM));
+
+    // DC(Data/Command)
+    GPIO_SetDir(DC_PORT_NUM, (1 << DC_PIN_NUM), 1);
+    GPIO_SetValue(DC_PORT_NUM, (1 << DC_PIN_NUM));
+
+    // RES(Reset)
+    GPIO_SetDir(RES_PORT_NUM, (1 << RES_PIN_NUM), 1);
+    GPIO_SetValue(RES_PORT_NUM, (1 << RES_PIN_NUM));
+
+    oled_reset();
+}
+
 /**
  * Draw pixel.
  *
@@ -345,7 +424,7 @@ void oled_fill_box(int x1, int y1, int x2, int y2, Color c1, Color c2) {
     SPI_WRITE(c2.g >> 2);
     SPI_WRITE(c2.r >> 3);
     CS_DIS();
-    WAIT_US(400);
+    WAIT_MS(1);
 }
 
 /**
@@ -369,7 +448,7 @@ void oled_copy(int x1, int y1, int x2, int y2, int nx, int ny) {
     SPI_WRITE(nx);
     SPI_WRITE(ny);
     CS_DIS();
-    WAIT_US(400);
+    WAIT_MS(1);
 }
 
 /**
@@ -389,7 +468,7 @@ void oled_darker(int x1, int y1, int x2, int y2) {
     SPI_WRITE(x2);
     SPI_WRITE(y2);
     CS_DIS();
-    WAIT_US(400);
+    WAIT_MS(1);
 }
 
 /**
@@ -410,7 +489,7 @@ void oled_clear(int x1, int y1, int x2, int y2) {
     SPI_WRITE(x2);
     SPI_WRITE(y2);
     CS_DIS();
-    WAIT_US(400);
+    WAIT_MS(1);
 #else
     oled_Color c;
     c.r = 0x00;
@@ -430,9 +509,9 @@ void oled_clear(int x1, int y1, int x2, int y2) {
 void oled_reset() {
 
     RES_ENA();
-    WAIT_US(200 * 1000);
+    WAIT_MS(200);
     RES_DIS();
-    WAIT_US(200 * 1000);
+    WAIT_MS(200);
 
     oled_set_display_on_off(0);
     oled_set_row_address(0, 63);
