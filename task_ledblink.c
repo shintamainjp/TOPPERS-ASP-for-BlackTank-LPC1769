@@ -9,7 +9,7 @@
 
 #include "kernel_cfg.h"
 #include "task_ledblink.h"
-#include "hardware.h"
+#include "debled.h"
 
 /**
  * \brief メインタスク
@@ -20,6 +20,8 @@
 void task_ledblink(intptr_t exinf)
 {
     int ledspd = 100;
+    int cnt = 0;
+
     while(1)
     {
         uint_t value;
@@ -30,9 +32,20 @@ void task_ledblink(intptr_t exinf)
                 syslog(LOG_NOTICE, "[%d]", ledspd);
             }
         }
+        if ((cnt % 2) == 0) {
+            debled_set(DEBLED1, 1);
+            debled_set(DEBLED2, 1);
+            debled_set(DEBLED3, 1);
+            debled_set(DEBLED4, 1);
+        } else {
+            debled_set(DEBLED1, 0);
+            debled_set(DEBLED2, 0);
+            debled_set(DEBLED3, 0);
+            debled_set(DEBLED4, 0);
+        }
 
-        LPC_GPIO0->FIOPIN ^= ACTLED;
         tslp_tsk(ledspd);
+        cnt++;
     }
 }
 

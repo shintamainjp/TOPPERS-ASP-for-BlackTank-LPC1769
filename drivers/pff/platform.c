@@ -11,9 +11,9 @@ PINSEL_CFG_Type PinCfg;
 SSP_DATA_SETUP_Type xferConfig;
 
 // PORT number that /CS pin assigned on
-#define CS_PORT_NUM 0
+#define CS_PORT_NUM 1
 // PIN number that  /CS pin assigned on
-#define CS_PIN_NUM 16
+#define CS_PIN_NUM 29
 
 void spi_cs_init(void)
 {
@@ -42,8 +42,7 @@ void spi_init(void)
 {
     /*
      * Initialize SPI pin connect
-     * P0.15 - SCK;
-     * P0.16 - SSEL
+     * P0.15 - SCLK;
      * P0.17 - MISO
      * P0.18 - MOSI
      */
@@ -57,8 +56,8 @@ void spi_init(void)
     PINSEL_ConfigPin(&PinCfg);
     PinCfg.Pinnum = 18;
     PINSEL_ConfigPin(&PinCfg);
-    PinCfg.Pinnum = 16;
-    PINSEL_ConfigPin(&PinCfg);
+    //PinCfg.Pinnum = 16;
+    //PINSEL_ConfigPin(&PinCfg);
 
     // initialize SSP configuration structure to default
     SSP_ConfigStructInit(&SSP_ConfigStruct);
@@ -66,7 +65,6 @@ void spi_init(void)
     SSP_Init(LPC_SSP0, &SSP_ConfigStruct);
     // Enable SSP peripheral
     SSP_Cmd(LPC_SSP0, ENABLE);
-
 
     spi_cs_init();
 }

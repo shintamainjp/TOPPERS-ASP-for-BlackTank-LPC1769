@@ -166,7 +166,9 @@ MYOBJS = app_init.o \
 	 platform.o \
 	 \
 	 task_ledblink.o \
-	 task_ntshell.o
+	 task_ntshell.o \
+	 \
+	 debled.o
 
 APPL_DIR = $(APPLDIR) $(SRCDIR)/library ./drivers/pff
 APPL_ASMOBJS =
