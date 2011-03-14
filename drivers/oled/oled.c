@@ -30,17 +30,17 @@
  * THE SOFTWARE.
  * =============================================================================
  */
-#include "AitendoOLED.h"
+#include "oled.h"
 
-#define RES_ENA()       io_res = 0
-#define RES_DIS()       io_res = 1
-#define CS_ENA()        io_cs = 0
-#define CS_DIS()        io_cs = 1
-#define DC_CMD()        io_dc = 0
-#define DC_DAT()        io_dc = 1
-#define SPI_WRITE(a)    io_spi.write((a))
-#define SPI_READ()      io_spi.write(0x00)
-#define WAIT_US(a)      wait_us((a))
+#define RES_ENA()
+#define RES_DIS()
+#define CS_ENA()
+#define CS_DIS()
+#define DC_CMD()
+#define DC_DAT()
+#define SPI_WRITE(a)
+#define SPI_READ()  0
+#define WAIT_US(a)
 #define swap(a,b) {int c=a;a=b;b=c;}
 
 #if 0
@@ -51,6 +51,212 @@
 #endif
 
 /**
+ * Reset.
+ */
+static void oled_reset();
+
+/**
+ * Write data.
+ *
+ * @param data Data.
+ */
+static void oled_write_data(unsigned char data);
+
+/**
+ * Set mode.
+ *
+ * @param fillrect Fill the rectangle.
+ * @param revcopy Reverse copy.
+ */
+static void oled_set_mode(unsigned char fillrect, unsigned char revcopy);
+
+/**
+ * Set column address.
+ *
+ * @param start Start address. (0-95)
+ * @param end End address. (0-95)
+ */
+static void oled_set_column_address(int start, int end);
+
+/**
+ * Set row address.
+ *
+ * @param start Start address. (0-63)
+ * @param end End address. (0-63)
+ */
+static void oled_set_row_address(int start, int end);
+
+/**
+ * Set contrast for Color A.
+ *
+ * @param contrast Contrast. (Default:0x80)
+ */
+static void oled_set_contrast_for_color_a(int contrast);
+
+/**
+ * Set contrast for Color B.
+ *
+ * @param contrast Contrast. (Default:0x80)
+ */
+static void oled_set_contrast_for_color_b(int contrast);
+
+/**
+ * Set contrast for Color C.
+ *
+ * @param contrast Contrast. (Default:0x80)
+ */
+static void oled_set_contrast_for_color_c(int contrast);
+
+/**
+ * Set master current control value.
+ *
+ * @param current Current value. (0x00-0x0F)
+ */
+static void oled_set_master_current_control(int current);
+
+/**
+ * Set remapping mode and the data format.
+ *
+ * @param mode See the document.
+ */
+static void oled_set_remap_and_data_format(int mode);
+
+/**
+ * Set display start line.
+ *
+ * @param line Start line number. (0-63)
+ */
+static void oled_set_display_start_line(int line);
+
+/**
+ * Set display offset line.
+ *
+ * @param offset Offset line number. (0-63)
+ */
+static void oled_set_display_offset(int offset);
+
+typedef enum {
+    NormalDisplay,
+    EntireDisplayOn,
+    EntireDisplayOff,
+    InverseDisplay
+} DisplayMode;
+
+/**
+ * Set display mode.
+ *
+ * @param mode Display mode.
+ */
+static void oled_set_display_mode(DisplayMode mode);
+
+/**
+ * Set multiplex ratio.
+ *
+ * @param ratio Ratio.
+ */
+static void oled_set_multiplex_ratio(int ratio);
+
+/**
+ * Set display on/off.
+ *
+ * @param on On.
+ */
+static void oled_set_display_on_off(unsigned char on);
+
+typedef struct gray_scale_table {
+    char data[32];
+} gray_scale_table_t;
+
+/**
+ * Set gray scale table.
+ *
+ * @param p A pointer to the look up table.
+ */
+static void oled_set_gray_scale_table(gray_scale_table_t *p);
+
+/**
+ * NOP.
+ */
+static void oled_nop();
+
+/**
+ * Set power saving mode.
+ *
+ * @param value Value. (0x00:None, 0x12:power saving)
+ */
+static void oled_set_power_saving_mode(int value);
+
+/**
+ * Set phase period.
+ *
+ * @param value Value. (Default:0x74)
+ */
+static void oled_set_phase_period(int value);
+
+/**
+ * Set display clock divide ratio.
+ *
+ * @param value Value. (Default:0x00)
+ */
+static void oled_set_display_clock_divide_ratio(int value);
+
+/**
+ * Set second pre-charge speed for color A.
+ *
+ * @param value Value.
+ */
+static void oled_set_second_pre_charge_speed_for_color_a(int value);
+
+/**
+ * Set second pre-charge speed for color B.
+ *
+ * @param value Value.
+ */
+static void oled_set_second_pre_charge_speed_for_color_b(int value);
+
+/**
+ * Set second pre-charge speed for color C.
+ *
+ * @param value Value.
+ */
+static void oled_set_second_pre_charge_speed_for_color_c(int value);
+
+/**
+ * Set pre charge level for color A.
+ *
+ * @param value The value.
+ */
+static void oled_set_pre_charge_level_for_color_a(int value);
+
+/**
+ * Set pre charge level for color B.
+ *
+ * @param value The value.
+ */
+static void oled_set_pre_charge_level_for_color_b(int value);
+
+/**
+ * Set pre charge level for color C.
+ *
+ * @param value The value.
+ */
+static void oled_set_pre_charge_level_for_color_c(int value);
+
+/**
+ * Set VCOMH.
+ *
+ * @param value VCOMH value. (0x00:0.43 * Vref, 0x3F:0x83 * Vref)
+ */
+static void oled_set_vcomh(int value);
+
+/**
+ * Read the status register.
+ *
+ * @return the value.
+ */
+static unsigned char oled_read_status_register();
+
+/**
  * Draw pixel.
  *
  * @param x X.
@@ -58,13 +264,13 @@
  * @param c Color.
  */
 void oled_draw_pixel(int x, int y, Color c) {
-    setColumnAddress(x, x);
-    setRowAddress(y, y);
+    oled_set_column_address(x, x);
+    oled_set_row_address(y, y);
     c.b = c.b >> 3;
     c.g = c.g >> 2;
     c.r = c.r >> 3;
-    writeData((((c.b << 3) & 0xF8) | ((c.g >> 3) & 0x07)));
-    writeData((((c.g << 5) & 0xE0) | ((c.r >> 0) & 0x1F)));
+    oled_write_data((((c.b << 3) & 0xF8) | ((c.g >> 3) & 0x07)));
+    oled_write_data((((c.g << 5) & 0xE0) | ((c.r >> 0) & 0x1F)));
 }
 
 /**
@@ -77,24 +283,10 @@ void oled_draw_pixel(int x, int y, Color c) {
  * @param c Color.
  */
 void oled_draw_line(int x1, int y1, int x2, int y2, Color c) {
-#if 0
-    DC_CMD();
-    CS_ENA();
-    SPI_WRITE(0x21);
-    SPI_WRITE(x1);
-    SPI_WRITE(y1);
-    SPI_WRITE(x2);
-    SPI_WRITE(y2);
-    SPI_WRITE(c.b >> 3);
-    SPI_WRITE(c.g >> 2);
-    SPI_WRITE(c.r >> 3);
-    CS_DIS();
-    WAIT_US(100);
-#else
     /*
      * Bresenham's line algorithm
      */
-    bool steep = abs(y2 - y1) > abs(x2 - x1);
+    unsigned char steep = abs(y2 - y1) > abs(x2 - x1);
     if (steep) {
         swap(x1, y1);
         swap(x2, y2);
@@ -113,11 +305,12 @@ void oled_draw_line(int x1, int y1, int x2, int y2, Color c) {
     } else {
         ystep = -1;
     }
-    for (int x = x1; x <= x2; x++) {
+    int x;
+    for (x = x1; x <= x2; x++) {
         if (steep) {
-            drawPixel(y, x, c);
+            oled_draw_pixel(y, x, c);
         } else {
-            drawPixel(x, y, c);
+            oled_draw_pixel(x, y, c);
         }
         error = error - deltay;
         if (error < 0) {
@@ -125,7 +318,6 @@ void oled_draw_line(int x1, int y1, int x2, int y2, Color c) {
             error = error + deltax;
         }
     }
-#endif
 }
 
 /**
@@ -226,7 +418,7 @@ void oled_clear(int x1, int y1, int x2, int y2) {
     c.b = 0x00;
     for (int x = x1; x <= x2; x++) {
         for (int y = y1; y <= y2; y++) {
-            drawPixel(x, y, c);
+            oled_draw_pixel(x, y, c);
         }
     }
 #endif
@@ -242,32 +434,32 @@ void oled_reset() {
     RES_DIS();
     WAIT_US(200 * 1000);
 
-    setDisplayOnOff(false);
-    setRowAddress(0, 63);
-    setColumnAddress(0, 95);
-    setRemapAndDataFormat(0x70);
-    setDisplayStartLine(0);
-    setDisplayOffset(0);
-    setDisplayMode(AitendoOLED::NormalDisplay);
-    setMultiplexRatio(0x3f);
-    setMasterCurrentControl(0x8f);
-    setPowerSavingMode(0x00);
-    setPhasePeriod(0x74);
-    setDisplayClockDivideRatio(0xD0);
-    setSecondPreChargeSpeedForColorA(0x80);
-    setSecondPreChargeSpeedForColorB(0x80);
-    setSecondPreChargeSpeedForColorC(0x80);
-    setPreChargeLevelForColorA(0x3F);
-    setPreChargeLevelForColorB(0x3F);
-    setPreChargeLevelForColorC(0x3F);
-    setVCOMH(0x3E);
-    setMasterCurrentControl(0x0F);
+    oled_set_display_on_off(0);
+    oled_set_row_address(0, 63);
+    oled_set_column_address(0, 95);
+    oled_set_remap_and_data_format(0x70);
+    oled_set_display_start_line(0);
+    oled_set_display_offset(0);
+    oled_set_display_mode(NormalDisplay);
+    oled_set_multiplex_ratio(0x3f);
+    oled_set_master_current_control(0x8f);
+    oled_set_power_saving_mode(0x00);
+    oled_set_phase_period(0x74);
+    oled_set_display_clock_divide_ratio(0xD0);
+    oled_set_second_pre_charge_speed_for_color_a(0x80);
+    oled_set_second_pre_charge_speed_for_color_b(0x80);
+    oled_set_second_pre_charge_speed_for_color_c(0x80);
+    oled_set_pre_charge_level_for_color_a(0x3F);
+    oled_set_pre_charge_level_for_color_b(0x3F);
+    oled_set_pre_charge_level_for_color_c(0x3F);
+    oled_set_vcomh(0x3E);
+    oled_set_master_current_control(0x0F);
     // A:Blue, B:Green, C:Red
-    setContrastForColorA(0x80);
-    setContrastForColorB(0x80);
-    setContrastForColorC(0x80);
-    setMode(true, false);
-    setDisplayOnOff(true);
+    oled_set_contrast_for_color_a(0x80);
+    oled_set_contrast_for_color_b(0x80);
+    oled_set_contrast_for_color_c(0x80);
+    oled_set_mode(1, 0);
+    oled_set_display_on_off(1);
 }
 
 /**
@@ -275,7 +467,7 @@ void oled_reset() {
  *
  * @param data Data.
  */
-void oled_write_data(uint8_t data) {
+void oled_write_data(unsigned char data) {
     DC_DAT();
     CS_ENA();
     SPI_WRITE(data);
@@ -288,8 +480,8 @@ void oled_write_data(uint8_t data) {
  * @param fillrect Fill the rectangle.
  * @param revcopy Reverse copy.
  */
-void oled_set_mode(bool fillrect, bool revcopy) {
-    uint8_t val = 0x00;
+void oled_set_mode(unsigned char fillrect, unsigned char revcopy) {
+    unsigned char val = 0x00;
     if (fillrect) {
         val |= 1 << 0;
     }
@@ -473,7 +665,7 @@ void oled_set_multiplex_ratio(int ratio) {
  *
  * @param on On.
  */
-void oled_set_display_on_off(bool on) {
+void oled_set_display_on_off(unsigned char on) {
     if (on) {
         DC_CMD();
         CS_ENA();
@@ -496,7 +688,8 @@ void oled_set_gray_scale_table(gray_scale_table_t *p) {
     DC_CMD();
     CS_ENA();
     SPI_WRITE(0xB8);
-    for (int i = 0; i < 32; i++) {
+    int i;
+    for (i = 0; i < 32; i++) {
         SPI_WRITE(p->data[i]);
     }
     CS_DIS();
@@ -647,8 +840,8 @@ void oled_set_vcomh(int value) {
  *
  * @return the value. (0x80:CommandLock)
  */
-uint8_t oled_readStatusRegister() {
-    uint8_t s;
+unsigned char oled_readStatusRegister() {
+    unsigned char s;
     DC_CMD();
     CS_ENA();
     s = SPI_READ();
