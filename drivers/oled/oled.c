@@ -47,14 +47,14 @@
 #define RES_PORT_NUM 0
 #define RES_PIN_NUM 22
 
-#define RES_ENA() GPIO_SetValue(RES_PORT_NUM, (1 << RES_PIN_NUM))
-#define RES_DIS() GPIO_ClearValue(RES_PORT_NUM, (1 << RES_PIN_NUM))
+#define RES_ENA() GPIO_ClearValue(RES_PORT_NUM, (1 << RES_PIN_NUM))
+#define RES_DIS() GPIO_SetValue(RES_PORT_NUM, (1 << RES_PIN_NUM))
 
-#define CS_ENA() GPIO_SetValue(CS_PORT_NUM, (1 << CS_PIN_NUM))
-#define CS_DIS() GPIO_ClearValue(CS_PORT_NUM, (1 << CS_PIN_NUM))
+#define CS_ENA() GPIO_ClearValue(CS_PORT_NUM, (1 << CS_PIN_NUM))
+#define CS_DIS() GPIO_SetValue(CS_PORT_NUM, (1 << CS_PIN_NUM))
 
-#define DC_CMD() GPIO_SetValue(DC_PORT_NUM, (1 << DC_PIN_NUM))
-#define DC_DAT() GPIO_ClearValue(DC_PORT_NUM, (1 << DC_PIN_NUM))
+#define DC_CMD() GPIO_ClearValue(DC_PORT_NUM, (1 << DC_PIN_NUM))
+#define DC_DAT() GPIO_SetValue(DC_PORT_NUM, (1 << DC_PIN_NUM))
 
 SSP_CFG_Type SSP_ConfigStruct;
 PINSEL_CFG_Type PinCfg;

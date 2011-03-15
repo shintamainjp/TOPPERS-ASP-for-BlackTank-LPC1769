@@ -16,6 +16,7 @@
 #include "ntlibc.h"
 #include "pff.h"
 #include "diskio.h"
+#include "oled.h"
 
 char curdir[32];
 FATFS fs;
@@ -224,6 +225,13 @@ int func_ntshell(const unsigned char *text)
 void task_ntshell(intptr_t exinf)
 {
     serial_opn_por(SIO_PORTID);
+    Color c1, c2;
+    c1.r = 0xff; c1.g = 0xff; c1.b = 0xff;
+    c2.r = 0x80; c2.g = 0x80; c2.b = 0x80;
+    oled_init();
+    oled_clear(0, 0, 20, 20);
+    oled_draw_pixel(1, 1, c1);
+    oled_fill_box(0, 0, 20, 20, c1, c2);
 
     ntshell_execute(&parser,
             &editor, &history,
