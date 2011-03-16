@@ -17,6 +17,7 @@
 #include "pff.h"
 #include "diskio.h"
 #include "oled.h"
+#include "hid.h"
 
 char curdir[32];
 FATFS fs;
@@ -224,6 +225,8 @@ int func_ntshell(const unsigned char *text)
  */
 void task_ntshell(intptr_t exinf)
 {
+    int i;
+
     serial_opn_por(SIO_PORTID);
     Color c1, c2;
 
@@ -234,14 +237,35 @@ void task_ntshell(intptr_t exinf)
     oled_init();
     oled_clear(0, 0, 95, 63);
 
-    c2.r = 0x10; c2.g = 0x10; c2.b = 0x10;
-    oled_fill_box(0, 0, 20, 20, c1, c2);
+#if 0
+    for (i = 0; i < 8; i++) {
+        c2.r = i * 10;
+        c2.g = i * 10;
+        c2.b = i * 10;
+        oled_fill_box(i * 10, i * 10, i * 10 + 10, i * 10 + 10, c1, c2);
+    }
+#else
+    c2.r = 0x80; c2.g = 0; c2.b = 0;
+    oled_fill_box(0, 0, 10, 10, c1, c2);
+    c2.r = 0; c2.g = 0x80; c2.b = 0;
+    oled_fill_box(10, 10, 20, 20, c1, c2);
+    c2.r = 0; c2.g = 0; c2.b = 0x80;
+    oled_fill_box(20, 20, 30, 30, c1, c2);
+#endif
 
-    c2.r = 0x20; c2.g = 0x20; c2.b = 0x20;
-    oled_fill_box(20, 20, 40, 40, c1, c2);
+    tslp_tsk(5000);
+    oled_clear(0, 0, 95, 63);
 
-    c2.r = 0x30; c2.g = 0x30; c2.b = 0x30;
-    oled_fill_box(40, 40, 60, 60, c1, c2);
+    hid_init();
+
+    for (i = 0; i < 4; i++) {
+        hid_swled(i, 1);
+        tslp_tsk(1000);
+    }
+    for (i = 0; i < 4; i++) {
+        hid_swled(i, 0);
+        tslp_tsk(1000);
+    }
 
     ntshell_execute(&parser,
             &editor, &history,
