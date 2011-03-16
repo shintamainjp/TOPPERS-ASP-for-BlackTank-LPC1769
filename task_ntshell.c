@@ -226,12 +226,22 @@ void task_ntshell(intptr_t exinf)
 {
     serial_opn_por(SIO_PORTID);
     Color c1, c2;
-    c1.r = 0xff; c1.g = 0xff; c1.b = 0xff;
-    c2.r = 0x80; c2.g = 0x80; c2.b = 0x80;
+
+    c1.r = 0x60;
+    c1.g = 0x60;
+    c1.b = 0x60;
+
     oled_init();
-    oled_clear(0, 0, 20, 20);
-    oled_draw_pixel(1, 1, c1);
+    oled_clear(0, 0, 95, 63);
+
+    c2.r = 0x10; c2.g = 0x10; c2.b = 0x10;
     oled_fill_box(0, 0, 20, 20, c1, c2);
+
+    c2.r = 0x20; c2.g = 0x20; c2.b = 0x20;
+    oled_fill_box(20, 20, 40, 40, c1, c2);
+
+    c2.r = 0x30; c2.g = 0x30; c2.b = 0x30;
+    oled_fill_box(40, 40, 60, 60, c1, c2);
 
     ntshell_execute(&parser,
             &editor, &history,

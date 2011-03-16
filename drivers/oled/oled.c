@@ -72,20 +72,20 @@ static unsigned char oled_spi_rx(void);
 
 static void oled_spi_tx(unsigned char c)
 {
-    SSP_SendData(LPC_SSP1, c);
-    while (SSP_GetStatus(LPC_SSP1, SSP_SR_BSY) == SET)
+    SSP_SendData(LPC_SSP0, c);
+    while (SSP_GetStatus(LPC_SSP0, SSP_SR_BSY) == SET)
     {
     }
-    SSP_ReceiveData(LPC_SSP1);
+    SSP_ReceiveData(LPC_SSP0);
 }
 
 static unsigned char oled_spi_rx(void)
 {
-    SSP_SendData(LPC_SSP1, 0xff);
-    while (SSP_GetStatus(LPC_SSP1, SSP_SR_BSY) == SET)
+    SSP_SendData(LPC_SSP0, 0xff);
+    while (SSP_GetStatus(LPC_SSP0, SSP_SR_BSY) == SET)
     {
     }
-    return SSP_ReceiveData(LPC_SSP1);
+    return SSP_ReceiveData(LPC_SSP0);
 }
 
 /**
@@ -302,7 +302,7 @@ void oled_init(void)
      * P1.23 - MISO
      * P1.24 - MOSI
      */
-    PinCfg.Funcnum = 2;
+    PinCfg.Funcnum = 3;
     PinCfg.OpenDrain = 0;
     PinCfg.Pinmode = 0;
     PinCfg.Portnum = 1;
@@ -315,10 +315,11 @@ void oled_init(void)
 
     // initialize SSP configuration structure to default
     SSP_ConfigStructInit(&SSP_ConfigStruct);
+    SSP_ConfigStruct.ClockRate = 1000;
     // Initialize SSP peripheral with parameter given in structure above
-    SSP_Init(LPC_SSP1, &SSP_ConfigStruct);
+    SSP_Init(LPC_SSP0, &SSP_ConfigStruct);
     // Enable SSP peripheral
-    SSP_Cmd(LPC_SSP1, ENABLE);
+    SSP_Cmd(LPC_SSP0, ENABLE);
 
     // CS(Chip Select)
     GPIO_SetDir(CS_PORT_NUM, (1 << CS_PIN_NUM), 1);
