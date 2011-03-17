@@ -1,9 +1,9 @@
 /**
- * \file task_ledblink.h
+ * \file task_led.h
  * \brief アプリケーション用インクルードファイル。コンフィギュレータも読み込む。
  */
-#ifndef _TASK_LEDBLINK_H_
-#define _TASK_LEDBLINK_H_
+#ifndef _TASK_LED_H_
+#define _TASK_LED_H_
 
 /*
  *  ターゲット依存の定義
@@ -14,15 +14,15 @@
  *  各タスクの優先度の定義
  */
 
-#define TSKPRI_LEDBLINK 10		/* メインタスクの優先度 */
+#define TSKPRI_LED  10		/* メインタスクの優先度 */
 
 /*
  *  関数のプロトタイプ宣言
  */
 #ifndef TOPPERS_MACRO_ONLY
 
-extern void	task_ledblink(intptr_t exinf);
+extern void	task_led(intptr_t exinf);
 
 #endif /* TOPPERS_MACRO_ONLY */
 
-#endif /* _TASK_LEDBLINK_H_ */
+#endif /* _TASK_LED_H_ */

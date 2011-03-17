@@ -1,36 +1,40 @@
 ===============================================================
- このプロジェクトについて
+ BlackTank LPC1769
 ===============================================================
-
-このプロジェクトは以下の３つの作業を行った結果が含まれています。
-
-１。TOPPERS/ASPをLPCXpresso IDE上でデバッグできるようにする。
-２。Natural Tiny Shell (NT-Shell)を使った対話形式デバッグに対応する。
-３。TraceLogVisualizer (TLV)を使ったロギングに対応する。
-
-===============================================================
- OpenOCDを使ったデバッグ
-===============================================================
-> telnet localhost 4444
-halt
-flash probe 0
-flash write_image erase TOPPERS-ASP_BlackTank-LPC1769.bin 0 bin
-
-> gdb
+ BlackTank LPC1769はARM Cortex-M3とRTOSを楽しむ事を目的に設計
+ した基板です。
+ 有機ELディスプレイ、４系統ユーザ入力、オーディオコーデック、
+ マイクロSDカードなどが１枚の基板に搭載されています。
+ ARM Cortex-M3にはNXP SemiconductorsのLPC1769を採用しています。
 
 ===============================================================
- TODO
+ タスク設計
 ===============================================================
-1. ブートに失敗する件
-http://blog.goo.ne.jp/sirius506/d/20100516 を参考に以下の問題を検証する。
 
-> reset
-JTAG tap: lpc1768.cpu tap/device found: 0x4ba00477 (mfg: 0x23b, part: 0xba00, ver: 0x4)
-Only resetting the Cortex-M3 core, use a reset-init event handler to reset any peripherals
-lpc1768.cpu -- clearing lockup after double fault
-target state: halted
-target halted due to debug-request, current mode: Handler HardFault
-xPSR: 0x21000003 pc: 0x0000cdb2 msp: 0x1000281c
-Polling target failed, GDB will be halted. Polling again in 100ms
-Polling succeeded again
+1. ユーザインプットタスク(task_userinput)
+ ユーザインプットタスクは４系統のユーザ入力の変化を観察する
+ タスクです。
+ 変化があればデータキューを介してシステムコントロールタスクに
+ 通知されます。
 
+2. システムコントロールタスク(task_systemcontrol)
+ システムコントロールタスクはシステムの全体制御を統括する役目を
+ 果たします。
+
+3. LEDタスク(task_led)
+ LEDタスクはLEDの点灯を制御するタスクです。
+ このタスクへの指示はデータキューを介して行うことができます。
+
+4. ディスプレイタスク(task_display)
+ ディスプレイタスクは有機ELディスプレイを制御するタスクです。
+ このタスクへの指示はメールボックスを介して行うことができます。
+
+5. ナチュラルタイニーシェルタスク(task_ntshell)
+ システムをコンソールから制御することのできるインターフェース
+ タスクです。
+
+6. ストレージタスク(task_storage)
+ マイクロSDカードを制御するためのタスクです。
+
+7. オーディオタスク(task_audio)
+ オーディオを制御するためのタスクです。

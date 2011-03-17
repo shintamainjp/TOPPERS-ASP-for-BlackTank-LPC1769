@@ -164,15 +164,14 @@ MYOBJS = app_init.o \
 	 pff.o \
 	 diskio_mmc.o \
 	 platform.o \
-	 \
 	 oled.o \
-	 \
-	 task_ledblink.o \
-	 task_ntshell.o \
-	 \
 	 debled.o \
+	 hid.o \
 	 \
-	 hid.o
+	 task_led.o \
+	 task_ntshell.o \
+	 task_userinput.o \
+	 task_display.o
 
 APPL_DIR = $(APPLDIR) $(SRCDIR)/library ./drivers/pff ./drivers/oled ./drivers/hid
 APPL_ASMOBJS =

@@ -1,5 +1,5 @@
 /**
- * \file task_ledblink.c
+ * \file task_led.c
  * \brief アプリケーションの本体ファイル。
 */
 
@@ -8,7 +8,7 @@
 #include <t_syslog.h>
 
 #include "kernel_cfg.h"
-#include "task_ledblink.h"
+#include "task_led.h"
 #include "debled.h"
 
 /**
@@ -17,7 +17,7 @@
  * \details
  * 100ミリ秒休んでLEDを反転する。これを繰り返す。タスクからは戻らない。
  */
-void task_ledblink(intptr_t exinf)
+void task_led(intptr_t exinf)
 {
     int ledspd = 100;
     int cnt = 0;
