@@ -89,24 +89,6 @@ char *ntopt_get_text(const char *str, const int n, char *buf, int siz)
     return '\0';
 }
 
-int ntopt_compare(const char *s1, const char *s2)
-{
-    char *p1 = (char *)s1;
-    char *p2 = (char *)s2;
-    while (*p1) {
-        if (*p1 != *p2) {
-            return (*p1 < *p2) ? 1 : -1;
-        }
-        p1++;
-        p2++;
-    }
-    if (*p1 == *p2) {
-        return 0;
-    } else {
-        return (*p1 < *p2) ? 1 : -1;
-    }
-}
-
 int ntopt_parse(const char *str, void (*func)(int argc, char **argv))
 {
     int argc;
@@ -157,11 +139,6 @@ int main(int argc, char **argv)
         printf("%d: %s\n", i, ntopt_get_text(str2, i, buf, sizeof(buf)));
     }
     printf("\n");
-
-    printf("compare1&2=%d\n", ntopt_compare(str1, str2));
-    printf("compare1&1=%d\n", ntopt_compare(str1, str1));
-    printf("compare2&2=%d\n", ntopt_compare(str2, str2));
-    printf("compare2&1=%d\n", ntopt_compare(str2, str1));
 
     ntopt_parse(str1, callback);
     ntopt_parse(str2, callback);

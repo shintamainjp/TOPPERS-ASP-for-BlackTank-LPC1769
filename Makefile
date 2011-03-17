@@ -138,7 +138,7 @@ ifndef OMIT_OPTIMIZATION
   COPTS := $(COPTS) -O0
 endif
 CDEFS := $(CDEFS)
-INCLUDES := -I. -I$(SRCDIR)/include -I$(SRCDIR)/arch -I$(SRCDIR) -I./drivers/pff -I./drivers/oled -I./drivers/hid $(INCLUDES)
+INCLUDES := -I. -I$(SRCDIR)/include -I$(SRCDIR)/arch -I$(SRCDIR) -I./drivers/pff -I./drivers/oled -I./drivers/led -I./drivers/hid $(INCLUDES)
 LDFLAGS := $(LDFLAGS)
 LIBS := $(LIBS) $(CXXLIBS)
 CFLAGS = $(COPTS) $(CDEFS) $(INCLUDES)
@@ -173,7 +173,7 @@ MYOBJS = app_init.o \
 	 task_userinput.o \
 	 task_display.o
 
-APPL_DIR = $(APPLDIR) $(SRCDIR)/library ./drivers/pff ./drivers/oled ./drivers/hid
+APPL_DIR = $(APPLDIR) $(SRCDIR)/library ./drivers/pff ./drivers/oled ./drivers/led ./drivers/hid
 APPL_ASMOBJS =
 ifdef USE_CXX
   APPL_CXXOBJS = $(MYOBJS)

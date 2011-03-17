@@ -10,7 +10,10 @@
 #include <logtrace/trace_config.h>
 
 #include "kernel_cfg.h"
+
 #include "task_ntshell.h"
+#include "task_led.h"
+
 #include "ntshell.h"
 #include "ntopt.h"
 #include "ntlibc.h"
@@ -28,7 +31,7 @@ text_editor_t editor;
 text_history_t history;
 int ledspd = 100;
 
-void cmd_intval(int argc, char **argv);
+void cmd_led(int argc, char **argv);
 void cmd_mount(int argc, char **argv);
 void cmd_ls(int argc, char **argv);
 void cmd_cd(int argc, char **argv);
@@ -49,7 +52,7 @@ typedef struct {
 } command_table_t;
 
 const command_table_t table[] = {
-    {"intval", "Set interval time.", cmd_intval},
+    {"led", "Set state of the debug purpose LED.", cmd_led},
     {"mount", "Mount a SD card.", cmd_mount},
     {"ls", "List contents on a SD card.", cmd_ls},
     {"cd", "Change the current directory.", cmd_cd},
@@ -59,36 +62,59 @@ const command_table_t table[] = {
     {NULL, NULL, NULL}
 };
 
-void cmd_intval(int argc, char **argv) {
-    switch (argc) {
-        case 1:
-            syslog(LOG_NOTICE, "%d", ledspd);
-            break;
-        case 2:
-            if (ntopt_compare(argv[1], "up") == 0) {
-                if (ledspd < 500) {
-                    ledspd++;
-                    snd_dtq(DTQ_LEDSPD, (intptr_t)ledspd);
-                }
-                syslog(LOG_NOTICE, "%d", ledspd);
-            } else if (ntopt_compare(argv[1], "down") == 0) {
-                if (ledspd > 1) {
-                    ledspd--;
-                    snd_dtq(DTQ_LEDSPD, (intptr_t)ledspd);
-                }
-                syslog(LOG_NOTICE, "%d", ledspd);
-            } else {
-                syslog(LOG_NOTICE, "Unknown sub command.");
-            }
-            break;
+void cmd_led(int argc, char **argv) {
+    if (argc != 3) {
+        syslog(LOG_NOTICE, "led [DBLEDn|SWLEDn] [ON|OFF]");
+        return;
     }
+    if (ntlibc_strcmp(argv[1], "DBLED0") == 0) {
+        if (ntlibc_strcmp(argv[2], "ON") == 0) {
+            snd_dtq(DTQ_LED, (intptr_t)(0x80 | DBLED0));
+            return;
+        }
+        if (ntlibc_strcmp(argv[2], "OFF") == 0) {
+            snd_dtq(DTQ_LED, (intptr_t)(0x00 | DBLED0));
+            return;
+        }
+    }
+    if (ntlibc_strcmp(argv[1], "DBLED1") == 0) {
+        if (ntlibc_strcmp(argv[2], "ON") == 0) {
+            snd_dtq(DTQ_LED, (intptr_t)(0x80 | DBLED1));
+            return;
+        }
+        if (ntlibc_strcmp(argv[2], "OFF") == 0) {
+            snd_dtq(DTQ_LED, (intptr_t)(0x00 | DBLED1));
+            return;
+        }
+    }
+    if (ntlibc_strcmp(argv[1], "DBLED2") == 0) {
+        if (ntlibc_strcmp(argv[2], "ON") == 0) {
+            snd_dtq(DTQ_LED, (intptr_t)(0x80 | DBLED2));
+            return;
+        }
+        if (ntlibc_strcmp(argv[2], "OFF") == 0) {
+            snd_dtq(DTQ_LED, (intptr_t)(0x00 | DBLED2));
+            return;
+        }
+    }
+    if (ntlibc_strcmp(argv[1], "DBLED3") == 0) {
+        if (ntlibc_strcmp(argv[2], "ON") == 0) {
+            snd_dtq(DTQ_LED, (intptr_t)(0x80 | DBLED3));
+            return;
+        }
+        if (ntlibc_strcmp(argv[2], "OFF") == 0) {
+            snd_dtq(DTQ_LED, (intptr_t)(0x00 | DBLED3));
+            return;
+        }
+    }
+    syslog(LOG_NOTICE, "Invalid command.");
 }
 
 void cmd_mount(int argc, char **argv) {
     int a = disk_initialize();
     int b = pf_mount(&fs);
     int c = pf_opendir(&dir, "");
-    strcpy(curdir, "");
+    ntlibc_strcpy(curdir, "");
     if ((a == 0) && (b == 0) && (c == 0)) {
         syslog(LOG_NOTICE, "Mounted the SD card.");
     } else {
@@ -127,13 +153,13 @@ void cmd_cd(int argc, char **argv) {
         case 1:
             r = pf_opendir(&dir, "");
             if (!r) {
-                strcpy(curdir, "");
+                ntlibc_strcpy(curdir, "");
             }
             break;
         case 2:
             r = pf_opendir(&dir, argv[1]);
             if (!r) {
-                strcpy(curdir, argv[1]);
+                ntlibc_strcpy(curdir, argv[1]);
             }
             break;
         default:
@@ -202,7 +228,7 @@ void func_ntopt(int argc, char **argv)
     int execnt = 0;
     const command_table_t *p = &table[0];
     while (p->command != NULL) {
-        if (ntopt_compare((const char *)argv[0], p->command) == 0) {
+        if (ntlibc_strcmp((const char *)argv[0], p->command) == 0) {
             p->func(argc, argv);
             execnt++;
         }
@@ -228,15 +254,14 @@ void task_ntshell(intptr_t exinf)
     int i;
 
     serial_opn_por(SIO_PORTID);
-    Color c1, c2;
 
+#if 0
+    Color c1, c2;
     c1.r = 0x60;
     c1.g = 0x60;
     c1.b = 0x60;
-
     oled_init();
     oled_clear(0, 0, 95, 63);
-
 #if 0
     for (i = 0; i < 8; i++) {
         c2.r = i * 10;
@@ -280,6 +305,7 @@ void task_ntshell(intptr_t exinf)
         syslog(LOG_NOTICE, "\tvol:%d %d %d %d", v1, v2, v3, v4);
         tslp_tsk(500);
     }
+#endif
 
     ntshell_execute(&parser,
             &editor, &history,

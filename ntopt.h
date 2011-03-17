@@ -35,7 +35,6 @@
 #define NTOPT_MAXLEN_ARGV  16
 
 int ntopt_parse(const char *str, void (*func)(int argc, char **argv));
-int ntopt_compare(const char *s1, const char *s2);
 
 #endif
 

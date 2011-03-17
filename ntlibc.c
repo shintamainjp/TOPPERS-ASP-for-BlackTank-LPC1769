@@ -30,7 +30,7 @@
 
 #include "ntlibc.h"
 
-size_t strlen(const char *s)
+size_t ntlibc_strlen(const char *s)
 {
     const char *p = s;
     int cnt = 0;
@@ -41,7 +41,7 @@ size_t strlen(const char *s)
     return cnt;
 }
 
-char *strcpy(char *des, const char *src)
+char *ntlibc_strcpy(char *des, const char *src)
 {
     char *d = des;
     const char *s = src;
@@ -54,7 +54,7 @@ char *strcpy(char *des, const char *src)
     return des;
 }
 
-char *strcat(char *des, const char *src)
+char *ntlibc_strcat(char *des, const char *src)
 {
     char *d = des;
     const char *s = src;
@@ -68,5 +68,23 @@ char *strcat(char *des, const char *src)
     }
     *d = '\0';
     return des;
+}
+
+int ntlibc_strcmp(const char *s1, const char *s2)
+{
+    char *p1 = (char *)s1;
+    char *p2 = (char *)s2;
+    while (*p1 && *p2) {
+        if (*p1 != *p2) {
+            return (*p1 < *p2) ? -1 : 1;
+        }
+        p1++;
+        p2++;
+    }
+    if (*p1 == *p2) {
+        return 0;
+    } else {
+        return (*p1 < *p2) ? -1 : 1;
+    }
 }
 

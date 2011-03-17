@@ -1,7 +1,3 @@
-/**
- * \file task_led.c
- * \brief アプリケーションの本体ファイル。
-*/
 
 #include <LPC17xx.h>
 #include <kernel.h>
@@ -11,41 +7,39 @@
 #include "task_led.h"
 #include "debled.h"
 
-/**
- * \brief メインタスク
- * \param exinf コンフィギュレータから渡す引数。今回は利用しない
- * \details
- * 100ミリ秒休んでLEDを反転する。これを繰り返す。タスクからは戻らない。
- */
+#define MSG_CONTROL(n) (((n) & 0x80) ? 0 : 1)
+#define MSG_TARGET(n) ((n) & 0x0F)
+
 void task_led(intptr_t exinf)
 {
-    int ledspd = 100;
-    int cnt = 0;
-
+    uint8_t msg;
     while(1)
     {
-        uint_t value;
-
-        while (prcv_dtq(DTQ_LEDSPD, (intptr_t *)&value) == E_OK) {
-            if (value > 0) {
-                ledspd = value;
-                syslog(LOG_NOTICE, "[%d]", ledspd);
+        while (prcv_dtq(DTQ_LED, (intptr_t *)&msg) == E_OK) {
+            switch (MSG_TARGET(msg)) {
+                case DBLED0:
+                    debled_set(0, MSG_CONTROL(msg));
+                    break;
+                case DBLED1:
+                    debled_set(1, MSG_CONTROL(msg));
+                    break;
+                case DBLED2:
+                    debled_set(2, MSG_CONTROL(msg));
+                    break;
+                case DBLED3:
+                    debled_set(3, MSG_CONTROL(msg));
+                    break;
+                case SWLED0:
+                    break;
+                case SWLED1:
+                    break;
+                case SWLED2:
+                    break;
+                case SWLED3:
+                    break;
             }
         }
-        if ((cnt % 2) == 0) {
-            debled_set(DEBLED1, 1);
-            debled_set(DEBLED2, 1);
-            debled_set(DEBLED3, 1);
-            debled_set(DEBLED4, 1);
-        } else {
-            debled_set(DEBLED1, 0);
-            debled_set(DEBLED2, 0);
-            debled_set(DEBLED3, 0);
-            debled_set(DEBLED4, 0);
-        }
-
-        tslp_tsk(ledspd);
-        cnt++;
+        tslp_tsk(10);
     }
 }
 
