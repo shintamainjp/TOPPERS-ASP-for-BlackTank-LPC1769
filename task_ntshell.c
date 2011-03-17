@@ -267,6 +267,15 @@ void task_ntshell(intptr_t exinf)
         tslp_tsk(1000);
     }
 
+    for (i = 0; i < 1000; i++) {
+        int s1 = hid_swread(0);
+        int s2 = hid_swread(1);
+        int s3 = hid_swread(2);
+        int s4 = hid_swread(3);
+        syslog(LOG_NOTICE, "sw:%d %d %d %d", s1, s2, s3, s4);
+        tslp_tsk(500);
+    }
+
     ntshell_execute(&parser,
             &editor, &history,
             func_read, func_write, func_ntshell);
