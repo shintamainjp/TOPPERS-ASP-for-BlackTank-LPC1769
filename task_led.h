@@ -16,7 +16,13 @@
 #define SWLED2 6
 #define SWLED3 7
 
+#define LEDOFF 0
+#define LEDON 1
+
+#define LEDMSG(target, control) snd_dtq(DTQ_LED, (intptr_t)(((control) ? 0x80:0x00) | (target)))
+
 void task_led(intptr_t exinf);
+
 
 #endif
 

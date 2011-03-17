@@ -69,40 +69,41 @@ void cmd_led(int argc, char **argv) {
     }
     if (ntlibc_strcmp(argv[1], "DBLED0") == 0) {
         if (ntlibc_strcmp(argv[2], "ON") == 0) {
-            snd_dtq(DTQ_LED, (intptr_t)(0x80 | DBLED0));
+            LEDMSG(DBLED0, LEDON);
             return;
         }
         if (ntlibc_strcmp(argv[2], "OFF") == 0) {
-            snd_dtq(DTQ_LED, (intptr_t)(0x00 | DBLED0));
+            LEDMSG(DBLED0, LEDOFF);
             return;
         }
     }
     if (ntlibc_strcmp(argv[1], "DBLED1") == 0) {
         if (ntlibc_strcmp(argv[2], "ON") == 0) {
-            snd_dtq(DTQ_LED, (intptr_t)(0x80 | DBLED1));
+            LEDMSG(DBLED1, LEDON);
             return;
         }
         if (ntlibc_strcmp(argv[2], "OFF") == 0) {
-            snd_dtq(DTQ_LED, (intptr_t)(0x00 | DBLED1));
+            LEDMSG(DBLED1, LEDOFF);
             return;
         }
     }
     if (ntlibc_strcmp(argv[1], "DBLED2") == 0) {
         if (ntlibc_strcmp(argv[2], "ON") == 0) {
-            snd_dtq(DTQ_LED, (intptr_t)(0x80 | DBLED2));
+            LEDMSG(DBLED2, LEDON);
             return;
         }
         if (ntlibc_strcmp(argv[2], "OFF") == 0) {
-            snd_dtq(DTQ_LED, (intptr_t)(0x00 | DBLED2));
+            LEDMSG(DBLED2, LEDOFF);
             return;
         }
     }
     if (ntlibc_strcmp(argv[1], "DBLED3") == 0) {
         if (ntlibc_strcmp(argv[2], "ON") == 0) {
-            snd_dtq(DTQ_LED, (intptr_t)(0x80 | DBLED3));
+            LEDMSG(DBLED3, LEDON);
             return;
         }
         if (ntlibc_strcmp(argv[2], "OFF") == 0) {
+            LEDMSG(DBLED3, LEDOFF);
             snd_dtq(DTQ_LED, (intptr_t)(0x00 | DBLED3));
             return;
         }
@@ -280,31 +281,6 @@ void task_ntshell(intptr_t exinf)
 
     tslp_tsk(5000);
     oled_clear(0, 0, 95, 63);
-
-    hid_init();
-
-    for (i = 0; i < 4; i++) {
-        hid_swled(i, 1);
-        tslp_tsk(1000);
-    }
-    for (i = 0; i < 4; i++) {
-        hid_swled(i, 0);
-        tslp_tsk(1000);
-    }
-
-    for (i = 0; i < 1000; i++) {
-        int s1 = hid_swread(0);
-        int s2 = hid_swread(1);
-        int s3 = hid_swread(2);
-        int s4 = hid_swread(3);
-        int v1 = hid_volread(0);
-        int v2 = hid_volread(1);
-        int v3 = hid_volread(2);
-        int v4 = hid_volread(3);
-        syslog(LOG_NOTICE, "sw:%d %d %d %d", s1, s2, s3, s4);
-        syslog(LOG_NOTICE, "\tvol:%d %d %d %d", v1, v2, v3, v4);
-        tslp_tsk(500);
-    }
 #endif
 
     ntshell_execute(&parser,
