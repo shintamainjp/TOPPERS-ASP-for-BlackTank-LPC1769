@@ -272,7 +272,12 @@ void task_ntshell(intptr_t exinf)
         int s2 = hid_swread(1);
         int s3 = hid_swread(2);
         int s4 = hid_swread(3);
+        int v1 = hid_volread(0);
+        int v2 = hid_volread(1);
+        int v3 = hid_volread(2);
+        int v4 = hid_volread(3);
         syslog(LOG_NOTICE, "sw:%d %d %d %d", s1, s2, s3, s4);
+        syslog(LOG_NOTICE, "\tvol:%d %d %d %d", v1, v2, v3, v4);
         tslp_tsk(500);
     }
 
