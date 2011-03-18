@@ -1200,7 +1200,6 @@ app_init.o: kernel/arch/arm_m_gcc/prc_test.h \
 	/usr/local/LPCXpresso/tools/bin/../lib/gcc/arm-none-eabi/4.4.1/../../../../arm-none-eabi/include/sys/libconfig.h \
 	/usr/local/LPCXpresso/tools/bin/../lib/gcc/arm-none-eabi/4.4.1/../../../../arm-none-eabi/include/sys/libconfig-arm.h \
 	/usr/local/LPCXpresso/tools/bin/../lib/gcc/arm-none-eabi/4.4.1/include/stddef.h \
-	./drivers/led/debled.h \
 	/usr/local/LPCXpresso/tools/bin/../lib/gcc/arm-none-eabi/4.4.1/../../../../arm-none-eabi/include/stdint.h \
 	/usr/local/LPCXpresso/tools/bin/../lib/gcc/arm-none-eabi/4.4.1/../../../../arm-none-eabi/include/stddef.h \
 	kernel/chip/lpc17xx_gcc/cmsis/core/core_cm3.h \
@@ -1312,18 +1311,17 @@ oled.o: /usr/local/LPCXpresso/tools/bin/../lib/gcc/arm-none-eabi/4.4.1/../../../
 	/usr/local/LPCXpresso/tools/bin/../lib/gcc/arm-none-eabi/4.4.1/../../../../arm-none-eabi/include/redlib/stdint.h \
 	kernel/chip/lpc17xx_gcc/cmsis/device/LPC17xx.h \
 	kernel/arch/arm_m_gcc/arm_m.h 
-debled.o: \
-	/usr/local/LPCXpresso/tools/bin/../lib/gcc/arm-none-eabi/4.4.1/../../../../arm-none-eabi/include/stdint.h \
-	./drivers/led/debled.h \
+led.o: /usr/local/LPCXpresso/tools/bin/../lib/gcc/arm-none-eabi/4.4.1/../../../../arm-none-eabi/include/stdint.h \
 	kernel/chip/lpc17xx_gcc/cmsis/core/core_cm3.h \
 	/usr/local/LPCXpresso/tools/bin/../lib/gcc/arm-none-eabi/4.4.1/../../../../arm-none-eabi/include/redlib/sys/redlib_version.h \
 	/usr/local/LPCXpresso/tools/bin/../lib/gcc/arm-none-eabi/4.4.1/../../../../arm-none-eabi/include/sys/redlib_version.h \
 	/usr/local/LPCXpresso/tools/bin/../lib/gcc/arm-none-eabi/4.4.1/../../../../arm-none-eabi/include/redlib/sys/libconfig.h \
 	kernel/chip/lpc17xx_gcc/cmsis/device/system_LPC17xx.h \
-	./drivers/led/debled.c \
+	./drivers/led/led.h \
 	/usr/local/LPCXpresso/tools/bin/../lib/gcc/arm-none-eabi/4.4.1/../../../../arm-none-eabi/include/sys/libconfig.h \
 	/usr/local/LPCXpresso/tools/bin/../lib/gcc/arm-none-eabi/4.4.1/../../../../arm-none-eabi/include/redlib/stdint.h \
 	/usr/local/LPCXpresso/tools/bin/../lib/gcc/arm-none-eabi/4.4.1/../../../../arm-none-eabi/include/redlib/sys/libconfig-arm.h \
+	./drivers/led/led.c \
 	kernel/chip/lpc17xx_gcc/cmsis/device/LPC17xx.h \
 	/usr/local/LPCXpresso/tools/bin/../lib/gcc/arm-none-eabi/4.4.1/../../../../arm-none-eabi/include/sys/libconfig-arm.h 
 hid.o: /usr/local/LPCXpresso/tools/bin/../lib/gcc/arm-none-eabi/4.4.1/../../../../arm-none-eabi/include/sys/redlib_version.h \
@@ -1365,6 +1363,7 @@ hid.o: /usr/local/LPCXpresso/tools/bin/../lib/gcc/arm-none-eabi/4.4.1/../../../.
 task_led.o: kernel/arch/arm_m_gcc/prc_test.h \
 	/usr/local/LPCXpresso/tools/bin/../lib/gcc/arm-none-eabi/4.4.1/../../../../arm-none-eabi/include/sys/redlib_version.h \
 	kernel/target/lpc1768_generic_gcc/target_stddef.h \
+	./drivers/led/led.h \
 	/usr/local/LPCXpresso/tools/bin/../lib/gcc/arm-none-eabi/4.4.1/include-fixed/limits.h \
 	/usr/local/LPCXpresso/tools/bin/../lib/gcc/arm-none-eabi/4.4.1/../../../../arm-none-eabi/include/redlib/stddef.h \
 	kernel/include/t_stddef.h kernel_cfg.h \
@@ -1381,7 +1380,6 @@ task_led.o: kernel/arch/arm_m_gcc/prc_test.h \
 	/usr/local/LPCXpresso/tools/bin/../lib/gcc/arm-none-eabi/4.4.1/../../../../arm-none-eabi/include/sys/libconfig.h \
 	/usr/local/LPCXpresso/tools/bin/../lib/gcc/arm-none-eabi/4.4.1/../../../../arm-none-eabi/include/sys/libconfig-arm.h \
 	/usr/local/LPCXpresso/tools/bin/../lib/gcc/arm-none-eabi/4.4.1/include/stddef.h \
-	./drivers/led/debled.h \
 	/usr/local/LPCXpresso/tools/bin/../lib/gcc/arm-none-eabi/4.4.1/../../../../arm-none-eabi/include/stdint.h \
 	/usr/local/LPCXpresso/tools/bin/../lib/gcc/arm-none-eabi/4.4.1/../../../../arm-none-eabi/include/stddef.h \
 	kernel/chip/lpc17xx_gcc/cmsis/core/core_cm3.h \
@@ -1421,7 +1419,6 @@ task_ntshell.o: kernel/target/lpc1768_generic_gcc/lpc1768_generic.h \
 	/usr/local/LPCXpresso/tools/bin/../lib/gcc/arm-none-eabi/4.4.1/include/stddef.h \
 	/usr/local/LPCXpresso/tools/bin/../lib/gcc/arm-none-eabi/4.4.1/../../../../arm-none-eabi/include/stddef.h \
 	/usr/local/LPCXpresso/tools/bin/../lib/gcc/arm-none-eabi/4.4.1/../../../../arm-none-eabi/include/stdint.h \
-	./drivers/oled/oled.h \
 	kernel/chip/lpc17xx_gcc/cmsis/core/core_cm3.h \
 	kernel/include/sil.h \
 	kernel/target/lpc1768_generic_gcc/target_kernel.h \
@@ -1432,8 +1429,8 @@ task_ntshell.o: kernel/target/lpc1768_generic_gcc/lpc1768_generic.h \
 	text_history.h kernel/chip/lpc17xx_gcc/chip_stddef.h \
 	kernel/syssvc/serial.h kernel/chip/lpc17xx_gcc/chip_kernel.h \
 	/usr/local/LPCXpresso/tools/bin/../lib/gcc/arm-none-eabi/4.4.1/../../../../arm-none-eabi/include/redlib/stdint.h \
-	kernel/arch/logtrace/trace_config.h ./drivers/hid/hid.h \
-	ntlibc.h kernel/chip/lpc17xx_gcc/cmsis/device/LPC17xx.h \
+	kernel/arch/logtrace/trace_config.h ntlibc.h \
+	kernel/chip/lpc17xx_gcc/cmsis/device/LPC17xx.h \
 	./drivers/pff/integer.h ntopt.h vtparse_table.h task_led.h \
 	kernel/arch/arm_m_gcc/arm_m.h 
 task_userinput.o: kernel/arch/arm_m_gcc/prc_test.h \
@@ -1466,8 +1463,9 @@ task_userinput.o: kernel/arch/arm_m_gcc/prc_test.h \
 	kernel/chip/lpc17xx_gcc/chip_stddef.h \
 	kernel/chip/lpc17xx_gcc/chip_kernel.h \
 	/usr/local/LPCXpresso/tools/bin/../lib/gcc/arm-none-eabi/4.4.1/../../../../arm-none-eabi/include/redlib/stdint.h \
+	./drivers/hid/hid.h \
 	kernel/chip/lpc17xx_gcc/cmsis/device/LPC17xx.h \
-	task_userinput.h 
+	task_userinput.h task_led.h 
 task_display.o: kernel/arch/arm_m_gcc/prc_test.h \
 	/usr/local/LPCXpresso/tools/bin/../lib/gcc/arm-none-eabi/4.4.1/../../../../arm-none-eabi/include/sys/redlib_version.h \
 	kernel/target/lpc1768_generic_gcc/target_stddef.h \
@@ -1489,6 +1487,7 @@ task_display.o: kernel/arch/arm_m_gcc/prc_test.h \
 	/usr/local/LPCXpresso/tools/bin/../lib/gcc/arm-none-eabi/4.4.1/include/stddef.h \
 	/usr/local/LPCXpresso/tools/bin/../lib/gcc/arm-none-eabi/4.4.1/../../../../arm-none-eabi/include/stdint.h \
 	/usr/local/LPCXpresso/tools/bin/../lib/gcc/arm-none-eabi/4.4.1/../../../../arm-none-eabi/include/stddef.h \
+	./drivers/oled/oled.h \
 	kernel/chip/lpc17xx_gcc/cmsis/core/core_cm3.h \
 	kernel/target/lpc1768_generic_gcc/target_kernel.h \
 	kernel/include/t_syslog.h \

@@ -23,7 +23,6 @@
 
 void task_led(intptr_t exinf);
 
-
 #endif
 
 #endif

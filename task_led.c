@@ -5,37 +5,42 @@
 
 #include "kernel_cfg.h"
 #include "task_led.h"
-#include "debled.h"
+#include "led.h"
 
-#define MSG_CONTROL(n) (((n) & 0x80) ? 0 : 1)
+#define MSG_CONTROL(n) (((n) & 0x80) ? 1 : 0)
 #define MSG_TARGET(n) ((n) & 0x0F)
 
 void task_led(intptr_t exinf)
 {
     uint8_t msg;
+    led_init();
     while(1)
     {
         while (prcv_dtq(DTQ_LED, (intptr_t *)&msg) == E_OK) {
             switch (MSG_TARGET(msg)) {
                 case DBLED0:
-                    debled_set(0, MSG_CONTROL(msg));
+                    led_debug_write(0, MSG_CONTROL(msg));
                     break;
                 case DBLED1:
-                    debled_set(1, MSG_CONTROL(msg));
+                    led_debug_write(1, MSG_CONTROL(msg));
                     break;
                 case DBLED2:
-                    debled_set(2, MSG_CONTROL(msg));
+                    led_debug_write(2, MSG_CONTROL(msg));
                     break;
                 case DBLED3:
-                    debled_set(3, MSG_CONTROL(msg));
+                    led_debug_write(3, MSG_CONTROL(msg));
                     break;
                 case SWLED0:
+                    led_switch_write(0, MSG_CONTROL(msg));
                     break;
                 case SWLED1:
+                    led_switch_write(1, MSG_CONTROL(msg));
                     break;
                 case SWLED2:
+                    led_switch_write(2, MSG_CONTROL(msg));
                     break;
                 case SWLED3:
+                    led_switch_write(3, MSG_CONTROL(msg));
                     break;
             }
         }

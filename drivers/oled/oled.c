@@ -315,7 +315,7 @@ void oled_init(void)
 
     // initialize SSP configuration structure to default
     SSP_ConfigStructInit(&SSP_ConfigStruct);
-    SSP_ConfigStruct.ClockRate = 1000;
+    SSP_ConfigStruct.ClockRate = 4000000;
     // Initialize SSP peripheral with parameter given in structure above
     SSP_Init(LPC_SSP0, &SSP_ConfigStruct);
     // Enable SSP peripheral

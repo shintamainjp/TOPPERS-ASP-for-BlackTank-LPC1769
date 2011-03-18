@@ -1,9 +1,12 @@
-#ifndef DEBLED_H
-#define DEBLED_H
 
+#ifndef LED_H
+#define LED_H
 
-void debled_init(void);
-void debled_set(const int target, const int state);
+#include <stdint.h>
+
+void led_init(void);
+void led_debug_write(const uint8_t target, const uint8_t on);
+void led_switch_write(const uint8_t target, const uint8_t on);
 
 #endif
 

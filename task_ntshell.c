@@ -19,8 +19,6 @@
 #include "ntlibc.h"
 #include "pff.h"
 #include "diskio.h"
-#include "oled.h"
-#include "hid.h"
 
 char curdir[32];
 FATFS fs;
@@ -104,7 +102,46 @@ void cmd_led(int argc, char **argv) {
         }
         if (ntlibc_strcmp(argv[2], "OFF") == 0) {
             LEDMSG(DBLED3, LEDOFF);
-            snd_dtq(DTQ_LED, (intptr_t)(0x00 | DBLED3));
+            return;
+        }
+    }
+    if (ntlibc_strcmp(argv[1], "SWLED0") == 0) {
+        if (ntlibc_strcmp(argv[2], "ON") == 0) {
+            LEDMSG(SWLED0, LEDON);
+            return;
+        }
+        if (ntlibc_strcmp(argv[2], "OFF") == 0) {
+            LEDMSG(SWLED0, LEDOFF);
+            return;
+        }
+    }
+    if (ntlibc_strcmp(argv[1], "SWLED1") == 0) {
+        if (ntlibc_strcmp(argv[2], "ON") == 0) {
+            LEDMSG(SWLED1, LEDON);
+            return;
+        }
+        if (ntlibc_strcmp(argv[2], "OFF") == 0) {
+            LEDMSG(SWLED1, LEDOFF);
+            return;
+        }
+    }
+    if (ntlibc_strcmp(argv[1], "SWLED2") == 0) {
+        if (ntlibc_strcmp(argv[2], "ON") == 0) {
+            LEDMSG(SWLED2, LEDON);
+            return;
+        }
+        if (ntlibc_strcmp(argv[2], "OFF") == 0) {
+            LEDMSG(SWLED2, LEDOFF);
+            return;
+        }
+    }
+    if (ntlibc_strcmp(argv[1], "SWLED3") == 0) {
+        if (ntlibc_strcmp(argv[2], "ON") == 0) {
+            LEDMSG(SWLED3, LEDON);
+            return;
+        }
+        if (ntlibc_strcmp(argv[2], "OFF") == 0) {
+            LEDMSG(SWLED3, LEDOFF);
             return;
         }
     }
@@ -127,13 +164,13 @@ void cmd_ls(int argc, char **argv) {
     int r;
     r = pf_opendir(&dir, curdir);
     if (r) {
-        syslog(LOG_NOTICE, "Failure to open the director. (code=%d)", r);
+        syslog(LOG_NOTICE, "Failure to open the directory. (code=%d)", r);
         return;
     }
     while (1) {
         r = pf_readdir(&dir, &fno);
         if (r != FR_OK) {
-            syslog(LOG_NOTICE, "Failure to read the director. (code=%d)", r);
+            syslog(LOG_NOTICE, "Failure to read the directory. (code=%d)", r);
             return;
         }
         if (!fno.fname[0]) {
@@ -252,36 +289,7 @@ int func_ntshell(const unsigned char *text)
  */
 void task_ntshell(intptr_t exinf)
 {
-    int i;
-
     serial_opn_por(SIO_PORTID);
-
-#if 0
-    Color c1, c2;
-    c1.r = 0x60;
-    c1.g = 0x60;
-    c1.b = 0x60;
-    oled_init();
-    oled_clear(0, 0, 95, 63);
-#if 0
-    for (i = 0; i < 8; i++) {
-        c2.r = i * 10;
-        c2.g = i * 10;
-        c2.b = i * 10;
-        oled_fill_box(i * 10, i * 10, i * 10 + 10, i * 10 + 10, c1, c2);
-    }
-#else
-    c2.r = 0x80; c2.g = 0; c2.b = 0;
-    oled_fill_box(0, 0, 10, 10, c1, c2);
-    c2.r = 0; c2.g = 0x80; c2.b = 0;
-    oled_fill_box(10, 10, 20, 20, c1, c2);
-    c2.r = 0; c2.g = 0; c2.b = 0x80;
-    oled_fill_box(20, 20, 30, 30, c1, c2);
-#endif
-
-    tslp_tsk(5000);
-    oled_clear(0, 0, 95, 63);
-#endif
 
     ntshell_execute(&parser,
             &editor, &history,

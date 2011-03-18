@@ -9,7 +9,6 @@
 
 #include "kernel_cfg.h"
 #include "app_init.h"
-#include "debled.h"
 
 /**
  * \brief 初期化ルーチン
@@ -21,6 +20,5 @@
  */
 void app_init(intptr_t exinf)
 {
-    debled_init();
 }
 

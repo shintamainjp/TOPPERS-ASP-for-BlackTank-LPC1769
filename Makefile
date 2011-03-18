@@ -165,7 +165,7 @@ MYOBJS = app_init.o \
 	 diskio_mmc.o \
 	 platform.o \
 	 oled.o \
-	 debled.o \
+	 led.o \
 	 hid.o \
 	 \
 	 task_led.o \
