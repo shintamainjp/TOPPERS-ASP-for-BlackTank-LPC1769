@@ -97,7 +97,7 @@
  DISP_CLEAR(r, g, b);
  DISP_LINE(x1, y1, x2, y2, r, g, b);
  DISP_BOX(x1, y1, x2, y2, r, g, b);
- DISP_FILL(x1, y1, x2, y2, r, g, b);
+ DISP_FILLBOX(x1, y1, x2, y2, r1, g1, b1, r2, g2, b2);
  DISP_TEXT(x, y, "text");
 
  タスク間はメールボックスでやりとりされます。
@@ -171,3 +171,5 @@
 * 発振器のパッケージを見直したい。
   -> 小さいパッケージの中ではどれが一般的？
 
+* ボリュームではなく、ロータリーエンコーダにしたい。
+  -> クルクル回したい。

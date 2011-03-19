@@ -24,7 +24,7 @@ void task_menu(intptr_t exinf)
                     } else {
                         LEDMSG(DBLED0, LEDOFF);
                     }
-                    DISP_CLEAR(0xff, 0, 0);
+                    DISP_BOX(0,0,95,63,0xff,0x00,0x00);
                     break;
                 case SW1:
                     if (MSG_VALUE(msg)) {
@@ -32,7 +32,7 @@ void task_menu(intptr_t exinf)
                     } else {
                         LEDMSG(DBLED1, LEDOFF);
                     }
-                    DISP_CLEAR(0, 0xff, 0);
+                    DISP_FILLBOX(0,0,95,63,0xff,0x00,0x00,0xff,0xff,0xff);
                     break;
                 case SW2:
                     if (MSG_VALUE(msg)) {
@@ -56,6 +56,7 @@ void task_menu(intptr_t exinf)
                     } else {
                         LEDMSG(SWLED0, LEDOFF);
                     }
+                    DISP_LINE(0, MSG_VALUE(msg), 96 - 1, 64 - 1, 0x80, 0x80, 0x80);
                     break;
                 case VOL1:
                     if (MSG_VALUE(msg) > 16) {
