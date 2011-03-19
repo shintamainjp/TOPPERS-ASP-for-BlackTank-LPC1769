@@ -14,7 +14,7 @@
  *  各タスクの優先度の定義
  */
 
-#define TSKPRI_DISPLAY    12
+#define TSKPRI_DISPLAY    13
 
 /*
  *  関数のプロトタイプ宣言

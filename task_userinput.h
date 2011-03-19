@@ -3,7 +3,7 @@
 
 #include "target_test.h"
 
-#define TSKPRI_USERINPUT    10
+#define TSKPRI_USERINPUT    12
 
 #ifndef TOPPERS_MACRO_ONLY
 

@@ -14,7 +14,7 @@
  *  各タスクの優先度の定義
  */
 
-#define TSKPRI_NTSHELL    12		/* メインタスクの優先度 */
+#define TSKPRI_NTSHELL    12
 
 /*
  *  関数のプロトタイプ宣言

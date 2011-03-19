@@ -4,43 +4,85 @@
 
 #include "kernel_cfg.h"
 #include "task_userinput.h"
-#include "task_led.h"
+#include "task_menu.h"
 #include "hid.h"
 
 void task_userinput(intptr_t exinf)
 {
+    uint8_t s0prev, s1prev, s2prev, s3prev;
+    uint8_t v0prev, v1prev, v2prev, v3prev;
     hid_init();
     while(1)
     {
-        if (hid_swread(0)) {
-            LEDMSG(DBLED0, LEDON);
-            LEDMSG(SWLED0, LEDON);
-        } else {
-            LEDMSG(DBLED0, LEDOFF);
-            LEDMSG(SWLED0, LEDOFF);
+        /*
+         * Sense.
+         */
+        uint8_t s0curr = hid_swread(0);
+        uint8_t s1curr = hid_swread(1);
+        uint8_t s2curr = hid_swread(2);
+        uint8_t s3curr = hid_swread(3);
+        uint8_t v0curr = (uint8_t)(hid_volread(0) >> 7);
+        uint8_t v1curr = (uint8_t)(hid_volread(1) >> 7);
+        uint8_t v2curr = (uint8_t)(hid_volread(2) >> 7);
+        uint8_t v3curr = (uint8_t)(hid_volread(3) >> 7);
+
+        /*
+         * Diff.
+         */
+        if (s0prev != s0curr) {
+            if (s0curr) {
+                USERMSG(SW0, 1);
+            } else {
+                USERMSG(SW0, 0);
+            }
         }
-        if (hid_swread(1)) {
-            LEDMSG(DBLED1, LEDON);
-            LEDMSG(SWLED1, LEDON);
-        } else {
-            LEDMSG(DBLED1, LEDOFF);
-            LEDMSG(SWLED1, LEDOFF);
+        if (s1prev != s1curr) {
+            if (s1curr) {
+                USERMSG(SW1, 1);
+            } else {
+                USERMSG(SW1, 0);
+            }
         }
-        if (hid_swread(2)) {
-            LEDMSG(DBLED2, LEDON);
-            LEDMSG(SWLED2, LEDON);
-        } else {
-            LEDMSG(DBLED2, LEDOFF);
-            LEDMSG(SWLED2, LEDOFF);
+        if (s2prev != s2curr) {
+            if (s2curr) {
+                USERMSG(SW2, 1);
+            } else {
+                USERMSG(SW2, 0);
+            }
         }
-        if (hid_swread(3)) {
-            LEDMSG(DBLED3, LEDON);
-            LEDMSG(SWLED3, LEDON);
-        } else {
-            LEDMSG(DBLED3, LEDOFF);
-            LEDMSG(SWLED3, LEDOFF);
+        if (s3prev != s3curr) {
+            if (s3curr) {
+                USERMSG(SW3, 1);
+            } else {
+                USERMSG(SW3, 0);
+            }
         }
-        tslp_tsk(50);
+        if (v0prev != v0curr) {
+            USERMSG(VOL0, v0curr);
+        }
+        if (v1prev != v1curr) {
+            USERMSG(VOL1, v1curr);
+        }
+        if (v2prev != v2curr) {
+            USERMSG(VOL2, v2curr);
+        }
+        if (v3prev != v3curr) {
+            USERMSG(VOL3, v3curr);
+        }
+
+        /*
+         * Store.
+         */
+        s0prev = s0curr;
+        s1prev = s1curr;
+        s2prev = s2curr;
+        s3prev = s3curr;
+        v0prev = v0curr;
+        v1prev = v1curr;
+        v2prev = v2curr;
+        v3prev = v3curr;
+
+        tslp_tsk(40);
     }
 }
 
