@@ -64,6 +64,7 @@ void task_menu(intptr_t exinf)
                     } else {
                         LEDMSG(SWLED1, LEDOFF);
                     }
+                    DISP_TEXT(5, 5, 0xff, 0xff, 0xff, "MENU LIST");
                     break;
                 case VOL2:
                     if (MSG_VALUE(msg) > 16) {

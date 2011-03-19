@@ -98,7 +98,7 @@
  DISP_LINE(x1, y1, x2, y2, r, g, b);
  DISP_BOX(x1, y1, x2, y2, r, g, b);
  DISP_FILLBOX(x1, y1, x2, y2, r1, g1, b1, r2, g2, b2);
- DISP_TEXT(x, y, "text");
+ DISP_TEXT(x, y, r, g, b, "text");
 
  タスク間はメールボックスでやりとりされます。
  マクロはこれを隠蔽した実装としました。

@@ -9,6 +9,7 @@
 #define DISPLAY_CMD_LINE 1
 #define DISPLAY_CMD_BOX 2
 #define DISPLAY_CMD_FILLBOX 3
+#define DISPLAY_CMD_TEXT 4
 
 typedef struct {
     T_MSG header;
@@ -54,6 +55,15 @@ typedef struct {
     uint8_t g2;
     uint8_t b2;
 } display_fillbox_t;
+
+typedef struct {
+    uint8_t x;
+    uint8_t y;
+    uint8_t r;
+    uint8_t g;
+    uint8_t b;
+    char text[32];
+} display_text_t;
 
 #define DISP_CLEAR(R,G,B) \
     do { \
@@ -118,6 +128,31 @@ typedef struct {
         param.r2 = (R2); \
         param.g2 = (G2); \
         param.b2 = (B2); \
+        ((display_msg_t*)vp)->param = &param; \
+        snd_mbx(MBX_DISPLAY, vp); \
+    } while(0)
+
+#define DISP_TEXT(X,Y,R,G,B,TEXT) \
+    do { \
+        int i; \
+        char *strp; \
+        VP vp; \
+        display_text_t param; \
+        get_mpf(MPF_DISPLAY, &vp); \
+        ((display_msg_t*)vp)->cmd = DISPLAY_CMD_TEXT; \
+        param.x = (X); \
+        param.y = (Y); \
+        param.r = (R); \
+        param.g = (G); \
+        param.b = (B); \
+        strp = (TEXT); \
+        i = 0; \
+        while (*strp) { \
+            param.text[i] = *strp; \
+            i++; \
+            strp++; \
+        } \
+        param.text[i] = '\0'; \
         ((display_msg_t*)vp)->param = &param; \
         snd_mbx(MBX_DISPLAY, vp); \
     } while(0)
