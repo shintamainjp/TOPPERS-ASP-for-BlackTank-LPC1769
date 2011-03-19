@@ -347,7 +347,7 @@ void oled_draw_pixel(int x, int y, Color c) {
     oled_set_column_address(x, x);
     oled_set_row_address(y, y);
     c.b = c.b >> 3;
-    c.g = c.g >> 2;
+    c.g = c.g >> 3;
     c.r = c.r >> 3;
     oled_write_data((((c.b << 3) & 0xF8) | ((c.g >> 3) & 0x07)));
     oled_write_data((((c.g << 5) & 0xE0) | ((c.r >> 0) & 0x1F)));
@@ -419,10 +419,10 @@ void oled_fill_box(int x1, int y1, int x2, int y2, Color c1, Color c2) {
     SPI_WRITE(x2);
     SPI_WRITE(y2);
     SPI_WRITE(c1.b >> 3);
-    SPI_WRITE(c1.g >> 2);
+    SPI_WRITE(c1.g >> 3);
     SPI_WRITE(c1.r >> 3);
     SPI_WRITE(c2.b >> 3);
-    SPI_WRITE(c2.g >> 2);
+    SPI_WRITE(c2.g >> 3);
     SPI_WRITE(c2.r >> 3);
     CS_DIS();
     WAIT_MS(1);

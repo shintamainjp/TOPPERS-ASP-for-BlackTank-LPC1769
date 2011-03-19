@@ -39,6 +39,9 @@ typedef struct color {
     unsigned char b;
 } Color;
 
+#define OLED_X 96
+#define OLED_Y 64
+
 void oled_init(void);
 
 /**
