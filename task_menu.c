@@ -1,10 +1,12 @@
 #include <LPC17xx.h>
 #include <kernel.h>
 #include <t_syslog.h>
+#include <itron.h>
 
 #include "kernel_cfg.h"
 #include "task_menu.h"
 #include "task_led.h"
+#include "task_display.h"
 
 #define MSG_DEVICE(n) (((n) & 0xE0) >> 5)
 #define MSG_VALUE(n) ((n) & 0x1F)
@@ -22,6 +24,7 @@ void task_menu(intptr_t exinf)
                     } else {
                         LEDMSG(DBLED0, LEDOFF);
                     }
+                    DISP_CLEAR(0xff, 0, 0);
                     break;
                 case SW1:
                     if (MSG_VALUE(msg)) {
@@ -29,6 +32,7 @@ void task_menu(intptr_t exinf)
                     } else {
                         LEDMSG(DBLED1, LEDOFF);
                     }
+                    DISP_CLEAR(0, 0xff, 0);
                     break;
                 case SW2:
                     if (MSG_VALUE(msg)) {
@@ -36,6 +40,7 @@ void task_menu(intptr_t exinf)
                     } else {
                         LEDMSG(DBLED2, LEDOFF);
                     }
+                    DISP_CLEAR(0, 0, 0xff);
                     break;
                 case SW3:
                     if (MSG_VALUE(msg)) {
@@ -43,6 +48,7 @@ void task_menu(intptr_t exinf)
                     } else {
                         LEDMSG(DBLED3, LEDOFF);
                     }
+                    DISP_CLEAR(0, 0, 0);
                     break;
                 case VOL0:
                     if (MSG_VALUE(msg) > 16) {
