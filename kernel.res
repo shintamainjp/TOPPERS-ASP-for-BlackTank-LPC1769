@@ -117,7 +117,7 @@
 			{
 				"id"    :8,
 				"atr"   :"0",
-				"pri"   :10,
+				"pri"   :9,
 				"exinf" :"0",
 				"task"  :"task_audio",
 				"stksz" :1024,

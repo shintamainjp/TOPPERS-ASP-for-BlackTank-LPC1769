@@ -56,7 +56,25 @@ void task_audio_init(intptr_t exinf)
     int cnt = 0;
     while (1) {
         tslp_tsk(1000);
-        syslog(LOG_NOTICE, "active... %d", cnt++);
+        /*
+         * 動作を示すマーキング.
+         */
+        DISP_FILLBOX(90, 0, 95, 6, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00);
+        switch (cnt % 4) {
+            case 0:
+                DISP_TEXT(90, 0, 0xFF, 0xFF, 0xFF, "-");
+                break;
+            case 1:
+                DISP_TEXT(90, 0, 0xFF, 0xFF, 0xFF, "\\");
+                break;
+            case 2:
+                DISP_TEXT(90, 0, 0xFF, 0xFF, 0xFF, "|");
+                break;
+            case 3:
+                DISP_TEXT(90, 0, 0xFF, 0xFF, 0xFF, "/");
+                break;
+        }
+        cnt++;
     }
 }
 
