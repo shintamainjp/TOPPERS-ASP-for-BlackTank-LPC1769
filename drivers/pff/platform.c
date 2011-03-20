@@ -1,14 +1,14 @@
 #include "platform.h"
 
-#include <lpc17xx_ssp.h>
+#include <lpc17xx_spi.h>
 #include <lpc17xx_gpio.h>
 #include <lpc17xx_pinsel.h>
 #include <lpc17xx_libcfg.h>
 #include <kernel.h>
 
-SSP_CFG_Type SSP_ConfigStruct;
+SPI_CFG_Type SPI_ConfigStruct;
 PINSEL_CFG_Type PinCfg;
-SSP_DATA_SETUP_Type xferConfig;
+SPI_DATA_SETUP_Type xferConfig;
 
 // PORT number that /CS pin assigned on
 #define CS_PORT_NUM 1
@@ -42,11 +42,11 @@ void spi_init(void)
 {
     /*
      * Initialize SPI pin connect
-     * P0.15 - SCLK;
+     * P0.15 - SCK;
      * P0.17 - MISO
      * P0.18 - MOSI
      */
-    PinCfg.Funcnum = 2;
+    PinCfg.Funcnum = 3;
     PinCfg.OpenDrain = 0;
     PinCfg.Pinmode = 0;
     PinCfg.Portnum = 0;
@@ -57,32 +57,38 @@ void spi_init(void)
     PinCfg.Pinnum = 18;
     PINSEL_ConfigPin(&PinCfg);
 
-    // initialize SSP configuration structure to default
-    SSP_ConfigStructInit(&SSP_ConfigStruct);
-    // Initialize SSP peripheral with parameter given in structure above
-    SSP_Init(LPC_SSP0, &SSP_ConfigStruct);
-    // Enable SSP peripheral
-    SSP_Cmd(LPC_SSP0, ENABLE);
+    // initialize SPI configuration structure to default
+    SPI_ConfigStructInit(&SPI_ConfigStruct);
+#if 0
+    SPI_ConfigStruct.CPHA = SPI_CPHA_SECOND;
+    SPI_ConfigStruct.CPOL = SPI_CPOL_LO;
+    SPI_ConfigStruct.ClockRate = 2000;
+    SPI_ConfigStruct.DataOrder = SPI_DATA_MSB_FIRST;
+    SPI_ConfigStruct.Databit = SPI_DATABIT_SIZE;
+#endif
+    SPI_ConfigStruct.Mode = SPI_MASTER_MODE;
+    // Initialize SPI peripheral with parameter given in structure above
+    SPI_Init(LPC_SPI, &SPI_ConfigStruct);
 
     spi_cs_init();
 }
 
 void spi_tx(unsigned char c)
 {
-    SSP_SendData(LPC_SSP0, c);
-    while (SSP_GetStatus(LPC_SSP0, SSP_SR_BSY) == SET)
+    SPI_SendData(LPC_SPI, c);
+    while (!(SPI_GetStatus(LPC_SPI) & SPI_SPSR_SPIF))
     {
     }
-    SSP_ReceiveData(LPC_SSP0);
+    SPI_ReceiveData(LPC_SPI);
 }
 
 unsigned char spi_rx(void)
 {
-    SSP_SendData(LPC_SSP0, 0xff);
-    while (SSP_GetStatus(LPC_SSP0, SSP_SR_BSY) == SET)
+    SPI_SendData(LPC_SPI, 0xff);
+    while (!(SPI_GetStatus(LPC_SPI) & SPI_SPSR_SPIF))
     {
     }
-    return SSP_ReceiveData(LPC_SSP0);
+    return SPI_ReceiveData(LPC_SPI);
 }
 
 void dly_1ms(void)
