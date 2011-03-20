@@ -49,5 +49,6 @@ void codec_init()
 		/* TLV320AIC23Bに初期化データを送信する */
 	for ( i=0; i< CODECINITDATALEN; i++){
 		i2c_send_2bytes( 0x1A, tlv320aic23init[i][0], tlv320aic23init[i][1]);		/* Activate all functionality of TLV320AIC23B */
+                tslp_tsk(10);
 	}
 }

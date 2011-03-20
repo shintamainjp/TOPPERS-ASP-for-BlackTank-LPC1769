@@ -21,10 +21,9 @@
  *  .cfg ファイルで参照する
  */
 
+#define TSKPRI_AUDIO_INIT 16
+#define AUDIO_PRIORITY 10
 
-#define MAIN_PRIORITY	16		/* メインタスクの優先度 */
-#define AUDIO_PRIORITY	10		/* メインタスクの優先度 */
-#define STACK_SIZE	1024
 /*
  *  ターゲットに依存する可能性のある定数の定義
  *
@@ -32,7 +31,7 @@
  */
 
 #ifndef TASK_PORTID
-#define	TASK_PORTID		1			/* 文字入力するシリアルポートID */
+#define TASK_PORTID		1			/* 文字入力するシリアルポートID */
 #endif /* TASK_PORTID */
 
 
@@ -43,8 +42,8 @@
  */
 #ifndef TOPPERS_MACRO_ONLY
 
-extern void	main_task(intptr_t exinf);
-extern void	audio_task(intptr_t exinf);
+extern void task_audio_init(intptr_t exinf);
+extern void audio_task(intptr_t exinf);
 extern void dma_intr_handler(intptr_t exinf);
 
 #endif /* TOPPERS_MACRO_ONLY */

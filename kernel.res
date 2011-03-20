@@ -111,7 +111,7 @@
 				"state" :"RUNNABLE"
 			}
 		},
-		"MAIN_TASK":{
+		"TASK_AUDIO_INIT":{
 			"Type":"Task",
 			"Attributes":
 			{
@@ -119,7 +119,7 @@
 				"atr"   :"TA_ACT",
 				"pri"   :16,
 				"exinf" :"0",
-				"task"  :"main_task",
+				"task"  :"task_audio_init",
 				"stksz" :1024,
 				"stk"   :"NULL",
 				"state" :"RUNNABLE"

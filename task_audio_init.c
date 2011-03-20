@@ -11,7 +11,7 @@
  * して再度オーディオ・コーデックに出力する。内部コピーは \ref process_audio 関数で行っており
  * 内部を書き換えることでどのようなアルゴリズムでも実装できる。
  *
- * \ref main_task は各種の初期化を行った後、 \ref audio_task をアクティブにする。 audio_taskは
+ * \ref task_audio_init は各種の初期化を行った後、 \ref audio_task をアクティブにする。 audio_taskは
  * DMA割り込みハンドラ \ref dma_intr_handler からのシグナルに同期して動作しており、
  * ピンポンバッファを使ってDMAとソフトウェア処理の並列化を図っている。
  *
@@ -26,7 +26,7 @@
 #include <kernel.h>
 #include <t_syslog.h>
 #include <t_stdlib.h>
-#include "talkthrough.h"
+#include "task_audio_init.h"
 #include <LPC17xx.h>
 #include "kernel_cfg.h"
 
@@ -85,7 +85,7 @@ void dma_intr_handler(intptr_t exinf)
  * \details
  * 一連の初期化のあと、オーディオタスクを動かしてダミーループに入る。
  */
-void main_task(intptr_t exinf)
+void task_audio_init(intptr_t exinf)
 {
 	int i=0;
 
