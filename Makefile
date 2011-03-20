@@ -174,12 +174,14 @@ MYOBJS = app_init.o \
 	 task_display.o \
 	 task_menu.o \
 	 \
+	 task_audio_init.o \
 	 task_audio.o \
 	 audio_effect.o \
 	 i2s_subsystem.o \
 	 codec_subsystem.o \
 	 i2c_subsystem.o \
-	 adc_subsystem.o
+	 adc_subsystem.o \
+	 testpin.o
 
 APPL_DIR = $(APPLDIR) $(SRCDIR)/library ./drivers/pff ./drivers/oled ./drivers/led ./drivers/hid
 APPL_ASMOBJS =

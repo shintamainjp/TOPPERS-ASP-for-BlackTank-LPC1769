@@ -143,7 +143,6 @@ void i2s_dma_init(struct I2S_AUDIO_DATA *audio_data)
 	| 0 << 12		// SBSize : Source burst
 	| AUDIOBUFSIZE;		// Transfer size [count]
 
-
     /* 受信LLIの初期化 */
     audio_data->rxI2SLLI[0].DstAddr = audio_data->rxBuffer[0];	/* 受信データのバッファ */
     audio_data->rxI2SLLI[0].SrcAddr = (int *) &LPC_I2S->I2SRXFIFO;	/* I2SのFIFOから受信する */
@@ -172,25 +171,24 @@ void i2s_dma_init(struct I2S_AUDIO_DATA *audio_data)
 	| 0 << 12		// SBSize : Source burst
 	| AUDIOBUFSIZE;		// Transfer size [count]
 
-
-
-
-
     /* 送信バッファのクリア */
     for (i = 0; i < AUDIOBUFSIZE; i++) {
-	audio_data->txBuffer[0][i] = 0x00;	/* ゼロフィル */
-	audio_data->txBuffer[1][i] = 0x00;
+        audio_data->txBuffer[0][i] = 0x00;	/* ゼロフィル */
+        audio_data->txBuffer[1][i] = 0x00;
     }
 
 
     /* 受信バッファのクリア */
     for (i = 0; i < AUDIOBUFSIZE; i++) {
-	audio_data->rxBuffer[0][i] = 0x00;	/* ゼロフィル */
-	audio_data->rxBuffer[1][i] = 0x00;
+        audio_data->rxBuffer[0][i] = 0x00;	/* ゼロフィル */
+        audio_data->rxBuffer[1][i] = 0x00;
     }
 
-    /* DMAの最初の1回の動作はレジスタを直接初期化して起動する。LPC1768のDMA起動方法は
-     * 洗練されているとは言い難い */
+    /*
+     * DMAの最初の1回の動作はレジスタを直接初期化して起動する。
+     * LPC1768のDMA起動方法は洗練されているとは言い難い。
+     */
+
     /* 送信DMAの起動準備 */
     LPC_GPDMACH0->DMACCSrcAddr = (int) audio_data->txI2SLLI[0].SrcAddr;
     LPC_GPDMACH0->DMACCDestAddr = (int) audio_data->txI2SLLI[0].DstAddr;
@@ -203,10 +201,11 @@ void i2s_dma_init(struct I2S_AUDIO_DATA *audio_data)
     LPC_GPDMACH1->DMACCLLI = (int) &(audio_data->rxI2SLLI[1]);
     LPC_GPDMACH1->DMACCControl = audio_data->rxI2SLLI[0].Control;
 
+    /*
+     * DMAチャンネルの設定を行う。
+     * この時点ではDMAはディセーブルである。
+     */
 
-
-
-    /* DMAチャンネルの設定を行う。この時点ではDMAはディセーブルである */
     /* TX */
     LPC_GPDMACH0->DMACCConfig = 0	// Enable : 0 is Disable
 	| 0 << 1		// Src Peripheral ( Ignored when M->P )
@@ -227,7 +226,6 @@ void i2s_dma_init(struct I2S_AUDIO_DATA *audio_data)
     /* 最後の処理としてDMAチャンネルを有功にする */
     LPC_GPDMACH0->DMACCConfig |= 1;
     LPC_GPDMACH1->DMACCConfig |= 1;
-
 }
 
 
@@ -245,20 +243,22 @@ AUDIOSAMPLE *i2s_getTxBuf()
     struct LLI *nextLLI;
 
     // このプログラムではDMACH0をI2S TXに使っている。
-    // 使用していないバッファとは、現在使用中のLLIの、次のLLIが指し示すバッファである。
+    // 使用していないバッファとは、現在使用中のLLIの、
+    // 次のLLIが指し示すバッファである。
     nextLLI = (struct LLI *) LPC_GPDMACH0->DMACCLLI;
     return nextLLI->SrcAddr;
 }
-
 
 /**
  * \brief 現在ソフトウェアが使えるI2S RXバッファをかえす。
  * \return プログラムが読み込んでいい受信バッファの先頭アドレス
  * \details
- * DMAが使用していないバッファをかえす。DMAと同期したプログラムを書く場合には必ず
- * このルーチンを使用してプログラムが使ってもよいバッファを決定する。
+ * DMAが使用していないバッファをかえす。
+ * DMAと同期したプログラムを書く場合には必ずこのルーチンを使用して
+ * プログラムが使ってもよいバッファを決定する。
  * \todo
- * DMAチャンネルの番号は決め打ちである。適切なDMA管理機構を使った方式への変更が必要である。
+ * DMAチャンネルの番号は決め打ちである。
+ * 適切なDMA管理機構を使った方式への変更が必要である。
  */
 AUDIOSAMPLE *i2s_getRxBuf()
 {
@@ -270,14 +270,17 @@ AUDIOSAMPLE *i2s_getRxBuf()
     return nextLLI->DstAddr;
 }
 
-
 void i2s_dma_intr_handler()
 {
-    if (LPC_GPDMA->DMACIntTCStat & (1 << 1))	// I2S DMAバッファ終了割り込みか？
+    if (LPC_GPDMA->DMACIntTCStat & (1 << 1))
     {
-	// CH1 (I2S DMA)のTC割り込みをクリア
-	LPC_GPDMA->DMACIntTCClear = 1 << 1;
-	// IS2 バッファ転送割り込みが起きたことをタスクに通知する。
-	isig_sem(SEM_I2SDMA);
+        /*
+         * I2S DMAバッファ終了割り込み
+         */
+        // CH1 (I2S DMA)のTC割り込みをクリア
+        LPC_GPDMA->DMACIntTCClear = (1 << 1);
+        // IS2 バッファ転送割り込みが起きたことをタスクに通知する。
+        isig_sem(SEM_I2SDMA);
     }
 }
+

@@ -2,7 +2,9 @@
 #ifndef TASK_AUDIO_H
 #define TASK_AUDIO_H
 
-#define TSKPRI_AUDIO 10
+#include "i2s_subsystem.h"
+
+#define TSKPRI_AUDIO 9
 
 /**
  * \brief オーディオDMAに同期して動くタスク
@@ -17,6 +19,7 @@
  */
 void task_audio(intptr_t exinf);
 void dma_intr_handler(intptr_t exinf);
+struct I2S_AUDIO_DATA* get_audio_data(void);
 
 #endif
 

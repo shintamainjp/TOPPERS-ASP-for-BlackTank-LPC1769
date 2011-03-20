@@ -11,6 +11,8 @@
 #include "i2c_subsystem.h"
 #include "adc_subsystem.h"
 #include "codec_subsystem.h"
+#include "testpin.h"
+#include "task_display.h"
 
 /**
  * \mainpage
@@ -83,35 +85,15 @@ void dma_intr_handler(intptr_t exinf)
  */
 static struct I2S_AUDIO_DATA audio_data;
 
+struct I2S_AUDIO_DATA* get_audio_data(void)
+{
+    return &audio_data;
+}
+
 void task_audio(intptr_t exinf)
 {
-    /* I2C を初期化する */
-    i2c_init();
-    syslog(LOG_NOTICE, "I2C initialize done.");
-
-    /* AUDIO CODECを初期化する */
-    codec_init();
-    syslog(LOG_NOTICE, "Codec initialize done.");
-
-    /* ペリフェラル群の初期化 */
-    adc_init();
-    syslog(LOG_NOTICE, "ADC initialize done.");
-
-    i2s_init();
-    syslog(LOG_NOTICE, "I2S initialize done.");
-
-    i2s_dma_init(&audio_data);
-    syslog(LOG_NOTICE, "I2S DMA initialize done.");
-
-    /* DMAによるI2S転送を始める */
-    i2s_start();
-    syslog(LOG_NOTICE, "Started I2S.");
-
     AUDIOSAMPLE * txbuf, *rxbuf;
     int index, ch, sample;
-
-    /* リアルタイム・ステータス用のテストピンを出力にする */
-    LPC_GPIO2->FIODIR |= 1<<8;
 
     while(1)
     {
@@ -119,7 +101,7 @@ void task_audio(intptr_t exinf)
         wai_sem(SEM_I2SDMA);
 
         // 同期状態を示すためのテストピン信号を作成する
-        LPC_GPIO2->FIOPIN ^= 1<<8;
+        testpin_tp1_toggle();
 
         // プログラムが使用してもよいバッファのアドレスを取得する。
         txbuf = i2s_getTxBuf();
@@ -141,6 +123,9 @@ void task_audio(intptr_t exinf)
                 txbuf[index++] = audio_data.outputBuffer[ch][sample];
             }
         }
+
+        // 同期状態を示すためのテストピン信号を作成する
+        testpin_tp2_toggle();
     }
 }
 

@@ -97,18 +97,32 @@
 				"state" :"RUNNABLE"
 			}
 		},
-		"TASK_AUDIO":{
+		"TASK_AUDIO_INIT":{
 			"Type":"Task",
 			"Attributes":
 			{
 				"id"    :7,
 				"atr"   :"TA_ACT",
+				"pri"   :16,
+				"exinf" :"0",
+				"task"  :"task_audio_init",
+				"stksz" :1024,
+				"stk"   :"NULL",
+				"state" :"RUNNABLE"
+			}
+		},
+		"TASK_AUDIO":{
+			"Type":"Task",
+			"Attributes":
+			{
+				"id"    :8,
+				"atr"   :"0",
 				"pri"   :10,
 				"exinf" :"0",
 				"task"  :"task_audio",
 				"stksz" :1024,
 				"stk"   :"NULL",
-				"state" :"RUNNABLE"
+				"state" :"DORMANT"
 			}
 		},
 		"INH_INHNO_TIMER_target_timer_handler":{

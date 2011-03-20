@@ -40,10 +40,9 @@ static uint32_t life = 0;
 
 void page_splash(void)
 {
-    if (life == 0) {
-        DISP_CLEAR(0x00, 0x00, 0x00);
-        DISP_MENUTAG("ABCD", "EFGH", "IJKL", "MNOP");
-    }
+    /* 他のタスクが初期化状態を表示するため
+     * このタスクでは何も表示しない。
+     */
 }
 
 void page_top(void)
