@@ -1,6 +1,7 @@
 /**
- * \file ledblink.h
- * \brief アプリケーション用インクルードファイル。コンフィギュレータも読み込む。
+ * @file ledblink.h
+ * @brief アプリケーション用インクルードファイル。
+ * コンフィギュレータも読み込む。
  */
 #ifndef _APP_INIT_H_
 #define _APP_INIT_H_
@@ -15,7 +16,7 @@
  */
 #ifndef TOPPERS_MACRO_ONLY
 
-extern void	app_init(intptr_t exinf);
+void app_init(intptr_t exinf);
 
 #endif /* TOPPERS_MACRO_ONLY */
 

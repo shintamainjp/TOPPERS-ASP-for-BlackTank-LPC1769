@@ -1,3 +1,11 @@
+/**
+ * @file task_led.h
+ * @brief LEDタスク(task_led)
+ * LEDタスクはLEDの点灯を制御するタスクです。
+ * 点灯は各タスクから次のマクロのみで指示することができます。
+ * LEDMSG(target, control);
+ */
+
 #ifndef _TASK_LED_H_
 #define _TASK_LED_H_
 

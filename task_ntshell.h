@@ -1,7 +1,9 @@
 /**
- * \file task_ntshell.h
- * \brief アプリケーション用インクルードファイル。コンフィギュレータも読み込む。
+ * @file task_ntshell.h
+ * @brief ナチュラルタイニーシェルタスク(task_ntshell)
+ * システムをコンソールから制御することのできるインターフェースタスクです。
  */
+
 #ifndef _TASK_NTSHELL_H_
 #define _TASK_NTSHELL_H_
 

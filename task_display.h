@@ -1,3 +1,15 @@
+/**
+ * @file task_display.h
+ * @brief ディスプレイタスク(task_display)
+ * ディスプレイタスクは有機ELディスプレイを制御するタスクです。
+ * ディスプレイの制御は以下のマクロを使って行うことができます。
+ * DISP_CLEAR(r, g, b);
+ * DISP_LINE(x1, y1, x2, y2, r, g, b);
+ * DISP_BOX(x1, y1, x2, y2, r, g, b);
+ * DISP_FILLBOX(x1, y1, x2, y2, r1, g1, b1, r2, g2, b2);
+ * DISP_TEXT(x, y, r, g, b, "text");
+ */
+
 #ifndef _TASK_DISPLAY_H_
 #define _TASK_DISPLAY_H_
 

@@ -1,3 +1,10 @@
+/**
+ * @file task_menu.h
+ * @brief メニュータスク(task_menu)
+ * メニュータスクはユーザにシステムのサービスを提示し、
+ * ユーザからの要求をシステムに伝達する役目を果たします。
+ */
+
 #ifndef _TASK_MENU_H_
 #define _TASK_MENU_H_
 
