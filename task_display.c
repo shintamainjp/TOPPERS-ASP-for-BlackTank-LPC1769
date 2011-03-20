@@ -112,8 +112,6 @@ static const uint8_t font5x7_data[] = {
 
 void cmd_clear(display_clear_t *p)
 {
-    syslog(LOG_NOTICE, "CLEAR Color:[%d,%d,%d]", p->r, p->g, p->b);
-
     Color c;
     c.r = p->r;
     c.g = p->g;
@@ -124,10 +122,6 @@ void cmd_clear(display_clear_t *p)
 
 void cmd_line(display_line_t *p)
 {
-    syslog(LOG_NOTICE, "LINE (%d,%d)-(%d,%d), Color:[%d,%d,%d]",
-            p->x1, p->y1, p->x2, p->y2,
-            p->r, p->g, p->b);
-
     Color c;
     c.r = p->r;
     c.g = p->g;
@@ -138,10 +132,6 @@ void cmd_line(display_line_t *p)
 
 void cmd_box(display_box_t *p)
 {
-    syslog(LOG_NOTICE, "BOX (%d,%d)-(%d,%d), Color:[%d,%d,%d]",
-            p->x1, p->y1, p->x2, p->y2,
-            p->r, p->g, p->b);
-
     Color c;
     c.r = p->r;
     c.g = p->g;
@@ -155,12 +145,6 @@ void cmd_box(display_box_t *p)
 
 void cmd_fillbox(display_fillbox_t *p)
 {
-    syslog(LOG_NOTICE, "FILLBOX (%d,%d)-(%d,%d)",
-            p->x1, p->y1, p->x2, p->y2);
-    syslog(LOG_NOTICE, "  Color:[%d,%d,%d],[%d,%d,%d]",
-            p->r1, p->g1, p->b1,
-            p->r2, p->g2, p->b2);
-
     Color c1, c2;
     c1.r = p->r1;
     c1.g = p->g1;
@@ -172,11 +156,7 @@ void cmd_fillbox(display_fillbox_t *p)
     oled_fill_box(p->x1, p->y1, p->x2, p->y2, c1, c2);
 }
 
-void draw_char(uint8_t x, uint8_t y, char c) {
-    Color col;
-    col.r = 0xff;
-    col.g = 0xff;
-    col.b = 0xff;
+void draw_char(uint8_t x, uint8_t y, char c, Color *col) {
     int i, j;
     if ((FONT_MIN_CODE <= c) &&(c <= FONT_MAX_CODE)) {
         int aofs = (c - FONT_MIN_CODE) * FONT_X;
@@ -184,7 +164,7 @@ void draw_char(uint8_t x, uint8_t y, char c) {
             uint8_t pat = font5x7_data[aofs + i];
             for (j = 0; j < FONT_Y; j++) {
                 if (pat & (1 << j)) {
-                    oled_draw_pixel(x + i, y + j, col);
+                    oled_draw_pixel(x + i, y + j, *col);
                 }
             }
         }
@@ -193,7 +173,7 @@ void draw_char(uint8_t x, uint8_t y, char c) {
             uint8_t pat = (i % 2) ? 0x55 : 0xAA;
             for (j = 0; j < FONT_Y; j++) {
                 if (pat & (1 << j)) {
-                    oled_draw_pixel(x + i, y + j, col);
+                    oled_draw_pixel(x + i, y + j, *col);
                 }
             }
         }
@@ -202,20 +182,15 @@ void draw_char(uint8_t x, uint8_t y, char c) {
 
 void cmd_text(display_text_t *p)
 {
-    syslog(LOG_NOTICE, "TEXT (%d,%d), Color:[%d,%d,%d]",
-            p->x, p->y,
-            p->r, p->g, p->b);
-    syslog(LOG_NOTICE, "  Text:[%s]", p->text);
-
-    Color c;
-    c.r = p->r;
-    c.g = p->g;
-    c.b = p->b;
+    Color col;
+    col.r = p->r;
+    col.g = p->g;
+    col.b = p->b;
 
     char *strp = p->text;
     int cnt = 0;
     while (*strp) {
-        draw_char(p->x + (FONT_X * cnt), p->y, *strp);
+        draw_char(p->x + (FONT_X * cnt), p->y, *strp, &col);
         strp++;
         cnt++;
     }

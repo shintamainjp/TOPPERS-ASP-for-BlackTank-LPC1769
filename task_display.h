@@ -3,7 +3,7 @@
 
 #include "target_test.h"
 
-#define TSKPRI_DISPLAY    13
+#define TSKPRI_DISPLAY    10
 
 #define DISPLAY_CMD_CLEAR 0
 #define DISPLAY_CMD_LINE 1

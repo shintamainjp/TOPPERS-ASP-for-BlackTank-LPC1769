@@ -47,15 +47,6 @@
 #define RES_PORT_NUM 0
 #define RES_PIN_NUM 22
 
-#define RES_ENA() GPIO_ClearValue(RES_PORT_NUM, (1 << RES_PIN_NUM))
-#define RES_DIS() GPIO_SetValue(RES_PORT_NUM, (1 << RES_PIN_NUM))
-
-#define CS_ENA() GPIO_ClearValue(CS_PORT_NUM, (1 << CS_PIN_NUM))
-#define CS_DIS() GPIO_SetValue(CS_PORT_NUM, (1 << CS_PIN_NUM))
-
-#define DC_CMD() GPIO_ClearValue(DC_PORT_NUM, (1 << DC_PIN_NUM))
-#define DC_DAT() GPIO_SetValue(DC_PORT_NUM, (1 << DC_PIN_NUM))
-
 SSP_CFG_Type SSP_ConfigStruct;
 PINSEL_CFG_Type PinCfg;
 SSP_DATA_SETUP_Type xferConfig;
@@ -68,12 +59,41 @@ static unsigned char oled_spi_rx(void);
 
 #define WAIT_MS(n) tslp_tsk(n)
 
-#define swap(a,b) {int c=a;a=b;b=c;}
+#define RES_ENA() GPIO_ClearValue(RES_PORT_NUM, (1 << RES_PIN_NUM))
+#define RES_DIS() GPIO_SetValue(RES_PORT_NUM, (1 << RES_PIN_NUM))
+
+#define CS_ENA() GPIO_ClearValue(CS_PORT_NUM, (1 << CS_PIN_NUM))
+#define CS_DIS() GPIO_SetValue(CS_PORT_NUM, (1 << CS_PIN_NUM))
+
+#define DC_CMD() GPIO_ClearValue(DC_PORT_NUM, (1 << DC_PIN_NUM))
+#define DC_DAT() GPIO_SetValue(DC_PORT_NUM, (1 << DC_PIN_NUM))
+
+#define swap(a,b) do{int c=a;a=b;b=c;}while(0)
+#define abs(n) (((n) > 0) ? (n) : -(n))
+#define flip(x,y) do{x=OLED_X-(x)-1;y=OLED_Y-(y)-1;}while(0)
+#define align(x1,y1,x2,y2) \
+    do{\
+        int tx1=x1;\
+        int ty1=y1;\
+        int tx2=x2;\
+        int ty2=y2;\
+        if (ty1 > ty2) {\
+            x1=tx2;\
+            y1=ty2;\
+            x2=tx1;\
+            y2=ty1;\
+        } else {\
+            x1=tx1;\
+            y1=ty1;\
+            x2=tx2;\
+            y2=ty2;\
+        }\
+    }while(0)
 
 static void oled_spi_tx(unsigned char c)
 {
     SSP_SendData(LPC_SSP0, c);
-    while (SSP_GetStatus(LPC_SSP0, SSP_SR_BSY) == SET)
+    while (SSP_GetStatus(LPC_SSP0, SSP_SR_BSY))
     {
     }
     SSP_ReceiveData(LPC_SSP0);
@@ -82,7 +102,7 @@ static void oled_spi_tx(unsigned char c)
 static unsigned char oled_spi_rx(void)
 {
     SSP_SendData(LPC_SSP0, 0xff);
-    while (SSP_GetStatus(LPC_SSP0, SSP_SR_BSY) == SET)
+    while (SSP_GetStatus(LPC_SSP0, SSP_SR_BSY))
     {
     }
     return SSP_ReceiveData(LPC_SSP0);
@@ -344,6 +364,7 @@ void oled_init(void)
  * @param c Color.
  */
 void oled_draw_pixel(int x, int y, Color c) {
+    flip(x,y);
     oled_set_column_address(x, x);
     oled_set_row_address(y, y);
     c.b = c.b >> 3;
@@ -363,6 +384,7 @@ void oled_draw_pixel(int x, int y, Color c) {
  * @param c Color.
  */
 void oled_draw_line(int x1, int y1, int x2, int y2, Color c) {
+    align(x1,y1,x2,y2);
     /*
      * Bresenham's line algorithm
      */
@@ -411,6 +433,9 @@ void oled_draw_line(int x1, int y1, int x2, int y2, Color c) {
  * @param c2 Color2.
  */
 void oled_fill_box(int x1, int y1, int x2, int y2, Color c1, Color c2) {
+    flip(x1,y1);
+    flip(x2,y2);
+    align(x1,y1,x2,y2);
     DC_CMD();
     CS_ENA();
     SPI_WRITE(0x22);
@@ -439,6 +464,9 @@ void oled_fill_box(int x1, int y1, int x2, int y2, Color c1, Color c2) {
  * @param ny Y of the destination.
  */
 void oled_copy(int x1, int y1, int x2, int y2, int nx, int ny) {
+    flip(x1,y1);
+    flip(x2,y2);
+    align(x1,y1,x2,y2);
     DC_CMD();
     CS_ENA();
     SPI_WRITE(0x23);
@@ -461,6 +489,9 @@ void oled_copy(int x1, int y1, int x2, int y2, int nx, int ny) {
  * @param y2 Y2.
  */
 void oled_darker(int x1, int y1, int x2, int y2) {
+    flip(x1,y1);
+    flip(x2,y2);
+    align(x1,y1,x2,y2);
     DC_CMD();
     CS_ENA();
     SPI_WRITE(0x24);
@@ -481,7 +512,9 @@ void oled_darker(int x1, int y1, int x2, int y2) {
  * @param y2 Y2.
  */
 void oled_clear(int x1, int y1, int x2, int y2) {
-#if 1
+    flip(x1,y1);
+    flip(x2,y2);
+    align(x1,y1,x2,y2);
     DC_CMD();
     CS_ENA();
     SPI_WRITE(0x25);
@@ -491,17 +524,6 @@ void oled_clear(int x1, int y1, int x2, int y2) {
     SPI_WRITE(y2);
     CS_DIS();
     WAIT_MS(1);
-#else
-    oled_Color c;
-    c.r = 0x00;
-    c.g = 0x00;
-    c.b = 0x00;
-    for (int x = x1; x <= x2; x++) {
-        for (int y = y1; y <= y2; y++) {
-            oled_draw_pixel(x, y, c);
-        }
-    }
-#endif
 }
 
 /**

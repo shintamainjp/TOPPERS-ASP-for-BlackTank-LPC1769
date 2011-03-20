@@ -1,3 +1,4 @@
+
 #include <LPC17xx.h>
 #include <kernel.h>
 #include <t_syslog.h>
@@ -11,78 +12,127 @@
 #define MSG_DEVICE(n) (((n) & 0xE0) >> 5)
 #define MSG_VALUE(n) ((n) & 0x1F)
 
+typedef enum {
+    PAGE_SPLASH,
+    PAGE_TOP,
+    PAGE_100,
+    PAGE_200,
+    PAGE_300,
+    PAGE_400
+} PAGEID;
+
+typedef struct {
+    PAGEID curr_page;
+    PAGEID next_page[4];
+    void (*func)(void);
+} menu_t;
+
+static PAGEID page = PAGE_SPLASH;
+static uint32_t life = 0;
+
+#define DISP_MENUTAG(A,B,C,D) \
+    do { \
+        DISP_TEXT(2 + (24 * 0), 52, 0xFF, 0xFF, 0xFF, (A)); \
+        DISP_TEXT(2 + (24 * 1), 52, 0xFF, 0xFF, 0xFF, (B)); \
+        DISP_TEXT(2 + (24 * 2), 52, 0xFF, 0xFF, 0xFF, (C)); \
+        DISP_TEXT(2 + (24 * 3), 52, 0xFF, 0xFF, 0xFF, (D)); \
+    } while(0)
+
+void page_splash(void)
+{
+    if (life == 0) {
+        DISP_CLEAR(0x00, 0x00, 0x00);
+        DISP_MENUTAG("ABCD", "EFGH", "IJKL", "MNOP");
+    }
+}
+
+void page_top(void)
+{
+    if (life == 0) {
+        DISP_CLEAR(0x00, 0x00, 0x00);
+        DISP_MENUTAG("SEL1", "SEL2", "SEL3", "SEL4");
+    }
+}
+
+void page_100(void)
+{
+    if (life == 0) {
+        DISP_CLEAR(0xFF, 0x00, 0x00);
+        DISP_MENUTAG("110", "120", "130", "140");
+    }
+}
+
+void page_200(void)
+{
+    if (life == 0) {
+        DISP_CLEAR(0x00, 0xFF, 0x00);
+        DISP_MENUTAG("210", "220", "230", "240");
+    }
+}
+
+void page_300(void)
+{
+    if (life == 0) {
+        DISP_CLEAR(0x00, 0x00, 0xFF);
+        DISP_MENUTAG("310", "320", "330", "340");
+    }
+}
+
+void page_400(void)
+{
+    if (life == 0) {
+        DISP_CLEAR(0x00, 0x00, 0x00);
+        DISP_MENUTAG("410", "420", "430", "440");
+    }
+}
+
+static const menu_t menu[6] = {
+    {PAGE_SPLASH, {PAGE_TOP, PAGE_TOP, PAGE_TOP, PAGE_TOP}, page_splash},
+    {PAGE_TOP, {PAGE_100, PAGE_200, PAGE_300, PAGE_400}, page_top},
+    {PAGE_100, {PAGE_100, PAGE_200, PAGE_300, PAGE_400}, page_100},
+    {PAGE_200, {PAGE_100, PAGE_200, PAGE_300, PAGE_400}, page_200},
+    {PAGE_300, {PAGE_100, PAGE_200, PAGE_300, PAGE_400}, page_300},
+    {PAGE_400, {PAGE_100, PAGE_200, PAGE_300, PAGE_400}, page_400}
+};
+
+void execute_pagefunc(PAGEID page)
+{
+    int i;
+    for (i = 0; i < sizeof(menu) / sizeof(menu[0]); i++) {
+        if (menu[i].curr_page == page) {
+            if (menu[i].func != NULL) {
+                menu[i].func();
+                return;
+            }
+        }
+    }
+}
+
+PAGEID get_next_page(PAGEID page, int sw)
+{
+    int i;
+    for (i = 0; i < sizeof(menu) / sizeof(menu[0]); i++) {
+        if (menu[i].curr_page == page) {
+            return menu[i].next_page[sw];
+        }
+    }
+    return page;
+}
+
 void task_menu(intptr_t exinf)
 {
     uint8_t msg;
     while(1)
     {
+        execute_pagefunc(page);
+        life++;
         while (prcv_dtq(DTQ_USERINPUT, (intptr_t *)&msg) == E_OK) {
-            switch (MSG_DEVICE(msg)) {
-                case SW0:
-                    if (MSG_VALUE(msg)) {
-                        LEDMSG(DBLED0, LEDON);
-                    } else {
-                        LEDMSG(DBLED0, LEDOFF);
-                    }
-                    DISP_BOX(0,0,95,63,0xff,0x00,0x00);
-                    break;
-                case SW1:
-                    if (MSG_VALUE(msg)) {
-                        LEDMSG(DBLED1, LEDON);
-                    } else {
-                        LEDMSG(DBLED1, LEDOFF);
-                    }
-                    DISP_FILLBOX(0,0,95,63,0xff,0x00,0x00,0xff,0xff,0xff);
-                    break;
-                case SW2:
-                    if (MSG_VALUE(msg)) {
-                        LEDMSG(DBLED2, LEDON);
-                    } else {
-                        LEDMSG(DBLED2, LEDOFF);
-                    }
-                    DISP_CLEAR(0, 0, 0xff);
-                    break;
-                case SW3:
-                    if (MSG_VALUE(msg)) {
-                        LEDMSG(DBLED3, LEDON);
-                    } else {
-                        LEDMSG(DBLED3, LEDOFF);
-                    }
-                    DISP_CLEAR(0, 0, 0);
-                    break;
-                case VOL0:
-                    if (MSG_VALUE(msg) > 16) {
-                        LEDMSG(SWLED0, LEDON);
-                    } else {
-                        LEDMSG(SWLED0, LEDOFF);
-                    }
-                    DISP_LINE(0, MSG_VALUE(msg), 96 - 1, 64 - 1, 0x80, 0x80, 0x80);
-                    break;
-                case VOL1:
-                    if (MSG_VALUE(msg) > 16) {
-                        LEDMSG(SWLED1, LEDON);
-                    } else {
-                        LEDMSG(SWLED1, LEDOFF);
-                    }
-                    DISP_TEXT(5, 5, 0xff, 0xff, 0xff, "MENU LIST");
-                    break;
-                case VOL2:
-                    if (MSG_VALUE(msg) > 16) {
-                        LEDMSG(SWLED2, LEDON);
-                    } else {
-                        LEDMSG(SWLED2, LEDOFF);
-                    }
-                    break;
-                case VOL3:
-                    if (MSG_VALUE(msg) > 16) {
-                        LEDMSG(SWLED3, LEDON);
-                    } else {
-                        LEDMSG(SWLED3, LEDOFF);
-                    }
-                    break;
+            if ((SW0 <= MSG_DEVICE(msg)) && (MSG_DEVICE(msg) <= SW3)) {
+                page = get_next_page(page, MSG_DEVICE(msg));
+                life = 0;
             }
         }
-        tslp_tsk(40);
+        tslp_tsk(100);
     }
 }
 

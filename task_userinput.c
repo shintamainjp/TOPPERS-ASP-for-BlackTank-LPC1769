@@ -82,7 +82,7 @@ void task_userinput(intptr_t exinf)
         v2prev = v2curr;
         v3prev = v3curr;
 
-        tslp_tsk(40);
+        tslp_tsk(50);
     }
 }
 
