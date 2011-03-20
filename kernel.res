@@ -27,25 +27,11 @@
 				"state" :"RUNNABLE"
 			}
 		},
-		"TASK_AUDIO":{
-			"Type":"Task",
-			"Attributes":
-			{
-				"id"    :2,
-				"atr"   :"TA_ACT",
-				"pri"   :9,
-				"exinf" :"0",
-				"task"  :"task_audio",
-				"stksz" :1024,
-				"stk"   :"NULL",
-				"state" :"RUNNABLE"
-			}
-		},
 		"TASK_MENU":{
 			"Type":"Task",
 			"Attributes":
 			{
-				"id"    :3,
+				"id"    :2,
 				"atr"   :"TA_ACT",
 				"pri"   :11,
 				"exinf" :"0",
@@ -59,7 +45,7 @@
 			"Type":"Task",
 			"Attributes":
 			{
-				"id"    :4,
+				"id"    :3,
 				"atr"   :"TA_ACT",
 				"pri"   :10,
 				"exinf" :"0",
@@ -73,7 +59,7 @@
 			"Type":"Task",
 			"Attributes":
 			{
-				"id"    :5,
+				"id"    :4,
 				"atr"   :"TA_ACT",
 				"pri"   :12,
 				"exinf" :"0",
@@ -87,7 +73,7 @@
 			"Type":"Task",
 			"Attributes":
 			{
-				"id"    :6,
+				"id"    :5,
 				"atr"   :"TA_ACT",
 				"pri"   :10,
 				"exinf" :"0",
@@ -101,7 +87,7 @@
 			"Type":"Task",
 			"Attributes":
 			{
-				"id"    :7,
+				"id"    :6,
 				"atr"   :"TA_ACT",
 				"pri"   :12,
 				"exinf" :"0",
@@ -115,7 +101,7 @@
 			"Type":"Task",
 			"Attributes":
 			{
-				"id"    :8,
+				"id"    :7,
 				"atr"   :"TA_ACT",
 				"pri"   :16,
 				"exinf" :"0",
@@ -129,7 +115,7 @@
 			"Type":"Task",
 			"Attributes":
 			{
-				"id"    :9,
+				"id"    :8,
 				"atr"   :"0",
 				"pri"   :10,
 				"exinf" :"0",

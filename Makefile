@@ -173,7 +173,6 @@ MYOBJS = app_init.o \
 	 task_userinput.o \
 	 task_display.o \
 	 task_menu.o \
-	 task_audio.o \
 	 \
 	 adc_subsystem.o \
 	 audio_processing.o \
