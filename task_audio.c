@@ -1,7 +1,13 @@
-/**
- * \file talkthrough.c
- * \brief Takachihoボードの初期化を行い、他のタスクを起動する。
- */
+
+#include <kernel.h>
+#include <t_syslog.h>
+#include <t_stdlib.h>
+#include "task_audio.h"
+#include <LPC17xx.h>
+#include "kernel_cfg.h"
+#include "audio_common.h"
+#include "audio_effect.h"
+#include "i2s_subsystem.h"
 
 /**
  * \mainpage
@@ -22,14 +28,6 @@
  * このプログラムではその操作を省いている。
  */
 
-
-#include <kernel.h>
-#include <t_syslog.h>
-#include <t_stdlib.h>
-#include "task_audio_init.h"
-#include <LPC17xx.h>
-#include "kernel_cfg.h"
-
 /**
  * \param file ソースコードのファイル名
  * \param line ソースコードの行番号
@@ -47,7 +45,6 @@ svc_perror(const char *file, int_t line, const char *expr, ER ercd)
 		t_perror(LOG_ERROR, file, line, expr, ercd);
 	}
 }
-
 
 /**
  * \brief サービスコールのエラー出力マクロ
@@ -73,20 +70,23 @@ svc_perror(const char *file, int_t line, const char *expr, ER ercd)
  */
 void dma_intr_handler(intptr_t exinf)
 {
-	i2s_dma_intr_handler();
+    i2s_dma_intr_handler();
 }
 
 
 
+
 /**
- * \brief メインタスク
- * \param exinf コンフィギュレータから受け取る引数。このタスクでは無視する。
- *
+ * \brief I2S用データ
  * \details
- * 一連の初期化のあと、オーディオタスクを動かしてダミーループに入る。
+ * DMAのLLIやバッファなどはすべてこの変数にパッケージしている。こうすることで、グローバル空間に名前が散らかることを阻止できる。
  */
-void task_audio_init(intptr_t exinf)
+static struct I2S_AUDIO_DATA audio_data;
+
+void task_audio(intptr_t exinf)
 {
+    syslog(LOG_NOTICE, "%s started.", __func__);
+
 	int i=0;
 
 	syslog(LOG_NOTICE, "Talkthrough program starts.");
@@ -106,22 +106,46 @@ void task_audio_init(intptr_t exinf)
 	i2s_init();
         syslog(LOG_NOTICE, "I2S initialize done.");
 
-	i2s_dma_init();
+	i2s_dma_init(&audio_data);
         syslog(LOG_NOTICE, "I2S DMA initialize done.");
-
-		/* オーディオ処理タスクをアクティブにする */
-	SVC_PERROR(act_tsk(AUDIO_TASK));
-        syslog(LOG_NOTICE, "Audio task activated.");
 
 		/* DMAによるI2S転送を始める */
 	i2s_start();
         syslog(LOG_NOTICE, "Started I2S.");
 
-		/* ダミーループ */
+
+	AUDIOSAMPLE * txbuf, *rxbuf;
+	int index, ch, sample;
+
+		/* リアルタイム・ステータス用のテストピンを出力にする */
+	LPC_GPIO2->FIODIR |= 1<<8;	// set test pin output
+
 	while(1)
 	{
-		tslp_tsk(1000);
-		syslog(LOG_NOTICE, "Still Arive : %d", i++);
+			// DMAバッファ転送の終了を待つ
+		wai_sem(SEM_I2SDMA);
+
+			// 同期状態を示すためのテストピン信号を作成する
+		LPC_GPIO2->FIOPIN ^= 1<<8;			// test pinのトグル
+
+			// プログラムが使用してもよいバッファのアドレスを取得する。
+		txbuf = i2s_getTxBuf();
+		rxbuf = i2s_getRxBuf();
+
+
+		index = 0;
+		for ( sample=0; sample<AUDIOBUFSIZE/2; sample++)
+			for ( ch=0; ch<2; ch++)
+				audio_data.inputBuffer[ch][sample] = rxbuf[index++];
+
+		audio_effect_through( audio_data.inputBuffer, audio_data.outputBuffer, AUDIOBUFSIZE/2);
+
+		index = 0;
+		for ( sample=0; sample<AUDIOBUFSIZE/2; sample++)
+			for ( ch=0; ch<2; ch++)
+				txbuf[index++] = audio_data.outputBuffer[ch][sample];
+
+
 	}
 }
 

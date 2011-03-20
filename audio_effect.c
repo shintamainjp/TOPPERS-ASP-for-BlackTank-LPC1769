@@ -11,7 +11,10 @@
 	/*右チャンネルインデックス*/
 #define RCH 1
 
-void process_audio( AUDIOSAMPLE input[2][AUDIOBUFSIZE/2], AUDIOSAMPLE output[2][AUDIOBUFSIZE/2], int count )
+void audio_effect_through(
+        AUDIOSAMPLE input[2][AUDIOBUFSIZE/2],
+        AUDIOSAMPLE output[2][AUDIOBUFSIZE/2],
+        int count)
 {
 	int i;
 

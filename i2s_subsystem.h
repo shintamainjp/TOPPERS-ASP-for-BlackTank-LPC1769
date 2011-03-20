@@ -27,22 +27,76 @@
 #include <LPC17xx.h>
 #include <kernel.h>
 #include <t_syslog.h>
+#include "audio_common.h"
+
+	/**
+	 * \brief DMA用のリンクリストの構成要素型
+	 * \details
+	 * LP17xxの GPDMAはスキャッタ、ギャザーにも使用できるリンクリストを
+	 * 構成できる。LLI型はそのリストの構成単位となるデータ型である。基本的にLLIは
+	 * LPC1768のユーザーズマニュアル、UM10360で記述されているDMA LLIそのままである。
+	 * 詳しくはユーザーズマニュアル参照の事。
+	 */
+struct LLI {
+	int * SrcAddr;			/**< DMAのソース・バッファ・アドレス */
+	int * DstAddr;			/**< DMAのデスティネーション・バッファ・アドレス・ */
+	struct LLI * nextLLI;	/**< 次のLLI要素へのポインタ */
+	unsigned int Control;	/**< DMAコントロール・レジスタへのロード値 */
+};
 
 /**
- * \brief オーディオデータ型
+ * \brief I2S用データ
  * \details
- * プログラム内部で使うオーディオの基本型。左詰めの符号付き固定小数点型である。小数点はMSBの
- * すぐ右にある。
+ * DMA転送などに使うデータを一ヶ所にあつめたもの。
  */
-typedef int AUDIOSAMPLE;
+struct I2S_AUDIO_DATA {
+	/**
+	 * \brief 送信DMA用のLLIリスト
+	 * \details
+	 * LLIチェーンは2要素をもち、全体でサーキュラーバッファを構成する。初期化は \ref i2s_dma_init で行う。
+	 */
+	struct LLI txI2SLLI[2];
 
-/**
- * \brief I2S DMAバッファの長さ
- * \details
- * 一回のDMA転送に使うデータバッファの長さ。AUDIOBUFSIZEがNならば、ステレオなので、
- * N/2サンプルのデータを一回のDMAで転送することになる。
- */
-#define	AUDIOBUFSIZE	64	 /* I2Sバッファの長さ。48kHzサンプルの時、1mSにするには96を選ぶ */
+	/**
+	 * \brief 受信DMA用のLLIリスト
+	 * \details
+	 * LLIチェーンは2要素をもち、全体でサーキュラーバッファを構成する。初期化は \ref i2s_dma_init で行う。
+	 */
+	struct LLI rxI2SLLI[2];
+
+	/**
+	 * \brief I2S送信DMAのバッファ
+	 * \details
+	 * DMAを使ってI2Sポートから送信するためのデータバッファ。二つのバッファを持つのは、ピンポン（ダブルバッファ）
+	 * 制御を行うためである。DMA転送中にプログラムが次の送信データを書き込むためのバッファを取得するには、
+	 * \ref i2s_getTxBuf 関数を使う。
+	 */
+	AUDIOSAMPLE txBuffer[2][AUDIOBUFSIZE];
+
+	/**
+	 * \brief I2S受信DMAのバッファ
+	 * \details
+	 * DMAを使ってI2Sポートから受信するためのデータバッファ。二つのバッファを持つのは、ピンポン（ダブルバッファ）
+	 * 制御を行うためである。DMA転送中にプログラムが直前の受信データを読み込むためのバッファを取得するには、
+	 * \ref i2s_getRxBuf 関数を使う。
+	 */
+	AUDIOSAMPLE rxBuffer[2][AUDIOBUFSIZE];
+
+	/**
+	 * \brief \ref process_audio へ渡すためのデータバッファ
+	 * \details
+	 * audio_processing関数は右と左のチャンネルを分離して受けとるが、TLV320AIC23BはLRLRLR...形式で
+	 * データを送ってくる。そのため、あらかじめ並び替えて渡すためのバッファである。
+	 */
+	AUDIOSAMPLE inputBuffer[2][AUDIOBUFSIZE/2];
+	/**
+	 * \brief \ref process_audio からデータを受け取るためのデータバッファ
+	 * \details
+	 * audio_processing関数は右と左のチャンネルを分離して生成するが、TLV320AIC23BはLRLRLR...形式で
+	 * データを受信する。そのため、一旦受け取って並べ替えるためのバッファである。
+	 */
+	AUDIOSAMPLE outputBuffer[2][AUDIOBUFSIZE/2];
+};
 
 
 /**
@@ -93,34 +147,8 @@ void i2s_start();
  */
 void i2s_dma_intr_handler();
 
+AUDIOSAMPLE * i2s_getTxBuf();
+AUDIOSAMPLE * i2s_getRxBuf();
 
-/**
- * \brief オーディオ信号処理関数
- * \param input 入力のオーディオデータ列。LchとRchに分かれて配列になっている
- * \param output 出力のオーディオデータ列。LchとRchに分かれて配列になっている
- * \param count 入出力データオンサンプル数。count=8のとき、入出力のデータ数はステレオなのでそれぞれ16となる。
- * \details
- * ユーザー信号処理を行う関数である。入力はあらかじめLとRに分離されて関数に渡される。同様に出力は
- * LとRを分離して受け取る。配列の添字としては、Lが0、Rが1である。
- *
- * countはサンプル数を表す。
- *
- */
-void process_audio( AUDIOSAMPLE input[2][AUDIOBUFSIZE/2], AUDIOSAMPLE output[2][AUDIOBUFSIZE/2], int count );
+#endif
 
-
-/**
- * \brief オーディオDMAに同期して動くタスク
- * \param exinf コンフィギュレータがタスクに引き渡す変数。このタスクは無視する。
- * \details
- * \ref dma_intr_handler からのSEM_I2SDMA セマフォ・シグナルを受けて
- * しかるべきデータ・バッファを特定し、信号処理を行う。
- *
- * なお、このタスクはシステム起動時にはインアクティブである。
- * \ref main_task から明示的にアクティベートして始めて動作を開始する。
- *
- */
-void audio_task(intptr_t exinf);
-
-
-#endif /* I2S_SUBSYSTEM_H_ */
