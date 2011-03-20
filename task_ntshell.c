@@ -13,6 +13,7 @@
 
 #include "task_ntshell.h"
 #include "task_led.h"
+#include "task_display.h"
 
 #include "ntshell.h"
 #include "ntopt.h"
@@ -29,6 +30,7 @@ text_editor_t editor;
 text_history_t history;
 int ledspd = 100;
 
+void cmd_lcd(int argc, char **argv);
 void cmd_led(int argc, char **argv);
 void cmd_mount(int argc, char **argv);
 void cmd_ls(int argc, char **argv);
@@ -50,6 +52,7 @@ typedef struct {
 } command_table_t;
 
 const command_table_t table[] = {
+    {"lcd", "Control the LCD.", cmd_lcd},
     {"led", "Set state of the debug purpose LED.", cmd_led},
     {"mount", "Mount a SD card.", cmd_mount},
     {"ls", "List contents on a SD card.", cmd_ls},
@@ -59,6 +62,14 @@ const command_table_t table[] = {
     {"help", "Display help.", cmd_help},
     {NULL, NULL, NULL}
 };
+
+void cmd_lcd(int argc, char **argv) {
+    if (argc == 2) {
+        if (ntlibc_strcmp(argv[1], "cls") == 0) {
+            DISP_CLEAR(0x00, 0x00, 0x00);
+        }
+    }
+}
 
 void cmd_led(int argc, char **argv) {
     if (argc != 3) {

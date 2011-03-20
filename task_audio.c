@@ -8,24 +8,30 @@
 #include "audio_common.h"
 #include "audio_effect.h"
 #include "i2s_subsystem.h"
+#include "i2c_subsystem.h"
+#include "adc_subsystem.h"
+#include "codec_subsystem.h"
 
 /**
  * \mainpage
- * LPC1768を使用したAudio信号のTalkthrough (ループバック)デモプログラムである。
+ * LPC1768を使用したAudio信号のTalkthrough (ループバック)デモ
+ * プログラムである。
  *
- * 内蔵I2SペリフェラルとDMAを使って外部のオーディオ・コーデックからデータを取り込み、内部でコピー
- * して再度オーディオ・コーデックに出力する。内部コピーは \ref process_audio 関数で行っており
+ * 内蔵I2SペリフェラルとDMAを使って外部のオーディオ・コーデック
+ * からデータを取り込み、内部でコピーして再度オーディオ・コーデックに
+ * 出力する。内部コピーは \ref process_audio 関数で行っており
  * 内部を書き換えることでどのようなアルゴリズムでも実装できる。
  *
- * \ref task_audio_init は各種の初期化を行った後、 \ref audio_task をアクティブにする。 audio_taskは
- * DMA割り込みハンドラ \ref dma_intr_handler からのシグナルに同期して動作しており、
+ * \ref task_audio_init は各種の初期化を行った後、 \ref audio_task を
+ * アクティブにする。 audio_taskはDMA割り込みハンドラ
+ * \ref dma_intr_handler からのシグナルに同期して動作しており、
  * ピンポンバッファを使ってDMAとソフトウェア処理の並列化を図っている。
  *
- * このプログラムが使用しているコーデックはTI社のTLV320AIC23Bである。初期化データ列は
- * \ref codec_init ルーチンから送出している。
+ * このプログラムが使用しているコーデックはTI社のTLV320AIC23Bである。
+ * 初期化データ列は \ref codec_init ルーチンから送出している。
  *
- * なお、LPC1768のDMAは、何らかのDMA管理機構を使ってチャンネル割り当てをすべきだが、
- * このプログラムではその操作を省いている。
+ * なお、LPC1768のDMAは、何らかのDMA管理機構を使ってチャンネル割り当てを
+ * すべきだが、このプログラムではその操作を省いている。
  */
 
 /**
@@ -41,9 +47,9 @@
 Inline void
 svc_perror(const char *file, int_t line, const char *expr, ER ercd)
 {
-	if (ercd < 0) {
-		t_perror(LOG_ERROR, file, line, expr, ercd);
-	}
+    if (ercd < 0) {
+        t_perror(LOG_ERROR, file, line, expr, ercd);
+    }
 }
 
 /**
@@ -53,10 +59,7 @@ svc_perror(const char *file, int_t line, const char *expr, ER ercd)
  * exprとして与えたサービスコールのソースコード上の表現とその実行結果を印字する。
  * サービスコールに限らず値を持つ式ならなんでもよい。
  */
-#define	SVC_PERROR(expr)	svc_perror(__FILE__, __LINE__, #expr, (expr))
-
-
-
+#define	SVC_PERROR(expr) svc_perror(__FILE__, __LINE__, #expr, (expr))
 
 /**
  * \brief DMAハンドラ
@@ -73,9 +76,6 @@ void dma_intr_handler(intptr_t exinf)
     i2s_dma_intr_handler();
 }
 
-
-
-
 /**
  * \brief I2S用データ
  * \details
@@ -85,67 +85,62 @@ static struct I2S_AUDIO_DATA audio_data;
 
 void task_audio(intptr_t exinf)
 {
-    syslog(LOG_NOTICE, "%s started.", __func__);
+    /* I2C を初期化する */
+    i2c_init();
+    syslog(LOG_NOTICE, "I2C initialize done.");
 
-	int i=0;
+    /* AUDIO CODECを初期化する */
+    codec_init();
+    syslog(LOG_NOTICE, "Codec initialize done.");
 
-	syslog(LOG_NOTICE, "Talkthrough program starts.");
+    /* ペリフェラル群の初期化 */
+    adc_init();
+    syslog(LOG_NOTICE, "ADC initialize done.");
 
-		/* I2C を初期化する */
-	i2c_init();
-        syslog(LOG_NOTICE, "I2C initialize done.");
+    i2s_init();
+    syslog(LOG_NOTICE, "I2S initialize done.");
 
-		/* AUDIO CODECを初期化する */
-	codec_init();
-        syslog(LOG_NOTICE, "Codec initialize done.");
+    i2s_dma_init(&audio_data);
+    syslog(LOG_NOTICE, "I2S DMA initialize done.");
 
-		/* ペリフェラル群の初期化 */
-	adc_init();
-        syslog(LOG_NOTICE, "ADC initialize done.");
+    /* DMAによるI2S転送を始める */
+    i2s_start();
+    syslog(LOG_NOTICE, "Started I2S.");
 
-	i2s_init();
-        syslog(LOG_NOTICE, "I2S initialize done.");
+    AUDIOSAMPLE * txbuf, *rxbuf;
+    int index, ch, sample;
 
-	i2s_dma_init(&audio_data);
-        syslog(LOG_NOTICE, "I2S DMA initialize done.");
+    /* リアルタイム・ステータス用のテストピンを出力にする */
+    LPC_GPIO2->FIODIR |= 1<<8;
 
-		/* DMAによるI2S転送を始める */
-	i2s_start();
-        syslog(LOG_NOTICE, "Started I2S.");
+    while(1)
+    {
+        // DMAバッファ転送の終了を待つ
+        wai_sem(SEM_I2SDMA);
 
+        // 同期状態を示すためのテストピン信号を作成する
+        LPC_GPIO2->FIOPIN ^= 1<<8;
 
-	AUDIOSAMPLE * txbuf, *rxbuf;
-	int index, ch, sample;
+        // プログラムが使用してもよいバッファのアドレスを取得する。
+        txbuf = i2s_getTxBuf();
+        rxbuf = i2s_getRxBuf();
 
-		/* リアルタイム・ステータス用のテストピンを出力にする */
-	LPC_GPIO2->FIODIR |= 1<<8;	// set test pin output
-
-	while(1)
-	{
-			// DMAバッファ転送の終了を待つ
-		wai_sem(SEM_I2SDMA);
-
-			// 同期状態を示すためのテストピン信号を作成する
-		LPC_GPIO2->FIOPIN ^= 1<<8;			// test pinのトグル
-
-			// プログラムが使用してもよいバッファのアドレスを取得する。
-		txbuf = i2s_getTxBuf();
-		rxbuf = i2s_getRxBuf();
-
-
-		index = 0;
-		for ( sample=0; sample<AUDIOBUFSIZE/2; sample++)
-			for ( ch=0; ch<2; ch++)
-				audio_data.inputBuffer[ch][sample] = rxbuf[index++];
-
-		audio_effect_through( audio_data.inputBuffer, audio_data.outputBuffer, AUDIOBUFSIZE/2);
-
-		index = 0;
-		for ( sample=0; sample<AUDIOBUFSIZE/2; sample++)
-			for ( ch=0; ch<2; ch++)
-				txbuf[index++] = audio_data.outputBuffer[ch][sample];
-
-
-	}
+        index = 0;
+        for ( sample=0; sample<AUDIOBUFSIZE/2; sample++) {
+            for ( ch=0; ch<2; ch++) {
+                audio_data.inputBuffer[ch][sample] = rxbuf[index++];
+            }
+        }
+        audio_effect_through(
+                audio_data.inputBuffer,
+                audio_data.outputBuffer,
+                AUDIOBUFSIZE/2);
+        index = 0;
+        for ( sample=0; sample<AUDIOBUFSIZE/2; sample++) {
+            for ( ch=0; ch<2; ch++) {
+                txbuf[index++] = audio_data.outputBuffer[ch][sample];
+            }
+        }
+    }
 }
 

@@ -2,6 +2,7 @@
 #define _TASK_DISPLAY_H_
 
 #include "target_test.h"
+#include <itron.h>
 
 #define TSKPRI_DISPLAY    10
 

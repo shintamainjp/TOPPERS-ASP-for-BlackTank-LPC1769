@@ -5,16 +5,11 @@
 #ifndef _INTEGER
 #define _INTEGER
 
-#ifdef _WIN32	/* FatFs development platform */
-
-#include <windows.h>
-#include <tchar.h>
-
-#else			/* Embedded platform */
+#include <itron.h>
 
 /* These types must be 16-bit, 32-bit or larger integer */
-typedef int				INT;
-typedef unsigned int	UINT;
+//typedef int				INT;
+//typedef unsigned int	UINT;
 
 /* These types must be 8-bit integer */
 typedef char			CHAR;
@@ -31,7 +26,5 @@ typedef unsigned short	WCHAR;
 typedef long			LONG;
 typedef unsigned long	ULONG;
 typedef unsigned long	DWORD;
-
-#endif
 
 #endif
