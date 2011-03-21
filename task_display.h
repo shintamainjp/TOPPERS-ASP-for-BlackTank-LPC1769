@@ -8,6 +8,7 @@
  * DISP_BOX(x1, y1, x2, y2, r, g, b);
  * DISP_FILLBOX(x1, y1, x2, y2, r1, g1, b1, r2, g2, b2);
  * DISP_TEXT(x, y, r, g, b, "text");
+ * DISP_BMPFILE("filename");
  */
 
 #ifndef _TASK_DISPLAY_H_
@@ -23,6 +24,7 @@
 #define DISPLAY_CMD_BOX 2
 #define DISPLAY_CMD_FILLBOX 3
 #define DISPLAY_CMD_TEXT 4
+#define DISPLAY_CMD_BMPFILE 5
 
 typedef struct {
     T_MSG header;
@@ -77,6 +79,10 @@ typedef struct {
     uint8_t b;
     char text[32];
 } display_text_t;
+
+typedef struct {
+    char filename[32];
+} display_bmpfile_t;
 
 #define DISP_CLEAR(R,G,B) \
     do { \
@@ -166,6 +172,26 @@ typedef struct {
             strp++; \
         } \
         param.text[i] = '\0'; \
+        ((display_msg_t*)vp)->param = &param; \
+        snd_mbx(MBX_DISPLAY, vp); \
+    } while(0)
+
+#define DISP_BMPFILE(FILENAME) \
+    do { \
+        int i; \
+        char *strp; \
+        VP vp; \
+        display_bmpfile_t param; \
+        get_mpf(MPF_DISPLAY, &vp); \
+        ((display_msg_t*)vp)->cmd = DISPLAY_CMD_BMPFILE; \
+        strp = (FILENAME); \
+        i = 0; \
+        while (*strp) { \
+            param.filename[i] = *strp; \
+            i++; \
+            strp++; \
+        } \
+        param.filename[i] = '\0'; \
         ((display_msg_t*)vp)->param = &param; \
         snd_mbx(MBX_DISPLAY, vp); \
     } while(0)

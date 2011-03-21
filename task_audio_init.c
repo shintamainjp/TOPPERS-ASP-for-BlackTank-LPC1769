@@ -52,10 +52,13 @@ void task_audio_init(intptr_t exinf)
     /* DMAによるI2S転送を始める */
     i2s_start();
     DISP_TEXT(0, 10 * 5, 0xFF, 0xFF, 0xFF, "Started I2S.");
+    tslp_tsk(500);
+
+    DISP_BMPFILE("logo.bmp");
 
     int cnt = 0;
     while (1) {
-        tslp_tsk(1000);
+        tslp_tsk(200);
         /*
          * 動作を示すマーキング.
          */

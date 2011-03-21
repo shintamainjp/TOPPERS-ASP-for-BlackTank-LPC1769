@@ -6,6 +6,8 @@
 #include "kernel_cfg.h"
 #include "task_display.h"
 #include "oled.h"
+#include "pff.h"
+#include "bmplowio.h"
 
 static const uint8_t FONT_X = 5;
 static const uint8_t FONT_Y = 7;
@@ -196,6 +198,59 @@ void cmd_text(display_text_t *p)
     }
 }
 
+FATFS fs;
+DIR dir;
+FILINFO fno;
+bmp_file_t bmpfile;
+bmp_info_t bmpinfo;
+bmp_rgbquad_t bmprgbquad;
+
+int pf_getc(void)
+{
+    uint8_t c;
+    WORD n;
+    FRESULT fr = pf_read(&c, 1, &n);
+    return ((fr == FR_OK) ? c : -1);
+}
+
+void dispfunc(int x, int y, int r, int g, int b)
+{
+    if ((0 <= x) && (0 <= y) && (x < OLED_X) && (y < OLED_Y)) {
+        Color c;
+        c.r = r;
+        c.g = g;
+        c.b = b;
+        oled_draw_pixel(x, y, c);
+    }
+}
+
+void cmd_bmpfile(display_bmpfile_t *p)
+{
+    int a = disk_initialize();
+    int b = pf_mount(&fs);
+    int c = pf_opendir(&dir, "");
+    if ((a == 0) && (b == 0) && (c == 0)) {
+        if (pf_open(p->filename) == FR_OK) {
+            bmplowio_header_read(pf_getc, &bmpfile, &bmpinfo);
+            if (have_palette(&bmpinfo)) {
+                bmplowio_palette_read(
+                        pf_getc,
+                        &bmprgbquad,
+                        (1 << bmpinfo.biBitCount));
+            }
+            bmplowio_image_read(
+                    pf_getc,
+                    &bmpfile,
+                    &bmpinfo,
+                    dispfunc);
+        } else {
+            syslog(LOG_NOTICE, "open failed.");
+        }
+    } else {
+        syslog(LOG_NOTICE, "mount failed.");
+    }
+}
+
 void task_display(intptr_t exinf)
 {
     display_msg_t *p;
@@ -223,6 +278,9 @@ void task_display(intptr_t exinf)
                     break;
                 case DISPLAY_CMD_TEXT:
                     cmd_text((display_text_t *)param);
+                    break;
+                case DISPLAY_CMD_BMPFILE:
+                    cmd_bmpfile((display_bmpfile_t *)param);
                     break;
                 default:
                     syslog(LOG_NOTICE, "Unknown command number %d.", cmd);

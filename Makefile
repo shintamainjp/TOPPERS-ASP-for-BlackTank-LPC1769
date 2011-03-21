@@ -181,7 +181,8 @@ MYOBJS = app_init.o \
 	 codec_subsystem.o \
 	 i2c_subsystem.o \
 	 adc_subsystem.o \
-	 testpin.o
+	 testpin.o \
+	 bmplowio.o
 
 APPL_DIR = $(APPLDIR) $(SRCDIR)/library ./drivers/pff ./drivers/oled ./drivers/led ./drivers/hid
 APPL_ASMOBJS =
