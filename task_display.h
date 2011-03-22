@@ -15,7 +15,6 @@
 #define _TASK_DISPLAY_H_
 
 #include "target_test.h"
-#include <itron.h>
 
 #define TSKPRI_DISPLAY    12
 
@@ -84,117 +83,55 @@ typedef struct {
     char filename[32];
 } display_bmpfile_t;
 
+void disp_clear(const uint8_t r, const uint8_t g, const uint8_t b);
+void disp_line(
+        const uint8_t x1,
+        const uint8_t y1,
+        const uint8_t x2,
+        const uint8_t y2,
+        const uint8_t r,
+        const uint8_t g,
+        const uint8_t b);
+void disp_box(
+        const uint8_t x1,
+        const uint8_t y1,
+        const uint8_t x2,
+        const uint8_t y2,
+        const uint8_t r,
+        const uint8_t g,
+        const uint8_t b);
+void disp_fillbox(
+        const uint8_t x1,
+        const uint8_t y1,
+        const uint8_t x2,
+        const uint8_t y2,
+        const uint8_t r1,
+        const uint8_t g1,
+        const uint8_t b1,
+        const uint8_t r2,
+        const uint8_t g2,
+        const uint8_t b2);
+void disp_text(
+        const uint8_t x,
+        const uint8_t y,
+        const uint8_t r,
+        const uint8_t g,
+        const uint8_t b,
+        const char *text);
+void disp_bmpfile(const char *filename);
+
 #define DISP_CLEAR(R,G,B) \
-    do { \
-        VP vp; \
-        display_clear_t param; \
-        get_mpf(MPF_DISPLAY, &vp); \
-        ((display_msg_t*)vp)->cmd = DISPLAY_CMD_CLEAR; \
-        param.r = (R); \
-        param.g = (G); \
-        param.b = (B); \
-        ((display_msg_t*)vp)->param = &param; \
-        snd_mbx(MBX_DISPLAY, vp); \
-    } while(0)
-
+    disp_clear((R),(G),(B))
 #define DISP_LINE(X1,Y1,X2,Y2,R,G,B) \
-    do { \
-        VP vp; \
-        display_line_t param; \
-        get_mpf(MPF_DISPLAY, &vp); \
-        ((display_msg_t*)vp)->cmd = DISPLAY_CMD_LINE; \
-        param.x1 = (X1); \
-        param.y1 = (Y1); \
-        param.x2 = (X2); \
-        param.y2 = (Y2); \
-        param.r = (R); \
-        param.g = (G); \
-        param.b = (B); \
-        ((display_msg_t*)vp)->param = &param; \
-        snd_mbx(MBX_DISPLAY, vp); \
-    } while(0)
-
+    disp_line((X1),(Y1),(X2),(Y2),(R),(G),(B))
 #define DISP_BOX(X1,Y1,X2,Y2,R,G,B) \
-    do { \
-        VP vp; \
-        display_box_t param; \
-        get_mpf(MPF_DISPLAY, &vp); \
-        ((display_msg_t*)vp)->cmd = DISPLAY_CMD_BOX; \
-        param.x1 = (X1); \
-        param.y1 = (Y1); \
-        param.x2 = (X2); \
-        param.y2 = (Y2); \
-        param.r = (R); \
-        param.g = (G); \
-        param.b = (B); \
-        ((display_msg_t*)vp)->param = &param; \
-        snd_mbx(MBX_DISPLAY, vp); \
-    } while(0)
-
+    disp_box((X1),(Y1),(X2),(Y2),(R),(G),(B))
 #define DISP_FILLBOX(X1,Y1,X2,Y2,R1,G1,B1,R2,G2,B2) \
-    do { \
-        VP vp; \
-        display_fillbox_t param; \
-        get_mpf(MPF_DISPLAY, &vp); \
-        ((display_msg_t*)vp)->cmd = DISPLAY_CMD_FILLBOX; \
-        param.x1 = (X1); \
-        param.y1 = (Y1); \
-        param.x2 = (X2); \
-        param.y2 = (Y2); \
-        param.r1 = (R1); \
-        param.g1 = (G1); \
-        param.b1 = (B1); \
-        param.r2 = (R2); \
-        param.g2 = (G2); \
-        param.b2 = (B2); \
-        ((display_msg_t*)vp)->param = &param; \
-        snd_mbx(MBX_DISPLAY, vp); \
-    } while(0)
-
+    disp_fillbox((X1),(Y1),(X2),(Y2),(R1),(G1),(B1),(R2),(G2),(B2))
 #define DISP_TEXT(X,Y,R,G,B,TEXT) \
-    do { \
-        int i; \
-        char *strp; \
-        VP vp; \
-        display_text_t param; \
-        get_mpf(MPF_DISPLAY, &vp); \
-        ((display_msg_t*)vp)->cmd = DISPLAY_CMD_TEXT; \
-        param.x = (X); \
-        param.y = (Y); \
-        param.r = (R); \
-        param.g = (G); \
-        param.b = (B); \
-        strp = (TEXT); \
-        i = 0; \
-        while (*strp) { \
-            param.text[i] = *strp; \
-            i++; \
-            strp++; \
-        } \
-        param.text[i] = '\0'; \
-        ((display_msg_t*)vp)->param = &param; \
-        snd_mbx(MBX_DISPLAY, vp); \
-    } while(0)
-
+    disp_text((X),(Y),(R),(G),(B),(TEXT))
 #define DISP_BMPFILE(FILENAME) \
-    do { \
-        int i; \
-        char *strp; \
-        VP vp; \
-        display_bmpfile_t param; \
-        get_mpf(MPF_DISPLAY, &vp); \
-        ((display_msg_t*)vp)->cmd = DISPLAY_CMD_BMPFILE; \
-        strp = (FILENAME); \
-        i = 0; \
-        while (*strp) { \
-            param.filename[i] = *strp; \
-            i++; \
-            strp++; \
-        } \
-        param.filename[i] = '\0'; \
-        ((display_msg_t*)vp)->param = &param; \
-        snd_mbx(MBX_DISPLAY, vp); \
-    } while(0)
+    disp_bmpfile((FILENAME))
 
 #ifndef TOPPERS_MACRO_ONLY
 

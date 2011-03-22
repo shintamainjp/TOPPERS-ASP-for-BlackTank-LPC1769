@@ -6,8 +6,10 @@
 #define _INTEGER
 
 /* These types must be 16-bit, 32-bit or larger integer */
-//typedef int		INT;
-//typedef unsigned int	UINT;
+#ifndef TOPPERS_ITRON_H
+typedef int		INT;
+typedef unsigned int	UINT;
+#endif
 
 /* These types must be 8-bit integer */
 typedef char		CHAR;

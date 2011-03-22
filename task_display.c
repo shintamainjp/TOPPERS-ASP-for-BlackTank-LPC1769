@@ -112,10 +112,152 @@ static const uint8_t font5x7_data[] = {
     0x08, 0x1C, 0x2A, 0x08, 0x08  // <-
 };
 
+void disp_clear(const uint8_t r, const uint8_t g, const uint8_t b)
+{
+    VP vp;
+    display_clear_t param;
+    get_mpf(MPF_DISPLAY, &vp);
+    ((display_msg_t*)vp)->cmd = DISPLAY_CMD_CLEAR;
+    param.r = r;
+    param.g = g;
+    param.b = b;
+    ((display_msg_t*)vp)->param = &param;
+    snd_mbx(MBX_DISPLAY, vp);
+}
+
+void disp_line(
+        const uint8_t x1,
+        const uint8_t y1,
+        const uint8_t x2,
+        const uint8_t y2,
+        const uint8_t r,
+        const uint8_t g,
+        const uint8_t b)
+{
+    VP vp;
+    display_line_t param;
+    get_mpf(MPF_DISPLAY, &vp);
+    ((display_msg_t*)vp)->cmd = DISPLAY_CMD_LINE;
+    param.x1 = x1;
+    param.y1 = y1;
+    param.x2 = x2;
+    param.y2 = y2;
+    param.r = r;
+    param.g = g;
+    param.b = b;
+    ((display_msg_t*)vp)->param = &param;
+    snd_mbx(MBX_DISPLAY, vp);
+}
+
+void disp_box(
+        const uint8_t x1,
+        const uint8_t y1,
+        const uint8_t x2,
+        const uint8_t y2,
+        const uint8_t r,
+        const uint8_t g,
+        const uint8_t b)
+{
+    VP vp;
+    display_box_t param;
+    get_mpf(MPF_DISPLAY, &vp);
+    ((display_msg_t*)vp)->cmd = DISPLAY_CMD_BOX;
+    param.x1 = x1;
+    param.y1 = y1;
+    param.x2 = x2;
+    param.y2 = y2;
+    param.r = r;
+    param.g = g;
+    param.b = b;
+    ((display_msg_t*)vp)->param = &param;
+    snd_mbx(MBX_DISPLAY, vp);
+}
+
+void disp_fillbox(
+        const uint8_t x1,
+        const uint8_t y1,
+        const uint8_t x2,
+        const uint8_t y2,
+        const uint8_t r1,
+        const uint8_t g1,
+        const uint8_t b1,
+        const uint8_t r2,
+        const uint8_t g2,
+        const uint8_t b2)
+{
+    VP vp;
+    display_fillbox_t param;
+    get_mpf(MPF_DISPLAY, &vp);
+    ((display_msg_t*)vp)->cmd = DISPLAY_CMD_FILLBOX;
+    param.x1 = x1;
+    param.y1 = y1;
+    param.x2 = x2;
+    param.y2 = y2;
+    param.r1 = r1;
+    param.g1 = g1;
+    param.b1 = b1;
+    param.r2 = r2;
+    param.g2 = g2;
+    param.b2 = b2;
+    ((display_msg_t*)vp)->param = &param;
+    snd_mbx(MBX_DISPLAY, vp);
+}
+
+void disp_text(
+        const uint8_t x,
+        const uint8_t y,
+        const uint8_t r,
+        const uint8_t g,
+        const uint8_t b,
+        const char *text)
+{
+    int i;
+    const char *strp;
+    VP vp;
+    display_text_t param;
+    get_mpf(MPF_DISPLAY, &vp);
+    ((display_msg_t*)vp)->cmd = DISPLAY_CMD_TEXT;
+    param.x = x;
+    param.y = y;
+    param.r = r;
+    param.g = g;
+    param.b = b;
+    strp = text;
+    i = 0;
+    while (*strp) {
+        param.text[i] = *strp;
+        i++;
+        strp++;
+    }
+    param.text[i] = '\0';
+    ((display_msg_t*)vp)->param = &param;
+    snd_mbx(MBX_DISPLAY, vp);
+}
+
+void disp_bmpfile(const char *filename)
+{
+    int i;
+    const char *strp;
+    VP vp;
+    display_bmpfile_t param;
+    get_mpf(MPF_DISPLAY, &vp);
+    ((display_msg_t*)vp)->cmd = DISPLAY_CMD_BMPFILE;
+    strp = filename;
+    i = 0;
+    while (*strp) {
+        param.filename[i] = *strp;
+        i++;
+        strp++;
+    }
+    param.filename[i] = '\0';
+    ((display_msg_t*)vp)->param = &param;
+    snd_mbx(MBX_DISPLAY, vp);
+}
+
 void cmd_clear(display_clear_t *p)
 {
-    Color c;
-    c.r = p->r;
+Color c;
+c.r = p->r;
     c.g = p->g;
     c.b = p->b;
 

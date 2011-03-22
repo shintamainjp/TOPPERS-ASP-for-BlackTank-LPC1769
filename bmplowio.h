@@ -28,7 +28,6 @@
 
 #include <kernel.h>
 #include <t_stdlib.h>
-#include <itron.h>
 
 #define BMP_FILE_MAGIC_TEXT    (('B' << 0) | ('M' << 8))
 

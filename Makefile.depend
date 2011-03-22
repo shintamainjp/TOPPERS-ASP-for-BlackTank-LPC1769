@@ -38,8 +38,7 @@ cfg1_out.o: kernel/arch/arm_m_gcc/prc_insn.h \
 	kernel/chip/lpc17xx_gcc/cmsis/device/system_LPC17xx.h \
 	kernel/syssvc/serial.h \
 	/usr/local/LPCXpresso/tools/bin/../lib/gcc/arm-none-eabi/4.4.1/../../../../arm-none-eabi/include/redlib/stdint.h \
-	cfg1_out.c kernel/include/itron.h \
-	kernel/chip/lpc17xx_gcc/chip_unrename.h \
+	cfg1_out.c kernel/chip/lpc17xx_gcc/chip_unrename.h \
 	kernel/kernel/mempfix.h task_menu.h task_led.h \
 	kernel/arch/arm_m_gcc/arm_m.h application.cfg \
 	kernel/target/lpc1768_generic_gcc/lpc1768_generic.h \
@@ -1237,53 +1236,25 @@ ntopt.o: ntopt.c ntopt.h
 ntshell.o: text_history.h ntshell.h vtparse.h text_editor.h \
 	ntshell.c vtparse_table.h 
 ntlibc.o: ntlibc.c ntlibc.h 
-pff.o: /usr/local/LPCXpresso/tools/bin/../lib/gcc/arm-none-eabi/4.4.1/../../../../arm-none-eabi/include/limits.h \
+ff.o: ./drivers/ff/diskio.h ./drivers/ff/integer.h ./drivers/ff/ff.c \
+	./drivers/ff/ffconf.h ./drivers/ff/ff.h 
+ffrtc.o: \
+	/usr/local/LPCXpresso/tools/bin/../lib/gcc/arm-none-eabi/4.4.1/../../../../arm-none-eabi/include/stdint.h \
+	kernel/chip/lpc17xx_gcc/cmsis/core/core_cm3.h \
+	./drivers/ff/ffrtc.h \
 	/usr/local/LPCXpresso/tools/bin/../lib/gcc/arm-none-eabi/4.4.1/../../../../arm-none-eabi/include/redlib/sys/redlib_version.h \
 	/usr/local/LPCXpresso/tools/bin/../lib/gcc/arm-none-eabi/4.4.1/../../../../arm-none-eabi/include/sys/redlib_version.h \
-	kernel/target/lpc1768_generic_gcc/target_stddef.h \
-	kernel/arch/arm_m_gcc/prc_stddef.h \
+	kernel/pdic/rtc/lpc17xx_rtc.h \
 	/usr/local/LPCXpresso/tools/bin/../lib/gcc/arm-none-eabi/4.4.1/../../../../arm-none-eabi/include/redlib/sys/libconfig.h \
+	kernel/chip/lpc17xx_gcc/cmsis/device/system_LPC17xx.h \
+	kernel/pdic/common/lpc_types.h \
 	/usr/local/LPCXpresso/tools/bin/../lib/gcc/arm-none-eabi/4.4.1/../../../../arm-none-eabi/include/sys/libconfig.h \
-	./drivers/pff/diskio.h \
-	/usr/local/LPCXpresso/tools/bin/../lib/gcc/arm-none-eabi/4.4.1/include-fixed/limits.h \
-	/usr/local/LPCXpresso/tools/bin/../lib/gcc/arm-none-eabi/4.4.1/../../../../arm-none-eabi/include/redlib/stddef.h \
-	/usr/local/LPCXpresso/tools/bin/../lib/gcc/arm-none-eabi/4.4.1/include/stddef.h \
-	/usr/local/LPCXpresso/tools/bin/../lib/gcc/arm-none-eabi/4.4.1/../../../../arm-none-eabi/include/sys/libconfig-arm.h \
-	kernel/include/t_stddef.h \
-	/usr/local/LPCXpresso/tools/bin/../lib/gcc/arm-none-eabi/4.4.1/../../../../arm-none-eabi/include/stddef.h \
-	/usr/local/LPCXpresso/tools/bin/../lib/gcc/arm-none-eabi/4.4.1/../../../../arm-none-eabi/include/stdint.h \
-	/usr/local/LPCXpresso/tools/bin/../lib/gcc/arm-none-eabi/4.4.1/../../../../arm-none-eabi/include/redlib/limits.h \
-	./drivers/pff/pff.h kernel/arch/gcc/tool_stddef.h \
-	kernel/chip/lpc17xx_gcc/chip_stddef.h \
 	/usr/local/LPCXpresso/tools/bin/../lib/gcc/arm-none-eabi/4.4.1/../../../../arm-none-eabi/include/redlib/stdint.h \
-	kernel/include/itron.h \
+	./drivers/ff/ffrtc.c \
 	/usr/local/LPCXpresso/tools/bin/../lib/gcc/arm-none-eabi/4.4.1/../../../../arm-none-eabi/include/redlib/sys/libconfig-arm.h \
-	./drivers/pff/pff.c ./drivers/pff/integer.h 
-diskio_mmc_pff.o: \
-	/usr/local/LPCXpresso/tools/bin/../lib/gcc/arm-none-eabi/4.4.1/../../../../arm-none-eabi/include/limits.h \
-	/usr/local/LPCXpresso/tools/bin/../lib/gcc/arm-none-eabi/4.4.1/../../../../arm-none-eabi/include/redlib/sys/redlib_version.h \
-	/usr/local/LPCXpresso/tools/bin/../lib/gcc/arm-none-eabi/4.4.1/../../../../arm-none-eabi/include/sys/redlib_version.h \
-	kernel/target/lpc1768_generic_gcc/target_stddef.h \
-	kernel/arch/arm_m_gcc/prc_stddef.h \
-	/usr/local/LPCXpresso/tools/bin/../lib/gcc/arm-none-eabi/4.4.1/../../../../arm-none-eabi/include/redlib/sys/libconfig.h \
-	/usr/local/LPCXpresso/tools/bin/../lib/gcc/arm-none-eabi/4.4.1/../../../../arm-none-eabi/include/sys/libconfig.h \
-	./drivers/pff/diskio.h \
-	/usr/local/LPCXpresso/tools/bin/../lib/gcc/arm-none-eabi/4.4.1/include-fixed/limits.h \
-	/usr/local/LPCXpresso/tools/bin/../lib/gcc/arm-none-eabi/4.4.1/../../../../arm-none-eabi/include/redlib/stddef.h \
-	/usr/local/LPCXpresso/tools/bin/../lib/gcc/arm-none-eabi/4.4.1/include/stddef.h \
-	/usr/local/LPCXpresso/tools/bin/../lib/gcc/arm-none-eabi/4.4.1/../../../../arm-none-eabi/include/sys/libconfig-arm.h \
-	kernel/include/t_stddef.h \
-	/usr/local/LPCXpresso/tools/bin/../lib/gcc/arm-none-eabi/4.4.1/../../../../arm-none-eabi/include/stddef.h \
-	/usr/local/LPCXpresso/tools/bin/../lib/gcc/arm-none-eabi/4.4.1/../../../../arm-none-eabi/include/stdint.h \
-	./drivers/pff/pffspi.h \
-	/usr/local/LPCXpresso/tools/bin/../lib/gcc/arm-none-eabi/4.4.1/../../../../arm-none-eabi/include/redlib/limits.h \
-	./drivers/pff/pff.h kernel/arch/gcc/tool_stddef.h \
-	kernel/chip/lpc17xx_gcc/chip_stddef.h \
-	/usr/local/LPCXpresso/tools/bin/../lib/gcc/arm-none-eabi/4.4.1/../../../../arm-none-eabi/include/redlib/stdint.h \
-	./drivers/pff/diskio_mmc_pff.c kernel/include/itron.h \
-	/usr/local/LPCXpresso/tools/bin/../lib/gcc/arm-none-eabi/4.4.1/../../../../arm-none-eabi/include/redlib/sys/libconfig-arm.h \
-	./drivers/pff/integer.h 
-pffspi.o: \
+	kernel/chip/lpc17xx_gcc/cmsis/device/LPC17xx.h \
+	/usr/local/LPCXpresso/tools/bin/../lib/gcc/arm-none-eabi/4.4.1/../../../../arm-none-eabi/include/sys/libconfig-arm.h 
+ffspi.o: \
 	/usr/local/LPCXpresso/tools/bin/../lib/gcc/arm-none-eabi/4.4.1/../../../../arm-none-eabi/include/sys/redlib_version.h \
 	kernel/target/lpc1768_generic_gcc/target_stddef.h \
 	kernel/pdic/spi/lpc17xx_spi.h \
@@ -1296,19 +1267,20 @@ pffspi.o: \
 	kernel/target/lpc1768_generic_gcc/target_sil.h \
 	/usr/local/LPCXpresso/tools/bin/../lib/gcc/arm-none-eabi/4.4.1/../../../../arm-none-eabi/include/redlib/sys/libconfig-arm.h \
 	kernel/pdic/common/lpc17xx_libcfg.h kernel/include/kernel.h \
+	./drivers/ff/ffspi.c \
 	/usr/local/LPCXpresso/tools/bin/../lib/gcc/arm-none-eabi/4.4.1/../../../../arm-none-eabi/include/redlib/sys/redlib_version.h \
 	/usr/local/LPCXpresso/tools/bin/../lib/gcc/arm-none-eabi/4.4.1/../../../../arm-none-eabi/include/limits.h \
 	/usr/local/LPCXpresso/tools/bin/../lib/gcc/arm-none-eabi/4.4.1/../../../../arm-none-eabi/include/redlib/sys/libconfig.h \
-	kernel/arch/arm_m_gcc/prc_stddef.h ./drivers/pff/pffspi.c \
+	kernel/arch/arm_m_gcc/prc_stddef.h \
 	kernel/pdic/common/lpc_types.h \
 	/usr/local/LPCXpresso/tools/bin/../lib/gcc/arm-none-eabi/4.4.1/../../../../arm-none-eabi/include/sys/libconfig.h \
-	kernel/arch/arm_m_gcc/prc_sil.h \
+	kernel/arch/arm_m_gcc/prc_sil.h ./drivers/ff/ffspi.h \
 	/usr/local/LPCXpresso/tools/bin/../lib/gcc/arm-none-eabi/4.4.1/../../../../arm-none-eabi/include/sys/libconfig-arm.h \
 	/usr/local/LPCXpresso/tools/bin/../lib/gcc/arm-none-eabi/4.4.1/include/stddef.h \
 	/usr/local/LPCXpresso/tools/bin/../lib/gcc/arm-none-eabi/4.4.1/../../../../arm-none-eabi/include/stdint.h \
 	/usr/local/LPCXpresso/tools/bin/../lib/gcc/arm-none-eabi/4.4.1/../../../../arm-none-eabi/include/stddef.h \
 	kernel/chip/lpc17xx_gcc/cmsis/core/core_cm3.h \
-	./drivers/pff/pffspi.h kernel/include/sil.h \
+	kernel/include/sil.h \
 	kernel/target/lpc1768_generic_gcc/target_kernel.h \
 	/usr/local/LPCXpresso/tools/bin/../lib/gcc/arm-none-eabi/4.4.1/../../../../arm-none-eabi/include/redlib/limits.h \
 	kernel/chip/lpc17xx_gcc/chip_sil.h \
@@ -1319,6 +1291,8 @@ pffspi.o: \
 	/usr/local/LPCXpresso/tools/bin/../lib/gcc/arm-none-eabi/4.4.1/../../../../arm-none-eabi/include/redlib/stdint.h \
 	kernel/chip/lpc17xx_gcc/cmsis/device/LPC17xx.h \
 	kernel/arch/arm_m_gcc/arm_m.h 
+diskio_mmc_ff.o: ./drivers/ff/diskio.h ./drivers/ff/diskio_mmc_ff.c \
+	./drivers/ff/integer.h ./drivers/ff/ffspi.h 
 oled.o: /usr/local/LPCXpresso/tools/bin/../lib/gcc/arm-none-eabi/4.4.1/../../../../arm-none-eabi/include/sys/redlib_version.h \
 	kernel/target/lpc1768_generic_gcc/target_stddef.h \
 	/usr/local/LPCXpresso/tools/bin/../lib/gcc/arm-none-eabi/4.4.1/include-fixed/limits.h \
@@ -1456,18 +1430,18 @@ task_ntshell.o: kernel/target/lpc1768_generic_gcc/lpc1768_generic.h \
 	kernel/chip/lpc17xx_gcc/chip_syssvc.h \
 	/usr/local/LPCXpresso/tools/bin/../lib/gcc/arm-none-eabi/4.4.1/../../../../arm-none-eabi/include/sys/redlib_version.h \
 	kernel/target/lpc1768_generic_gcc/target_stddef.h \
-	task_ntshell.h ./drivers/pff/diskio.h \
+	./drivers/ff/integer.h task_ntshell.h \
 	/usr/local/LPCXpresso/tools/bin/../lib/gcc/arm-none-eabi/4.4.1/include-fixed/limits.h \
 	/usr/local/LPCXpresso/tools/bin/../lib/gcc/arm-none-eabi/4.4.1/../../../../arm-none-eabi/include/redlib/stddef.h \
 	kernel/arch/logtrace/kernel_fncode.h \
 	kernel/chip/lpc17xx_gcc/lpc17xx.h kernel/include/t_stddef.h \
-	task_display.h kernel_cfg.h \
+	task_display.h kernel_cfg.h ./drivers/ff/ffconf.h \
 	kernel/arch/arm_m_gcc/prc_kernel.h \
 	kernel/arch/gcc/tool_stddef.h \
 	kernel/target/lpc1768_generic_gcc/target_sil.h \
 	kernel/target/lpc1768_generic_gcc/target_syssvc.h \
 	/usr/local/LPCXpresso/tools/bin/../lib/gcc/arm-none-eabi/4.4.1/../../../../arm-none-eabi/include/redlib/sys/libconfig-arm.h \
-	kernel/include/kernel.h ntshell.h \
+	./drivers/ff/diskio.h kernel/include/kernel.h ntshell.h \
 	/usr/local/LPCXpresso/tools/bin/../lib/gcc/arm-none-eabi/4.4.1/../../../../arm-none-eabi/include/redlib/sys/redlib_version.h \
 	/usr/local/LPCXpresso/tools/bin/../lib/gcc/arm-none-eabi/4.4.1/../../../../arm-none-eabi/include/limits.h \
 	kernel/chip/lpc17xx_gcc/chip_test.h \
@@ -1476,6 +1450,7 @@ task_ntshell.o: kernel/target/lpc1768_generic_gcc/lpc1768_generic.h \
 	kernel/arch/arm_m_gcc/prc_stddef.h \
 	/usr/local/LPCXpresso/tools/bin/../lib/gcc/arm-none-eabi/4.4.1/../../../../arm-none-eabi/include/sys/libconfig.h \
 	vtparse.h kernel/arch/arm_m_gcc/prc_sil.h task_ntshell.c \
+	./drivers/ff/ff.h \
 	/usr/local/LPCXpresso/tools/bin/../lib/gcc/arm-none-eabi/4.4.1/../../../../arm-none-eabi/include/sys/libconfig-arm.h \
 	/usr/local/LPCXpresso/tools/bin/../lib/gcc/arm-none-eabi/4.4.1/include/stddef.h \
 	/usr/local/LPCXpresso/tools/bin/../lib/gcc/arm-none-eabi/4.4.1/../../../../arm-none-eabi/include/stddef.h \
@@ -1485,15 +1460,14 @@ task_ntshell.o: kernel/target/lpc1768_generic_gcc/lpc1768_generic.h \
 	kernel/target/lpc1768_generic_gcc/target_kernel.h \
 	kernel/include/t_syslog.h \
 	/usr/local/LPCXpresso/tools/bin/../lib/gcc/arm-none-eabi/4.4.1/../../../../arm-none-eabi/include/redlib/limits.h \
-	kernel/chip/lpc17xx_gcc/chip_sil.h ./drivers/pff/pff.h \
+	kernel/chip/lpc17xx_gcc/chip_sil.h \
 	kernel/chip/lpc17xx_gcc/cmsis/device/system_LPC17xx.h \
 	text_history.h kernel/chip/lpc17xx_gcc/chip_stddef.h \
 	kernel/syssvc/serial.h kernel/chip/lpc17xx_gcc/chip_kernel.h \
 	/usr/local/LPCXpresso/tools/bin/../lib/gcc/arm-none-eabi/4.4.1/../../../../arm-none-eabi/include/redlib/stdint.h \
-	kernel/arch/logtrace/trace_config.h kernel/include/itron.h \
-	ntlibc.h kernel/chip/lpc17xx_gcc/cmsis/device/LPC17xx.h \
-	./drivers/pff/integer.h ntopt.h vtparse_table.h task_led.h \
-	kernel/arch/arm_m_gcc/arm_m.h 
+	kernel/arch/logtrace/trace_config.h ntlibc.h \
+	kernel/chip/lpc17xx_gcc/cmsis/device/LPC17xx.h ntopt.h \
+	vtparse_table.h task_led.h kernel/arch/arm_m_gcc/arm_m.h 
 task_userinput.o: kernel/arch/arm_m_gcc/prc_test.h \
 	/usr/local/LPCXpresso/tools/bin/../lib/gcc/arm-none-eabi/4.4.1/../../../../arm-none-eabi/include/sys/redlib_version.h \
 	kernel/target/lpc1768_generic_gcc/target_stddef.h \
@@ -1530,10 +1504,11 @@ task_userinput.o: kernel/arch/arm_m_gcc/prc_test.h \
 task_display.o: kernel/arch/arm_m_gcc/prc_test.h \
 	/usr/local/LPCXpresso/tools/bin/../lib/gcc/arm-none-eabi/4.4.1/../../../../arm-none-eabi/include/sys/redlib_version.h \
 	kernel/target/lpc1768_generic_gcc/target_stddef.h \
+	./drivers/ff/integer.h \
 	/usr/local/LPCXpresso/tools/bin/../lib/gcc/arm-none-eabi/4.4.1/include-fixed/limits.h \
 	/usr/local/LPCXpresso/tools/bin/../lib/gcc/arm-none-eabi/4.4.1/../../../../arm-none-eabi/include/redlib/stddef.h \
 	kernel/include/t_stddef.h task_display.h kernel_cfg.h \
-	kernel/arch/arm_m_gcc/prc_kernel.h \
+	./drivers/ff/ffconf.h kernel/arch/arm_m_gcc/prc_kernel.h \
 	kernel/arch/gcc/tool_stddef.h \
 	/usr/local/LPCXpresso/tools/bin/../lib/gcc/arm-none-eabi/4.4.1/../../../../arm-none-eabi/include/redlib/sys/libconfig-arm.h \
 	task_display.c kernel/include/kernel.h bmplowio.h \
@@ -1544,6 +1519,7 @@ task_display.o: kernel/arch/arm_m_gcc/prc_test.h \
 	/usr/local/LPCXpresso/tools/bin/../lib/gcc/arm-none-eabi/4.4.1/../../../../arm-none-eabi/include/redlib/sys/libconfig.h \
 	kernel/arch/arm_m_gcc/prc_stddef.h \
 	/usr/local/LPCXpresso/tools/bin/../lib/gcc/arm-none-eabi/4.4.1/../../../../arm-none-eabi/include/sys/libconfig.h \
+	./drivers/ff/ff.h \
 	/usr/local/LPCXpresso/tools/bin/../lib/gcc/arm-none-eabi/4.4.1/../../../../arm-none-eabi/include/sys/libconfig-arm.h \
 	/usr/local/LPCXpresso/tools/bin/../lib/gcc/arm-none-eabi/4.4.1/include/stddef.h \
 	/usr/local/LPCXpresso/tools/bin/../lib/gcc/arm-none-eabi/4.4.1/../../../../arm-none-eabi/include/stdint.h \
@@ -1553,14 +1529,12 @@ task_display.o: kernel/arch/arm_m_gcc/prc_test.h \
 	kernel/target/lpc1768_generic_gcc/target_kernel.h \
 	kernel/include/t_syslog.h \
 	/usr/local/LPCXpresso/tools/bin/../lib/gcc/arm-none-eabi/4.4.1/../../../../arm-none-eabi/include/redlib/limits.h \
-	./drivers/pff/pff.h \
 	kernel/chip/lpc17xx_gcc/cmsis/device/system_LPC17xx.h \
 	kernel/chip/lpc17xx_gcc/chip_stddef.h \
 	kernel/chip/lpc17xx_gcc/chip_kernel.h \
 	/usr/local/LPCXpresso/tools/bin/../lib/gcc/arm-none-eabi/4.4.1/../../../../arm-none-eabi/include/redlib/stdint.h \
 	kernel/include/itron.h kernel/include/t_stdlib.h \
-	kernel/chip/lpc17xx_gcc/cmsis/device/LPC17xx.h \
-	./drivers/pff/integer.h 
+	kernel/chip/lpc17xx_gcc/cmsis/device/LPC17xx.h 
 task_menu.o: kernel/arch/arm_m_gcc/prc_test.h \
 	/usr/local/LPCXpresso/tools/bin/../lib/gcc/arm-none-eabi/4.4.1/../../../../arm-none-eabi/include/sys/redlib_version.h \
 	kernel/target/lpc1768_generic_gcc/target_stddef.h \
@@ -1574,8 +1548,8 @@ task_menu.o: kernel/arch/arm_m_gcc/prc_test.h \
 	kernel/include/kernel.h \
 	/usr/local/LPCXpresso/tools/bin/../lib/gcc/arm-none-eabi/4.4.1/../../../../arm-none-eabi/include/redlib/sys/redlib_version.h \
 	/usr/local/LPCXpresso/tools/bin/../lib/gcc/arm-none-eabi/4.4.1/../../../../arm-none-eabi/include/limits.h \
-	kernel/chip/lpc17xx_gcc/chip_test.h \
 	kernel/target/lpc1768_generic_gcc/target_test.h \
+	kernel/chip/lpc17xx_gcc/chip_test.h \
 	/usr/local/LPCXpresso/tools/bin/../lib/gcc/arm-none-eabi/4.4.1/../../../../arm-none-eabi/include/redlib/sys/libconfig.h \
 	kernel/arch/arm_m_gcc/prc_stddef.h \
 	/usr/local/LPCXpresso/tools/bin/../lib/gcc/arm-none-eabi/4.4.1/../../../../arm-none-eabi/include/sys/libconfig.h \
@@ -1591,7 +1565,6 @@ task_menu.o: kernel/arch/arm_m_gcc/prc_test.h \
 	kernel/chip/lpc17xx_gcc/chip_stddef.h \
 	kernel/chip/lpc17xx_gcc/chip_kernel.h \
 	/usr/local/LPCXpresso/tools/bin/../lib/gcc/arm-none-eabi/4.4.1/../../../../arm-none-eabi/include/redlib/stdint.h \
-	kernel/include/itron.h \
 	kernel/chip/lpc17xx_gcc/cmsis/device/LPC17xx.h task_menu.h \
 	task_led.h 
 task_audio_init.o: kernel/arch/arm_m_gcc/prc_test.h \
@@ -1627,8 +1600,7 @@ task_audio_init.o: kernel/arch/arm_m_gcc/prc_test.h \
 	audio_common.h kernel/chip/lpc17xx_gcc/chip_stddef.h \
 	kernel/chip/lpc17xx_gcc/chip_kernel.h \
 	/usr/local/LPCXpresso/tools/bin/../lib/gcc/arm-none-eabi/4.4.1/../../../../arm-none-eabi/include/redlib/stdint.h \
-	kernel/include/itron.h task_audio.h \
-	kernel/chip/lpc17xx_gcc/cmsis/device/LPC17xx.h \
+	task_audio.h kernel/chip/lpc17xx_gcc/cmsis/device/LPC17xx.h \
 	kernel/include/t_stdlib.h 
 task_audio.o: kernel/arch/arm_m_gcc/prc_test.h \
 	/usr/local/LPCXpresso/tools/bin/../lib/gcc/arm-none-eabi/4.4.1/../../../../arm-none-eabi/include/sys/redlib_version.h \
@@ -1661,8 +1633,7 @@ task_audio.o: kernel/arch/arm_m_gcc/prc_test.h \
 	audio_common.h kernel/chip/lpc17xx_gcc/chip_stddef.h \
 	kernel/chip/lpc17xx_gcc/chip_kernel.h \
 	/usr/local/LPCXpresso/tools/bin/../lib/gcc/arm-none-eabi/4.4.1/../../../../arm-none-eabi/include/redlib/stdint.h \
-	kernel/include/itron.h task_audio.h \
-	kernel/include/t_stdlib.h \
+	task_audio.h kernel/include/t_stdlib.h \
 	kernel/chip/lpc17xx_gcc/cmsis/device/LPC17xx.h 
 audio_effect.o: kernel/include/kernel.h \
 	/usr/local/LPCXpresso/tools/bin/../lib/gcc/arm-none-eabi/4.4.1/../../../../arm-none-eabi/include/limits.h \
@@ -1841,7 +1812,6 @@ bmplowio.o: kernel/include/kernel.h \
 	kernel/chip/lpc17xx_gcc/chip_stddef.h \
 	kernel/chip/lpc17xx_gcc/chip_kernel.h \
 	/usr/local/LPCXpresso/tools/bin/../lib/gcc/arm-none-eabi/4.4.1/../../../../arm-none-eabi/include/redlib/stdint.h \
-	kernel/include/itron.h \
 	/usr/local/LPCXpresso/tools/bin/../lib/gcc/arm-none-eabi/4.4.1/../../../../arm-none-eabi/include/redlib/sys/libconfig-arm.h \
 	kernel/include/t_stdlib.h bmplowio.c 
 lpc17xx_clkpwr.o: kernel/pdic/common/lpc17xx_clkpwr.h \
@@ -2070,6 +2040,37 @@ lpc17xx_adc.o: kernel/pdic/common/lpc17xx_libcfg_default.h \
 	/usr/local/LPCXpresso/tools/bin/../lib/gcc/arm-none-eabi/4.4.1/../../../../arm-none-eabi/include/redlib/sys/libconfig.h \
 	kernel/pdic/adc/lpc17xx_adc.h kernel/pdic/adc/lpc17xx_adc.c \
 	kernel/pdic/common/lpc_types.h \
+	/usr/local/LPCXpresso/tools/bin/../lib/gcc/arm-none-eabi/4.4.1/../../../../arm-none-eabi/include/sys/libconfig.h \
+	kernel/arch/arm_m_gcc/prc_sil.h \
+	/usr/local/LPCXpresso/tools/bin/../lib/gcc/arm-none-eabi/4.4.1/include-fixed/limits.h \
+	/usr/local/LPCXpresso/tools/bin/../lib/gcc/arm-none-eabi/4.4.1/../../../../arm-none-eabi/include/redlib/stddef.h \
+	/usr/local/LPCXpresso/tools/bin/../lib/gcc/arm-none-eabi/4.4.1/include/stddef.h \
+	kernel/include/t_stddef.h kernel/chip/lpc17xx_gcc/lpc17xx.h \
+	/usr/local/LPCXpresso/tools/bin/../lib/gcc/arm-none-eabi/4.4.1/../../../../arm-none-eabi/include/sys/libconfig-arm.h \
+	/usr/local/LPCXpresso/tools/bin/../lib/gcc/arm-none-eabi/4.4.1/../../../../arm-none-eabi/include/stddef.h \
+	/usr/local/LPCXpresso/tools/bin/../lib/gcc/arm-none-eabi/4.4.1/../../../../arm-none-eabi/include/stdint.h \
+	kernel/include/sil.h \
+	kernel/chip/lpc17xx_gcc/cmsis/core/core_cm3.h \
+	kernel/chip/lpc17xx_gcc/chip_sil.h \
+	/usr/local/LPCXpresso/tools/bin/../lib/gcc/arm-none-eabi/4.4.1/../../../../arm-none-eabi/include/redlib/limits.h \
+	kernel/arch/gcc/tool_stddef.h \
+	kernel/chip/lpc17xx_gcc/cmsis/device/system_LPC17xx.h \
+	kernel/chip/lpc17xx_gcc/chip_stddef.h \
+	kernel/target/lpc1768_generic_gcc/target_sil.h \
+	/usr/local/LPCXpresso/tools/bin/../lib/gcc/arm-none-eabi/4.4.1/../../../../arm-none-eabi/include/redlib/stdint.h \
+	/usr/local/LPCXpresso/tools/bin/../lib/gcc/arm-none-eabi/4.4.1/../../../../arm-none-eabi/include/redlib/sys/libconfig-arm.h \
+	kernel/chip/lpc17xx_gcc/cmsis/device/LPC17xx.h \
+	kernel/arch/arm_m_gcc/arm_m.h 
+lpc17xx_rtc.o: kernel/pdic/common/lpc17xx_libcfg_default.h \
+	kernel/pdic/common/lpc17xx_clkpwr.h \
+	/usr/local/LPCXpresso/tools/bin/../lib/gcc/arm-none-eabi/4.4.1/../../../../arm-none-eabi/include/limits.h \
+	/usr/local/LPCXpresso/tools/bin/../lib/gcc/arm-none-eabi/4.4.1/../../../../arm-none-eabi/include/redlib/sys/redlib_version.h \
+	/usr/local/LPCXpresso/tools/bin/../lib/gcc/arm-none-eabi/4.4.1/../../../../arm-none-eabi/include/sys/redlib_version.h \
+	kernel/pdic/rtc/lpc17xx_rtc.h \
+	kernel/target/lpc1768_generic_gcc/target_stddef.h \
+	kernel/arch/arm_m_gcc/prc_stddef.h \
+	/usr/local/LPCXpresso/tools/bin/../lib/gcc/arm-none-eabi/4.4.1/../../../../arm-none-eabi/include/redlib/sys/libconfig.h \
+	kernel/pdic/common/lpc_types.h kernel/pdic/rtc/lpc17xx_rtc.c \
 	/usr/local/LPCXpresso/tools/bin/../lib/gcc/arm-none-eabi/4.4.1/../../../../arm-none-eabi/include/sys/libconfig.h \
 	kernel/arch/arm_m_gcc/prc_sil.h \
 	/usr/local/LPCXpresso/tools/bin/../lib/gcc/arm-none-eabi/4.4.1/include-fixed/limits.h \
@@ -2360,7 +2361,6 @@ kernel_cfg.o: kernel/arch/arm_m_gcc/prc_insn.h \
 	kernel/chip/lpc17xx_gcc/cmsis/device/system_LPC17xx.h \
 	kernel/syssvc/serial.h \
 	/usr/local/LPCXpresso/tools/bin/../lib/gcc/arm-none-eabi/4.4.1/../../../../arm-none-eabi/include/redlib/stdint.h \
-	kernel/include/itron.h \
 	kernel/chip/lpc17xx_gcc/chip_unrename.h \
 	kernel/kernel/mempfix.h task_menu.h task_led.h \
 	kernel/arch/arm_m_gcc/arm_m.h \

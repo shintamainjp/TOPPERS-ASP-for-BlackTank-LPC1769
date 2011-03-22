@@ -149,7 +149,7 @@ int bmplowio_palette_write(
         const bmp_rgbquad_t *rgbquad,
         size_t n) {
     int i;
-    bmp_rgbquad_t *p = rgbquad;
+    const bmp_rgbquad_t *p = rgbquad;
     for (i = 0; i < n; i++) {
         func_putc(p->red);
         func_putc(p->green);

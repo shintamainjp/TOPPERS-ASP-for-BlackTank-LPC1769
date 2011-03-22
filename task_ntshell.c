@@ -18,8 +18,8 @@
 #include "ntshell.h"
 #include "ntopt.h"
 #include "ntlibc.h"
-#include "ff.h"
 #include "diskio.h"
+#include "ff.h"
 
 char curdir[32];
 FATFS fatfs[_VOLUMES];

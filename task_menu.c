@@ -2,7 +2,6 @@
 #include <LPC17xx.h>
 #include <kernel.h>
 #include <t_syslog.h>
-#include <itron.h>
 
 #include "kernel_cfg.h"
 #include "task_menu.h"
