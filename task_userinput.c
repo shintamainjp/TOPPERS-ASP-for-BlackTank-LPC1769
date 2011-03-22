@@ -9,8 +9,8 @@
 
 void task_userinput(intptr_t exinf)
 {
-    uint8_t s0prev, s1prev, s2prev, s3prev;
-    uint8_t v0prev, v1prev, v2prev, v3prev;
+    uint8_t s0prev = 0, s1prev = 0, s2prev = 0, s3prev = 0;
+    uint8_t v0prev = 0, v1prev = 0, v2prev = 0, v3prev = 0;
     hid_init();
     while(1)
     {

@@ -17,7 +17,7 @@
 #include "target_test.h"
 #include <itron.h>
 
-#define TSKPRI_DISPLAY    10
+#define TSKPRI_DISPLAY    12
 
 #define DISPLAY_CMD_CLEAR 0
 #define DISPLAY_CMD_LINE 1

@@ -6,7 +6,7 @@
 #include "kernel_cfg.h"
 #include "task_display.h"
 #include "oled.h"
-#include "pff.h"
+#include "ff.h"
 #include "bmplowio.h"
 
 static const uint8_t FONT_X = 5;
@@ -198,18 +198,19 @@ void cmd_text(display_text_t *p)
     }
 }
 
-FATFS fs;
+FATFS fatfs[_VOLUMES];
 DIR dir;
-FILINFO fno;
+FIL fil;
+FILINFO filinfo;
 bmp_file_t bmpfile;
 bmp_info_t bmpinfo;
 bmp_rgbquad_t bmprgbquad;
 
-int pf_getc(void)
+int ff_getc(void)
 {
     uint8_t c;
-    WORD n;
-    FRESULT fr = pf_read(&c, 1, &n);
+    UINT n;
+    FRESULT fr = f_read(&fil, &c, 1, &n);
     return ((fr == FR_OK) ? c : -1);
 }
 
@@ -226,20 +227,19 @@ void dispfunc(int x, int y, int r, int g, int b)
 
 void cmd_bmpfile(display_bmpfile_t *p)
 {
-    int a = disk_initialize();
-    int b = pf_mount(&fs);
-    int c = pf_opendir(&dir, "");
-    if ((a == 0) && (b == 0) && (c == 0)) {
-        if (pf_open(p->filename) == FR_OK) {
-            bmplowio_header_read(pf_getc, &bmpfile, &bmpinfo);
+    int a = f_mount(0, &fatfs[0]);
+    int b = f_opendir(&dir, "");
+    if ((a == 0) && (b == 0)) {
+        if (f_open(&fil, p->filename, FA_READ) == FR_OK) {
+            bmplowio_header_read(ff_getc, &bmpfile, &bmpinfo);
             if (have_palette(&bmpinfo)) {
                 bmplowio_palette_read(
-                        pf_getc,
+                        ff_getc,
                         &bmprgbquad,
                         (1 << bmpinfo.biBitCount));
             }
             bmplowio_image_read(
-                    pf_getc,
+                    ff_getc,
                     &bmpfile,
                     &bmpinfo,
                     dispfunc);

@@ -135,10 +135,10 @@ ifndef OMIT_WARNING_ALL
   COPTS := $(COPTS) -Wall
 endif
 ifndef OMIT_OPTIMIZATION
-  COPTS := $(COPTS) -O0
+  COPTS := $(COPTS) -O3
 endif
 CDEFS := $(CDEFS)
-INCLUDES := -I. -I$(SRCDIR)/include -I$(SRCDIR)/arch -I$(SRCDIR) -I./drivers/pff -I./drivers/oled -I./drivers/led -I./drivers/hid $(INCLUDES)
+INCLUDES := -I. -I$(SRCDIR)/include -I$(SRCDIR)/arch -I$(SRCDIR) -I./drivers/ff -I./drivers/oled -I./drivers/led -I./drivers/hid $(INCLUDES)
 LDFLAGS := $(LDFLAGS)
 LIBS := $(LIBS) $(CXXLIBS)
 CFLAGS = $(COPTS) $(CDEFS) $(INCLUDES)
@@ -161,9 +161,10 @@ MYOBJS = app_init.o \
 	 ntshell.o \
 	 ntlibc.o \
 	 \
-	 pff.o \
-	 diskio_mmc.o \
-	 platform.o \
+	 ff.o \
+	 ffrtc.o \
+	 ffspi.o \
+	 diskio_mmc_ff.o \
 	 oled.o \
 	 led.o \
 	 hid.o \
@@ -184,7 +185,7 @@ MYOBJS = app_init.o \
 	 testpin.o \
 	 bmplowio.o
 
-APPL_DIR = $(APPLDIR) $(SRCDIR)/library ./drivers/pff ./drivers/oled ./drivers/led ./drivers/hid
+APPL_DIR = $(APPLDIR) $(SRCDIR)/library ./drivers/ff ./drivers/oled ./drivers/led ./drivers/hid
 APPL_ASMOBJS =
 ifdef USE_CXX
   APPL_CXXOBJS = $(MYOBJS)

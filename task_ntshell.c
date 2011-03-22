@@ -18,13 +18,14 @@
 #include "ntshell.h"
 #include "ntopt.h"
 #include "ntlibc.h"
-#include "pff.h"
+#include "ff.h"
 #include "diskio.h"
 
 char curdir[32];
-FATFS fs;
+FATFS fatfs[_VOLUMES];
 DIR dir;
-FILINFO fno;
+FIL fil;
+FILINFO filinfo;
 vtparse_t parser;
 text_editor_t editor;
 text_history_t history;
@@ -160,11 +161,10 @@ void cmd_led(int argc, char **argv) {
 }
 
 void cmd_mount(int argc, char **argv) {
-    int a = disk_initialize();
-    int b = pf_mount(&fs);
-    int c = pf_opendir(&dir, "");
+    int a = f_mount(0, &fatfs[0]);
+    int b = f_opendir(&dir, "");
     ntlibc_strcpy(curdir, "");
-    if ((a == 0) && (b == 0) && (c == 0)) {
+    if ((a == 0) && (b == 0)) {
         syslog(LOG_NOTICE, "Mounted the SD card.");
     } else {
         syslog(LOG_NOTICE, "Failure to mount the SD card.");
@@ -173,24 +173,24 @@ void cmd_mount(int argc, char **argv) {
 
 void cmd_ls(int argc, char **argv) {
     int r;
-    r = pf_opendir(&dir, curdir);
+    r = f_opendir(&dir, curdir);
     if (r) {
         syslog(LOG_NOTICE, "Failure to open the directory. (code=%d)", r);
         return;
     }
     while (1) {
-        r = pf_readdir(&dir, &fno);
+        r = f_readdir(&dir, &filinfo);
         if (r != FR_OK) {
             syslog(LOG_NOTICE, "Failure to read the directory. (code=%d)", r);
             return;
         }
-        if (!fno.fname[0]) {
+        if (!filinfo.fname[0]) {
             break;
         }
-        if (fno.fattrib & AM_DIR) {
-            syslog(LOG_NOTICE, "<DIR>\t%s", fno.fname);
+        if (filinfo.fattrib & AM_DIR) {
+            syslog(LOG_NOTICE, "<DIR>\t%s", filinfo.fname);
         } else {
-            syslog(LOG_NOTICE, "%d\t%s", fno.fsize, fno.fname);
+            syslog(LOG_NOTICE, "%d\t%s", filinfo.fsize, filinfo.fname);
         }
         tslp_tsk(10);
     }
@@ -200,13 +200,13 @@ void cmd_cd(int argc, char **argv) {
     int r;
     switch (argc) {
         case 1:
-            r = pf_opendir(&dir, "");
+            r = f_opendir(&dir, "");
             if (!r) {
                 ntlibc_strcpy(curdir, "");
             }
             break;
         case 2:
-            r = pf_opendir(&dir, argv[1]);
+            r = f_opendir(&dir, argv[1]);
             if (!r) {
                 ntlibc_strcpy(curdir, argv[1]);
             }

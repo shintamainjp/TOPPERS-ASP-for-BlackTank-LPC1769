@@ -47,7 +47,7 @@
 			{
 				"id"    :3,
 				"atr"   :"TA_ACT",
-				"pri"   :10,
+				"pri"   :12,
 				"exinf" :"0",
 				"task"  :"task_display",
 				"stksz" :1024,
@@ -103,7 +103,7 @@
 			{
 				"id"    :7,
 				"atr"   :"TA_ACT",
-				"pri"   :16,
+				"pri"   :13,
 				"exinf" :"0",
 				"task"  :"task_audio_init",
 				"stksz" :1024,
