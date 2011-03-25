@@ -83,39 +83,11 @@
 				"state" :"RUNNABLE"
 			}
 		},
-		"TASK_USERINPUT":{
-			"Type":"Task",
-			"Attributes":
-			{
-				"id"    :6,
-				"atr"   :"0",
-				"pri"   :12,
-				"exinf" :"0",
-				"task"  :"task_userinput",
-				"stksz" :1024,
-				"stk"   :"NULL",
-				"state" :"DORMANT"
-			}
-		},
-		"TASK_MENU":{
-			"Type":"Task",
-			"Attributes":
-			{
-				"id"    :7,
-				"atr"   :"0",
-				"pri"   :11,
-				"exinf" :"0",
-				"task"  :"task_menu",
-				"stksz" :1024,
-				"stk"   :"NULL",
-				"state" :"DORMANT"
-			}
-		},
 		"TASK_AUDIO_INIT":{
 			"Type":"Task",
 			"Attributes":
 			{
-				"id"    :8,
+				"id"    :6,
 				"atr"   :"0",
 				"pri"   :13,
 				"exinf" :"0",
@@ -129,11 +101,39 @@
 			"Type":"Task",
 			"Attributes":
 			{
-				"id"    :9,
+				"id"    :7,
 				"atr"   :"0",
 				"pri"   :9,
 				"exinf" :"0",
 				"task"  :"task_audio",
+				"stksz" :1024,
+				"stk"   :"NULL",
+				"state" :"DORMANT"
+			}
+		},
+		"TASK_MENU":{
+			"Type":"Task",
+			"Attributes":
+			{
+				"id"    :8,
+				"atr"   :"0",
+				"pri"   :12,
+				"exinf" :"0",
+				"task"  :"task_menu",
+				"stksz" :1024,
+				"stk"   :"NULL",
+				"state" :"DORMANT"
+			}
+		},
+		"TASK_USERINPUT":{
+			"Type":"Task",
+			"Attributes":
+			{
+				"id"    :9,
+				"atr"   :"0",
+				"pri"   :14,
+				"exinf" :"0",
+				"task"  :"task_userinput",
 				"stksz" :1024,
 				"stk"   :"NULL",
 				"state" :"DORMANT"

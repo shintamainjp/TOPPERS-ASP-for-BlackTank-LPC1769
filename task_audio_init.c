@@ -47,6 +47,8 @@ void task_audio_init(intptr_t exinf)
     tslp_tsk(500);
 
     act_tsk(TASK_AUDIO);
+    act_tsk(TASK_MENU);
+    act_tsk(TASK_USERINPUT);
 
     /* DMAによるI2S転送を始める */
     i2s_start();

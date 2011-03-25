@@ -433,6 +433,12 @@ void oled_draw_line(int x1, int y1, int x2, int y2, Color c) {
  * @param c2 Color2.
  */
 void oled_fill_box(int x1, int y1, int x2, int y2, Color c1, Color c2) {
+    if (x1 == x2) {
+        return;
+    }
+    if (y1 == y2) {
+        return;
+    }
     flip(x1,y1);
     flip(x2,y2);
     align(x1,y1,x2,y2);

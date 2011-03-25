@@ -59,7 +59,7 @@ void hid_init(void)
     ADC_BurstCmd(LPC_ADC, 1);
 }
 
-unsigned char hid_swread(unsigned char ch)
+uint8_t hid_swread(unsigned char ch)
 {
     int port;
     int pin;

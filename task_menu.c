@@ -8,8 +8,9 @@
 #include "task_led.h"
 #include "task_display.h"
 
-#define MSG_DEVICE(n) (((n) & 0xE0) >> 5)
-#define MSG_VALUE(n) ((n) & 0x1F)
+#define MSG_DEVICE(n) (((n) & 0xF000) >> 12)
+#define MSG_TYPE(n)   (((n) & 0x0C00) >> 10)
+#define MSG_VALUE(n)  (((n) & 0x03FF) >>  0)
 
 typedef enum {
     PAGE_SPLASH,
@@ -119,15 +120,53 @@ PAGEID get_next_page(PAGEID page, int sw)
 
 void task_menu(intptr_t exinf)
 {
-    uint8_t msg;
+    uint16_t msg;
+
+    DISP_CLEAR(0x00, 0x00, 0x00);
+
     while(1)
     {
         execute_pagefunc(page);
         life++;
         while (prcv_dtq(DTQ_USERINPUT, (intptr_t *)&msg) == E_OK) {
             if ((SW0 <= MSG_DEVICE(msg)) && (MSG_DEVICE(msg) <= SW3)) {
-                page = get_next_page(page, MSG_DEVICE(msg));
-                life = 0;
+                if (MSG_VALUE(msg)) {
+                    page = get_next_page(page, MSG_DEVICE(msg));
+                    life = 0;
+                }
+                switch (MSG_DEVICE(msg)) {
+                    case SW0:
+                        LEDMSG(SWLED0, MSG_VALUE(msg));
+                        break;
+                    case SW1:
+                        LEDMSG(SWLED1, MSG_VALUE(msg));
+                        break;
+                    case SW2:
+                        LEDMSG(SWLED2, MSG_VALUE(msg));
+                        break;
+                    case SW3:
+                        LEDMSG(SWLED3, MSG_VALUE(msg));
+                        break;
+                }
+            }
+            if ((VOL0 <= MSG_DEVICE(msg)) && (MSG_DEVICE(msg) <= VOL3)) {
+                static const int MAXVAL = (127 / 3);
+                static const int XOFS = 10;
+                static const int YOFS = 5;
+                int ch = MSG_DEVICE(msg) - VOL0;
+                int val = MAXVAL - (MSG_VALUE(msg) / 3);
+                DISP_FILLBOX(
+                        XOFS + ch * 20, YOFS + 0,
+                        XOFS + ch * 20 + 10, YOFS + val,
+                        0x00, 0x00, 0x00,
+                        0x00, 0x00, 0x00);
+                DISP_FILLBOX(
+                        XOFS + ch * 20, YOFS + val,
+                        XOFS + ch * 20 + 10, YOFS + MAXVAL,
+                        0xFF, 0xFF, 0xFF,
+                        0xFF, 0xFF, 0xFF);
+                syslog(LOG_NOTICE, "%d device is %d",
+                        MSG_DEVICE(msg), MSG_VALUE(msg));
             }
         }
         tslp_tsk(100);

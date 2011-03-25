@@ -28,7 +28,8 @@
 #define LEDOFF 0
 #define LEDON 1
 
-#define LEDMSG(target, control) snd_dtq(DTQ_LED, (intptr_t)(((control) ? 0x80:0x00) | (target)))
+#define LEDMSG(target, control) \
+    snd_dtq(DTQ_LED, (intptr_t)(((control) ? 0x80:0x00) | (target & 0x0F)))
 
 void task_led(intptr_t exinf);
 

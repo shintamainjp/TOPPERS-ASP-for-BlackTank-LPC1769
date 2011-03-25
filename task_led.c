@@ -7,12 +7,12 @@
 #include "task_led.h"
 #include "led.h"
 
-#define MSG_CONTROL(n) (((n) & 0x80) ? 1 : 0)
-#define MSG_TARGET(n) ((n) & 0x0F)
+#define MSG_CONTROL(n) (((n) & 0x0080) ? 1 : 0)
+#define MSG_TARGET(n) ((n) & 0x000F)
 
 void task_led(intptr_t exinf)
 {
-    uint8_t msg;
+    uint16_t msg;
     led_init();
     while(1)
     {

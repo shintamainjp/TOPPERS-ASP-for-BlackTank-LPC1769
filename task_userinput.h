@@ -10,7 +10,7 @@
 
 #include "target_test.h"
 
-#define TSKPRI_USERINPUT    12
+#define TSKPRI_USERINPUT    14
 #define TSKSTK_USERINPUT    STACK_SIZE
 
 #ifndef TOPPERS_MACRO_ONLY
