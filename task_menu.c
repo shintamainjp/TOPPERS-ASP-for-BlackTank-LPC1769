@@ -56,7 +56,7 @@ void page_top(void)
 void page_100(void)
 {
     if (life == 0) {
-        DISP_CLEAR(0xFF, 0x00, 0x00);
+        DISP_CLEAR(0x00, 0x00, 0x00);
         DISP_MENUTAG("110", "120", "130", "140");
     }
 }
@@ -64,7 +64,7 @@ void page_100(void)
 void page_200(void)
 {
     if (life == 0) {
-        DISP_CLEAR(0x00, 0xFF, 0x00);
+        DISP_CLEAR(0x00, 0x00, 0x00);
         DISP_MENUTAG("210", "220", "230", "240");
     }
 }
@@ -72,7 +72,7 @@ void page_200(void)
 void page_300(void)
 {
     if (life == 0) {
-        DISP_CLEAR(0x00, 0x00, 0xFF);
+        DISP_CLEAR(0x00, 0x00, 0x00);
         DISP_MENUTAG("310", "320", "330", "340");
     }
 }
@@ -88,10 +88,10 @@ void page_400(void)
 static const menu_t menu[6] = {
     {PAGE_SPLASH, {PAGE_TOP, PAGE_TOP, PAGE_TOP, PAGE_TOP}, page_splash},
     {PAGE_TOP, {PAGE_100, PAGE_200, PAGE_300, PAGE_400}, page_top},
-    {PAGE_100, {PAGE_100, PAGE_200, PAGE_300, PAGE_400}, page_100},
-    {PAGE_200, {PAGE_100, PAGE_200, PAGE_300, PAGE_400}, page_200},
-    {PAGE_300, {PAGE_100, PAGE_200, PAGE_300, PAGE_400}, page_300},
-    {PAGE_400, {PAGE_100, PAGE_200, PAGE_300, PAGE_400}, page_400}
+    {PAGE_100, {PAGE_TOP, PAGE_TOP, PAGE_TOP, PAGE_TOP}, page_100},
+    {PAGE_200, {PAGE_TOP, PAGE_TOP, PAGE_TOP, PAGE_TOP}, page_200},
+    {PAGE_300, {PAGE_TOP, PAGE_TOP, PAGE_TOP, PAGE_TOP}, page_300},
+    {PAGE_400, {PAGE_TOP, PAGE_TOP, PAGE_TOP, PAGE_TOP}, page_400}
 };
 
 void execute_pagefunc(PAGEID page)
