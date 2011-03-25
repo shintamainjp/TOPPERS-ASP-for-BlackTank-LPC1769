@@ -58,7 +58,8 @@ svc_perror(const char *file, int_t line, const char *expr, ER ercd)
  * \brief サービスコールのエラー出力マクロ
  * \param expr サービスコールの式
  * \details
- * exprとして与えたサービスコールのソースコード上の表現とその実行結果を印字する。
+ * exprとして与えたサービスコールのソースコード上の表現と
+ * その実行結果を印字する。
  * サービスコールに限らず値を持つ式ならなんでもよい。
  */
 #define	SVC_PERROR(expr) svc_perror(__FILE__, __LINE__, #expr, (expr))
@@ -66,12 +67,14 @@ svc_perror(const char *file, int_t line, const char *expr, ER ercd)
 /**
  * \brief DMAハンドラ
  * \details
- *  このハンドラは全DMAに対して共通に呼ばれる．
+ * このハンドラは全DMAに対して共通に呼ばれる．
  *
- *  呼ばれると、DMAのバッファ終了割り込みステータスを確認する。それがI2S DMAバッファの
- *  終了割り込みなら、割り込みをクリアしてタスクに通知する。
- *  \todo
- * DMAチャンネルの番号は決め打ちである。適切なDMA管理機構を使った方式への変更が必要である。
+ * 呼ばれると、DMAのバッファ終了割り込みステータスを確認する。
+ * それがI2S DMAバッファの終了割り込みなら、割り込みをクリアして
+ * タスクに通知する。
+ * \todo
+ * DMAチャンネルの番号は決め打ちである。
+ * 適切なDMA管理機構を使った方式への変更が必要である。
  */
 void dma_intr_handler(intptr_t exinf)
 {
@@ -81,7 +84,8 @@ void dma_intr_handler(intptr_t exinf)
 /**
  * \brief I2S用データ
  * \details
- * DMAのLLIやバッファなどはすべてこの変数にパッケージしている。こうすることで、グローバル空間に名前が散らかることを阻止できる。
+ * DMAのLLIやバッファなどはすべてこの変数にパッケージしている。
+ * こうすることで、グローバル空間に名前が散らかることを阻止できる。
  */
 static struct I2S_AUDIO_DATA audio_data;
 
@@ -108,8 +112,8 @@ void task_audio(intptr_t exinf)
         rxbuf = i2s_getRxBuf();
 
         index = 0;
-        for ( sample=0; sample<AUDIOBUFSIZE/2; sample++) {
-            for ( ch=0; ch<2; ch++) {
+        for (sample = 0; sample < AUDIOBUFSIZE / 2; sample++) {
+            for (ch = 0; ch < 2; ch++) {
                 audio_data.inputBuffer[ch][sample] = rxbuf[index++];
             }
         }
@@ -118,11 +122,52 @@ void task_audio(intptr_t exinf)
                 audio_data.outputBuffer,
                 AUDIOBUFSIZE/2);
         index = 0;
-        for ( sample=0; sample<AUDIOBUFSIZE/2; sample++) {
-            for ( ch=0; ch<2; ch++) {
+        for (sample = 0; sample < AUDIOBUFSIZE / 2; sample++) {
+            for (ch = 0; ch < 2; ch++) {
                 txbuf[index++] = audio_data.outputBuffer[ch][sample];
             }
         }
+
+#if 0
+        /*
+         * サンプルの頭の値だけを抜き出してディスプレイタスクに
+         * オーディオレベルメータを要求する手抜きレベルメータ。
+         */
+        int level_l = audio_data.outputBuffer[LCH][0] >> 16;
+        int level_r = audio_data.outputBuffer[RCH][0] >> 16;
+        static const int METER_WIDTH = 96;
+        static const int METER_HEIGHT = 2;
+        static int divcnt = 0;
+        divcnt++;
+        if ((divcnt % 128) == 0) {
+            if ((0 < level_l) && (level_l < METER_WIDTH)) {
+                DISP_FILLBOX(
+                        0, 0,
+                        METER_WIDTH - 1, METER_HEIGHT - 1,
+                        0x00, 0x00, 0x00,
+                        0x00, 0x00, 0x00);
+                DISP_FILLBOX(
+                        0, 0,
+                        level_l, METER_HEIGHT - 1,
+                        0xFF, 0xFF, 0xFF,
+                        0xFF, 0xFF, 0xFF);
+            }
+        }
+        if ((divcnt % 128) == 64) {
+            if ((0 < level_r) && (level_r < METER_WIDTH)) {
+                DISP_FILLBOX(
+                        0, METER_HEIGHT,
+                        METER_WIDTH - 1, (METER_HEIGHT * 2) - 1,
+                        0x00, 0x00, 0x00,
+                        0x00, 0x00, 0x00);
+                DISP_FILLBOX(
+                        0, 0,
+                        level_r, (METER_HEIGHT * 2) - 1,
+                        0xFF, 0xFF, 0xFF,
+                        0xFF, 0xFF, 0xFF);
+            }
+        }
+#endif
 
         // 同期状態を示すためのテストピン信号を作成する
         testpin_tp2_toggle();

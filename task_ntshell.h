@@ -16,7 +16,7 @@
  *  各タスクの優先度の定義
  */
 
-#define TSKPRI_NTSHELL    12
+#define TSKPRI_NTSHELL    14
 #define TSKSTK_NTSHELL    STACK_SIZE
 
 /*

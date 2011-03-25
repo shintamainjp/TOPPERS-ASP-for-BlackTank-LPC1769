@@ -8,7 +8,7 @@
 #ifndef TASK_SPLASH_H
 #define TASK_SPLASH_H
 
-#define TSKPRI_SPLASH 13
+#define TSKPRI_SPLASH 12
 #define TSKSTK_SPLASH STACK_SIZE
 
 void task_splash(intptr_t exinf);

@@ -371,8 +371,6 @@ void cmd_bmpfile(display_bmpfile_t *p)
     bmp_info_t bmpinfo;
     bmp_rgbquad_t bmprgbquad;
 
-    syslog(LOG_NOTICE, "[%s] filename is %s", __func__, p->filename);
-
     int a = f_mount(0, &fatfs[0]);
     int b = f_opendir(&dir, "");
     if ((a == 0) && (b == 0)) {

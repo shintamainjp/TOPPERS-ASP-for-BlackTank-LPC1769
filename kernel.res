@@ -47,7 +47,7 @@
 			{
 				"id"    :3,
 				"atr"   :"TA_ACT",
-				"pri"   :10,
+				"pri"   :12,
 				"exinf" :"0",
 				"task"  :"task_led",
 				"stksz" :1024,
@@ -61,7 +61,7 @@
 			{
 				"id"    :4,
 				"atr"   :"TA_ACT",
-				"pri"   :12,
+				"pri"   :14,
 				"exinf" :"0",
 				"task"  :"task_ntshell",
 				"stksz" :1024,
@@ -75,7 +75,7 @@
 			{
 				"id"    :5,
 				"atr"   :"TA_ACT",
-				"pri"   :13,
+				"pri"   :12,
 				"exinf" :"0",
 				"task"  :"task_splash",
 				"stksz" :1024,
@@ -103,10 +103,10 @@
 			{
 				"id"    :7,
 				"atr"   :"0",
-				"pri"   :9,
+				"pri"   :8,
 				"exinf" :"0",
 				"task"  :"task_audio",
-				"stksz" :1024,
+				"stksz" :2048,
 				"stk"   :"NULL",
 				"state" :"DORMANT"
 			}

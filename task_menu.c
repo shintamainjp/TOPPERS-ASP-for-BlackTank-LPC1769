@@ -165,8 +165,6 @@ void task_menu(intptr_t exinf)
                         XOFS + ch * 20 + 10, YOFS + MAXVAL,
                         0xFF, 0xFF, 0xFF,
                         0xFF, 0xFF, 0xFF);
-                syslog(LOG_NOTICE, "%d device is %d",
-                        MSG_DEVICE(msg), MSG_VALUE(msg));
             }
         }
         tslp_tsk(100);
