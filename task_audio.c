@@ -128,44 +128,17 @@ void task_audio(intptr_t exinf)
             }
         }
 
-#if 0
+#if 1
         /*
          * サンプルの頭の値だけを抜き出してディスプレイタスクに
          * オーディオレベルメータを要求する手抜きレベルメータ。
          */
-        int level_l = audio_data.outputBuffer[LCH][0] >> 16;
-        int level_r = audio_data.outputBuffer[RCH][0] >> 16;
-        static const int METER_WIDTH = 96;
-        static const int METER_HEIGHT = 2;
+        int level_l = audio_data.outputBuffer[LCH][0];
+        int level_r = audio_data.outputBuffer[RCH][0];
         static int divcnt = 0;
         divcnt++;
-        if ((divcnt % 128) == 0) {
-            if ((0 < level_l) && (level_l < METER_WIDTH)) {
-                DISP_FILLBOX(
-                        0, 0,
-                        METER_WIDTH - 1, METER_HEIGHT - 1,
-                        0x00, 0x00, 0x00,
-                        0x00, 0x00, 0x00);
-                DISP_FILLBOX(
-                        0, 0,
-                        level_l, METER_HEIGHT - 1,
-                        0xFF, 0xFF, 0xFF,
-                        0xFF, 0xFF, 0xFF);
-            }
-        }
-        if ((divcnt % 128) == 64) {
-            if ((0 < level_r) && (level_r < METER_WIDTH)) {
-                DISP_FILLBOX(
-                        0, METER_HEIGHT,
-                        METER_WIDTH - 1, (METER_HEIGHT * 2) - 1,
-                        0x00, 0x00, 0x00,
-                        0x00, 0x00, 0x00);
-                DISP_FILLBOX(
-                        0, 0,
-                        level_r, (METER_HEIGHT * 2) - 1,
-                        0xFF, 0xFF, 0xFF,
-                        0xFF, 0xFF, 0xFF);
-            }
+        if ((divcnt % 64) == 0) {
+            DISP_AUDIO_LEVELMETER(level_l, level_r);
         }
 #endif
 

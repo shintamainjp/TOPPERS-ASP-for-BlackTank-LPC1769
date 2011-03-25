@@ -25,6 +25,7 @@
 #define DISPLAY_CMD_FILLBOX 3
 #define DISPLAY_CMD_TEXT 4
 #define DISPLAY_CMD_BMPFILE 5
+#define DISPLAY_CMD_AUDIO_LEVELMETER 6
 
 typedef struct {
     T_MSG header;
@@ -84,6 +85,11 @@ typedef struct {
     char filename[32];
 } display_bmpfile_t;
 
+typedef struct {
+    int left;
+    int right;
+} display_audio_levelmeter_t;
+
 void disp_clear(const uint8_t r, const uint8_t g, const uint8_t b);
 void disp_line(
         const uint8_t x1,
@@ -120,6 +126,7 @@ void disp_text(
         const uint8_t b,
         const char *text);
 void disp_bmpfile(const char *filename);
+void disp_audio_levelmeter(const int left, const int right);
 
 #define DISP_CLEAR(R,G,B) \
     disp_clear((R),(G),(B))
@@ -133,6 +140,8 @@ void disp_bmpfile(const char *filename);
     disp_text((X),(Y),(R),(G),(B),(TEXT))
 #define DISP_BMPFILE(FN) \
     disp_bmpfile((FN))
+#define DISP_AUDIO_LEVELMETER(L,R) \
+    disp_audio_levelmeter((L),(R))
 
 #ifndef TOPPERS_MACRO_ONLY
 

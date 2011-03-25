@@ -118,6 +118,7 @@ display_box_t param_box;
 display_fillbox_t param_fillbox;
 display_text_t param_text;
 display_bmpfile_t param_bmpfile;
+display_audio_levelmeter_t param_audio_levelmeter;
 
 void disp_clear(const uint8_t r, const uint8_t g, const uint8_t b)
 {
@@ -252,6 +253,17 @@ void disp_bmpfile(const char *filename)
     }
     param_bmpfile.filename[i] = '\0';
     ((display_msg_t*)vp)->param = &param_bmpfile;
+    snd_mbx(MBX_DISPLAY, vp);
+}
+
+void disp_audio_levelmeter(const int left, const int right)
+{
+    VP vp;
+    get_mpf(MPF_DISPLAY, &vp);
+    ((display_msg_t*)vp)->cmd = DISPLAY_CMD_AUDIO_LEVELMETER;
+    param_audio_levelmeter.left = left;
+    param_audio_levelmeter.right = right;
+    ((display_msg_t*)vp)->param = &param_audio_levelmeter;
     snd_mbx(MBX_DISPLAY, vp);
 }
 
@@ -396,6 +408,40 @@ void cmd_bmpfile(display_bmpfile_t *p)
     }
 }
 
+void cmd_audio_levelmeter(display_audio_levelmeter_t *p)
+{
+    Color c1, c2;
+    c1.r = 0xFF;
+    c1.g = 0xFF;
+    c1.b = 0xFF;
+    c2.r = 0x00;
+    c2.g = 0x00;
+    c2.b = 0x00;
+
+    static const int LVW = OLED_X;
+    static const int LVH = 2;
+
+    int PL = (p->left ) >> 16;
+    int PR = (p->right) >> 16;
+
+    if (PL < 0) {
+        PL = 0;
+    }
+    if (PR < 0) {
+        PR = 0;
+    }
+    if (LVW <= PL) {
+        PL = LVW - 1;
+    }
+    if (LVW <= PR) {
+        PR = LVW - 1;
+    }
+
+    oled_fill_box(0, 0, OLED_X - 1, (LVH * 2) - 1, c2, c2);
+    oled_fill_box(0, 0, PL, 0 + LVH - 1, c1, c1);
+    oled_fill_box(0, LVH, PR, LVH + LVH - 1, c1, c1);
+}
+
 void task_display(intptr_t exinf)
 {
     display_msg_t *p;
@@ -426,6 +472,9 @@ void task_display(intptr_t exinf)
                     break;
                 case DISPLAY_CMD_BMPFILE:
                     cmd_bmpfile((display_bmpfile_t *)param);
+                    break;
+                case DISPLAY_CMD_AUDIO_LEVELMETER:
+                    cmd_audio_levelmeter((display_audio_levelmeter_t *)param);
                     break;
                 default:
                     syslog(LOG_NOTICE, "Unknown command number %d.", cmd);

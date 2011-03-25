@@ -96,11 +96,13 @@
 
  ディスプレイの制御は以下のマクロを使って行うことができます。
 
- DISP_CLEAR(r, g, b);
- DISP_LINE(x1, y1, x2, y2, r, g, b);
- DISP_BOX(x1, y1, x2, y2, r, g, b);
- DISP_FILLBOX(x1, y1, x2, y2, r1, g1, b1, r2, g2, b2);
- DISP_TEXT(x, y, r, g, b, "text");
+ DISP_CLEAR(R, G, B);
+ DISP_LINE(X1, Y1, X2, Y2, R, G, B);
+ DISP_BOX(X1, Y1, X2, Y2, R, G, B);
+ DISP_FILLBOX(X1, Y1, X2, Y2, R1, G1, B1, R2, G2, B2);
+ DISP_TEXT(X, Y, R, G, B, "TEXT");
+ DISP_BMPFILE("0:FILENAME");
+ DISP_AUDIO_LEVELMETER(L, R);
 
  タスク間はメールボックスでやりとりされます。
  マクロはこれを隠蔽した実装としました。
