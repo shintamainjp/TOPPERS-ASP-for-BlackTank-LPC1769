@@ -91,50 +91,14 @@
 #define DEFAULT_ISTKSZ			(2048)
 #endif
 
-
-
 #ifndef TOPPERS_MACRO_ONLY
-
-/**
- * @brief PLLのクロックソース。 initPLL0に渡して使う。
- */
-typedef enum { eIrc, eMainOsc, eRtcOsc} pllClockSource_type;
-
-/**
- * @param clkSrc PLLのソースとなるクロック。eIrc, eMainOsc, eRtcOscのうち一つを指定する。
- * @param isMainOsc20MHzMore メイン発振器の周波数が20MHz以上なら真を渡す
- * @param M 逓倍比を決める整数。6から512が許される。
- * @param N PLLのリファレンス入力の分周比を決める整数。1から32が許される
- * @param cpuClkDiv PLLの出力の分周器。1/cpuClkDivになる。0,1,2は禁止。
- * @details
- * PLL0の周波数を設定する。クロックソースとなる発振器、その周波数、PLLのデバイダ、PLL後のデバイダを
- * 指定する。生成するクロックの周波数は以下の通りとなる。CCLKがCPUのコアクロックである。
- * @code
- * PLLCLK = (2 × M × FIN) / N
- * CCLK = PLLCLK / cpuClkDiv
- * @endcode
- * LPC1768のPLLに関しては次のような物理上限値がNXPによって定められている
- * - 入力は32kHz - 50MHz (UM10360, section 5.1)
- * - PLL出力は 275MHz - 550MHz (同上)
- * - CCLKは最大100MHz (データシート)
- *
- * このプログラムはNXP社のCMSIS中のルーチンをコピーし、改良したものである。
- */
-extern void initPLL0(
-		pllClockSource_type 	clkSrc,
-		unsigned int 			isMainOsc20MHzMore,
-		unsigned int			N,
-		unsigned int			M,
-		unsigned int			cpuClkDiv
-	);
-
 
 /**
  *  \brief チップ依存の初期化
  *  \details
  *  この館数はtarget_initializeから呼ぶことを前提としている。
  */
-extern void	chip_initialize(void);
+extern void chip_initialize(void);
 
 /**
  * \brief チップの終了処理
@@ -142,7 +106,7 @@ extern void	chip_initialize(void);
  *  システムを終了する時に使う．この関数はtarget_exit()から
  *  呼ぶことを前提としており、prc_terminate()を呼び、処理が終了すると制御を戻す。
  */
-extern void	chip_exit(void);
+extern void chip_exit(void);
 
 /**
  * \brief システムログの低レベル出力のための文字出力

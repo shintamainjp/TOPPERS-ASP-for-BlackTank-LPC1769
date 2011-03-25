@@ -27,25 +27,11 @@
 				"state" :"RUNNABLE"
 			}
 		},
-		"TASK_MENU":{
-			"Type":"Task",
-			"Attributes":
-			{
-				"id"    :2,
-				"atr"   :"TA_ACT",
-				"pri"   :11,
-				"exinf" :"0",
-				"task"  :"task_menu",
-				"stksz" :1024,
-				"stk"   :"NULL",
-				"state" :"RUNNABLE"
-			}
-		},
 		"TASK_DISPLAY":{
 			"Type":"Task",
 			"Attributes":
 			{
-				"id"    :3,
+				"id"    :2,
 				"atr"   :"TA_ACT",
 				"pri"   :12,
 				"exinf" :"0",
@@ -55,25 +41,11 @@
 				"state" :"RUNNABLE"
 			}
 		},
-		"TASK_USERINPUT":{
-			"Type":"Task",
-			"Attributes":
-			{
-				"id"    :4,
-				"atr"   :"TA_ACT",
-				"pri"   :12,
-				"exinf" :"0",
-				"task"  :"task_userinput",
-				"stksz" :1024,
-				"stk"   :"NULL",
-				"state" :"RUNNABLE"
-			}
-		},
 		"TASK_LED":{
 			"Type":"Task",
 			"Attributes":
 			{
-				"id"    :5,
+				"id"    :3,
 				"atr"   :"TA_ACT",
 				"pri"   :10,
 				"exinf" :"0",
@@ -87,7 +59,7 @@
 			"Type":"Task",
 			"Attributes":
 			{
-				"id"    :6,
+				"id"    :4,
 				"atr"   :"TA_ACT",
 				"pri"   :12,
 				"exinf" :"0",
@@ -97,25 +69,67 @@
 				"state" :"RUNNABLE"
 			}
 		},
-		"TASK_AUDIO_INIT":{
+		"TASK_SPLASH":{
+			"Type":"Task",
+			"Attributes":
+			{
+				"id"    :5,
+				"atr"   :"TA_ACT",
+				"pri"   :13,
+				"exinf" :"0",
+				"task"  :"task_splash",
+				"stksz" :1024,
+				"stk"   :"NULL",
+				"state" :"RUNNABLE"
+			}
+		},
+		"TASK_USERINPUT":{
+			"Type":"Task",
+			"Attributes":
+			{
+				"id"    :6,
+				"atr"   :"0",
+				"pri"   :12,
+				"exinf" :"0",
+				"task"  :"task_userinput",
+				"stksz" :1024,
+				"stk"   :"NULL",
+				"state" :"DORMANT"
+			}
+		},
+		"TASK_MENU":{
 			"Type":"Task",
 			"Attributes":
 			{
 				"id"    :7,
-				"atr"   :"TA_ACT",
+				"atr"   :"0",
+				"pri"   :11,
+				"exinf" :"0",
+				"task"  :"task_menu",
+				"stksz" :1024,
+				"stk"   :"NULL",
+				"state" :"DORMANT"
+			}
+		},
+		"TASK_AUDIO_INIT":{
+			"Type":"Task",
+			"Attributes":
+			{
+				"id"    :8,
+				"atr"   :"0",
 				"pri"   :13,
 				"exinf" :"0",
 				"task"  :"task_audio_init",
 				"stksz" :1024,
 				"stk"   :"NULL",
-				"state" :"RUNNABLE"
+				"state" :"DORMANT"
 			}
 		},
 		"TASK_AUDIO":{
 			"Type":"Task",
 			"Attributes":
 			{
-				"id"    :8,
+				"id"    :9,
 				"atr"   :"0",
 				"pri"   :9,
 				"exinf" :"0",

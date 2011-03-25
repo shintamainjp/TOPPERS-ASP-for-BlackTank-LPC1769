@@ -54,76 +54,29 @@
 #include "target_serial.h"
 #include "target_syssvc.h"
 
-
-
 void chip_initialize(void)
 {
-
-	/*
-	 *  プロセッサ依存部の初期化
-	 */
-	prc_initialize();
-
-}
-
-extern void initPLL0(
-		pllClockSource_type 	clkSrc,
-		unsigned int 			isMainOsc20MHzMore,
-		unsigned int			N,
-		unsigned int			M,
-		unsigned int			cpuClkDiv
-	)
-{
-
-	if ( clkSrc == eMainOsc )
-	{
-			// メインオシレータを使う場合には、周波数レンジに応じてSCSの設定を変える。
-		if ( isMainOsc20MHzMore )
-			LPC_SC->SCS = 1<<5;
-		else
-			LPC_SC->SCS = 1<<5 | 1<<4;
-
-		while
-			((LPC_SC->SCS & (1<<6)) == 0);	/* 発振器の準備が整うまで待つ   */
-	}
-
-	LPC_SC->CCLKCFG   = cpuClkDiv-1;      	/* CPUクロックデバイダの設定    */
-	LPC_SC->CLKSRCSEL = clkSrc;    			/* PLLに入力するクロック源の設定   */
-
-	LPC_SC->PLL0CFG   = (N-1) <<16 | (M-1); /* 分周比と低倍比の設定 */
-	LPC_SC->PLL0FEED  = 0xAA;
-	LPC_SC->PLL0FEED  = 0x55;
-
-	LPC_SC->PLL0CON   = 0x01;             	/* PLL0 イネーブル   */
-	LPC_SC->PLL0FEED  = 0xAA;
-	LPC_SC->PLL0FEED  = 0x55;
-	while
-	  (!(LPC_SC->PLL0STAT & (1<<26)));		/* PLLの準備が整うまで待つ  */
-
-	LPC_SC->PLL0CON   = 0x03;             /* PLL0 をクロックとして使う  */
-	LPC_SC->PLL0FEED  = 0xAA;
-	LPC_SC->PLL0FEED  = 0x55;
-	while
-	  (!(LPC_SC->PLL0STAT & ((1<<25) | (1<<24))));/* PLLの準備が整うまで待つ */
-
-
+    /*
+     *  プロセッサ依存部の初期化
+     */
+    prc_initialize();
 }
 
 void chip_exit(void)
 {
-	/* チップ依存部の終了処理 */
-	prc_terminate();
+    /* チップ依存部の終了処理 */
+    prc_terminate();
 }
-
-
 
 void chip_fput_log(char_t c)
 {
-	/*　Newlineなら、CRも追加する */
-	if (c == '\n') {
-		sio_pol_snd_chr('\r', SIO_PORTID);
-	}
-	sio_pol_snd_chr(c, SIO_PORTID);
+    /*
+     * Newlineなら、CRも追加する
+     */
+    if (c == '\n') {
+        sio_pol_snd_chr('\r', SIO_PORTID);
+    }
+    sio_pol_snd_chr(c, SIO_PORTID);
 }
 
 /**
@@ -131,16 +84,15 @@ void chip_fput_log(char_t c)
  * \details
  * メモリ初期化の前に呼び出される
  * CCRのSTKALIGNビットをクリアする
- * このビットはCORTEX-M3コアがR1からR2に変化する過程で"1"に変更された。クリアしないと
- * TOPPERS/ASPはクラッシュする。
+ * このビットはCORTEX-M3コアがR1からR2に変化する過程で"1"に変更された。
+ * クリアしないとTOPPERS/ASPはクラッシュする。
  */
 void hardware_init_hook()
 {
-	SCB->CCR &= ~SCB_CCR_STKALIGN_Msk;
+    SCB->CCR &= ~SCB_CCR_STKALIGN_Msk;
 }
 
 /**
  * \}
  */
-
 

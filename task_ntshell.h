@@ -17,6 +17,7 @@
  */
 
 #define TSKPRI_NTSHELL    12
+#define TSKSTK_NTSHELL    STACK_SIZE
 
 /*
  *  関数のプロトタイプ宣言

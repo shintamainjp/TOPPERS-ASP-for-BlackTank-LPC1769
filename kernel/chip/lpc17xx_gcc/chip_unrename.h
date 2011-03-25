@@ -6,7 +6,6 @@
 
 
 #undef chip_initialize
-#undef initPLL0
 #undef chip_exit
 #undef chip_fput_log
 
@@ -14,7 +13,6 @@
 
 
 #undef _chip_initialize
-#undef _initPLL0
 #undef _chip_exit
 #undef _chip_fput_log
 

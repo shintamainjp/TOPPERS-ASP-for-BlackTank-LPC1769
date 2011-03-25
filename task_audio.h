@@ -16,6 +16,7 @@
 #include "i2s_subsystem.h"
 
 #define TSKPRI_AUDIO 9
+#define TSKSTK_AUDIO STACK_SIZE
 
 void task_audio(intptr_t exinf);
 void dma_intr_handler(intptr_t exinf);

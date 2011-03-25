@@ -17,6 +17,7 @@
 #include "target_test.h"
 
 #define TSKPRI_DISPLAY    12
+#define TSKSTK_DISPLAY    STACK_SIZE
 
 #define DISPLAY_CMD_CLEAR 0
 #define DISPLAY_CMD_LINE 1
@@ -130,8 +131,8 @@ void disp_bmpfile(const char *filename);
     disp_fillbox((X1),(Y1),(X2),(Y2),(R1),(G1),(B1),(R2),(G2),(B2))
 #define DISP_TEXT(X,Y,R,G,B,TEXT) \
     disp_text((X),(Y),(R),(G),(B),(TEXT))
-#define DISP_BMPFILE(FILENAME) \
-    disp_bmpfile((FILENAME))
+#define DISP_BMPFILE(FN) \
+    disp_bmpfile((FN))
 
 #ifndef TOPPERS_MACRO_ONLY
 

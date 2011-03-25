@@ -1,5 +1,5 @@
 /**
- * \file app_init.c
+ * \file sys_init.c
  * \brief アプリケーションに関連する初期化用ファイル。
  */
 
@@ -8,7 +8,7 @@
 #include <t_syslog.h>
 
 #include "kernel_cfg.h"
-#include "app_init.h"
+#include "sys_init.h"
 
 /**
  * \brief 初期化ルーチン
@@ -18,7 +18,7 @@
  * この関数はapplication.cfgのなかで、ATT_INIにより、
  * システムに初期化関数として登録される。
  */
-void app_init(intptr_t exinf)
+void sys_init(intptr_t exinf)
 {
 }
 

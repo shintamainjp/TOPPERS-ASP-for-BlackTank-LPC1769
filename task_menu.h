@@ -11,6 +11,7 @@
 #include "target_test.h"
 
 #define TSKPRI_MENU    11
+#define TSKSTK_MENU    STACK_SIZE
 
 #ifndef TOPPERS_MACRO_ONLY
 

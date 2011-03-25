@@ -151,7 +151,7 @@ APPLDIR =
 APPL_CFG = $(APPLNAME).cfg
 
 DIR_TASK = task
-MYOBJS = app_init.o \
+MYOBJS = sys_init.o \
 	 \
 	 vtparse.o \
 	 vtparse_table.o \
@@ -174,9 +174,10 @@ MYOBJS = app_init.o \
 	 task_userinput.o \
 	 task_display.o \
 	 task_menu.o \
-	 \
 	 task_audio_init.o \
 	 task_audio.o \
+	 task_splash.o \
+	 \
 	 audio_effect.o \
 	 i2s_subsystem.o \
 	 codec_subsystem.o \

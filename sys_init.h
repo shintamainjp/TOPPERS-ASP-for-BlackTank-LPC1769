@@ -3,8 +3,8 @@
  * @brief アプリケーション用インクルードファイル。
  * コンフィギュレータも読み込む。
  */
-#ifndef _APP_INIT_H_
-#define _APP_INIT_H_
+#ifndef _SYS_INIT_H_
+#define _SYS_INIT_H_
 
 /*
  *  ターゲット依存の定義
@@ -16,9 +16,9 @@
  */
 #ifndef TOPPERS_MACRO_ONLY
 
-void app_init(intptr_t exinf);
+void sys_init(intptr_t exinf);
 
 #endif /* TOPPERS_MACRO_ONLY */
 
-#endif /* _APP_INIT_H_ */
+#endif /* _SYS_INIT_H_ */
 

@@ -112,16 +112,22 @@ static const uint8_t font5x7_data[] = {
     0x08, 0x1C, 0x2A, 0x08, 0x08  // <-
 };
 
+display_clear_t param_clear;
+display_line_t param_line;
+display_box_t param_box;
+display_fillbox_t param_fillbox;
+display_text_t param_text;
+display_bmpfile_t param_bmpfile;
+
 void disp_clear(const uint8_t r, const uint8_t g, const uint8_t b)
 {
     VP vp;
-    display_clear_t param;
     get_mpf(MPF_DISPLAY, &vp);
     ((display_msg_t*)vp)->cmd = DISPLAY_CMD_CLEAR;
-    param.r = r;
-    param.g = g;
-    param.b = b;
-    ((display_msg_t*)vp)->param = &param;
+    param_clear.r = r;
+    param_clear.g = g;
+    param_clear.b = b;
+    ((display_msg_t*)vp)->param = &param_clear;
     snd_mbx(MBX_DISPLAY, vp);
 }
 
@@ -135,17 +141,16 @@ void disp_line(
         const uint8_t b)
 {
     VP vp;
-    display_line_t param;
     get_mpf(MPF_DISPLAY, &vp);
     ((display_msg_t*)vp)->cmd = DISPLAY_CMD_LINE;
-    param.x1 = x1;
-    param.y1 = y1;
-    param.x2 = x2;
-    param.y2 = y2;
-    param.r = r;
-    param.g = g;
-    param.b = b;
-    ((display_msg_t*)vp)->param = &param;
+    param_line.x1 = x1;
+    param_line.y1 = y1;
+    param_line.x2 = x2;
+    param_line.y2 = y2;
+    param_line.r = r;
+    param_line.g = g;
+    param_line.b = b;
+    ((display_msg_t*)vp)->param = &param_line;
     snd_mbx(MBX_DISPLAY, vp);
 }
 
@@ -159,17 +164,16 @@ void disp_box(
         const uint8_t b)
 {
     VP vp;
-    display_box_t param;
     get_mpf(MPF_DISPLAY, &vp);
     ((display_msg_t*)vp)->cmd = DISPLAY_CMD_BOX;
-    param.x1 = x1;
-    param.y1 = y1;
-    param.x2 = x2;
-    param.y2 = y2;
-    param.r = r;
-    param.g = g;
-    param.b = b;
-    ((display_msg_t*)vp)->param = &param;
+    param_box.x1 = x1;
+    param_box.y1 = y1;
+    param_box.x2 = x2;
+    param_box.y2 = y2;
+    param_box.r = r;
+    param_box.g = g;
+    param_box.b = b;
+    ((display_msg_t*)vp)->param = &param_box;
     snd_mbx(MBX_DISPLAY, vp);
 }
 
@@ -186,20 +190,19 @@ void disp_fillbox(
         const uint8_t b2)
 {
     VP vp;
-    display_fillbox_t param;
     get_mpf(MPF_DISPLAY, &vp);
     ((display_msg_t*)vp)->cmd = DISPLAY_CMD_FILLBOX;
-    param.x1 = x1;
-    param.y1 = y1;
-    param.x2 = x2;
-    param.y2 = y2;
-    param.r1 = r1;
-    param.g1 = g1;
-    param.b1 = b1;
-    param.r2 = r2;
-    param.g2 = g2;
-    param.b2 = b2;
-    ((display_msg_t*)vp)->param = &param;
+    param_fillbox.x1 = x1;
+    param_fillbox.y1 = y1;
+    param_fillbox.x2 = x2;
+    param_fillbox.y2 = y2;
+    param_fillbox.r1 = r1;
+    param_fillbox.g1 = g1;
+    param_fillbox.b1 = b1;
+    param_fillbox.r2 = r2;
+    param_fillbox.g2 = g2;
+    param_fillbox.b2 = b2;
+    ((display_msg_t*)vp)->param = &param_fillbox;
     snd_mbx(MBX_DISPLAY, vp);
 }
 
@@ -214,23 +217,22 @@ void disp_text(
     int i;
     const char *strp;
     VP vp;
-    display_text_t param;
     get_mpf(MPF_DISPLAY, &vp);
     ((display_msg_t*)vp)->cmd = DISPLAY_CMD_TEXT;
-    param.x = x;
-    param.y = y;
-    param.r = r;
-    param.g = g;
-    param.b = b;
+    param_text.x = x;
+    param_text.y = y;
+    param_text.r = r;
+    param_text.g = g;
+    param_text.b = b;
     strp = text;
     i = 0;
     while (*strp) {
-        param.text[i] = *strp;
+        param_text.text[i] = *strp;
         i++;
         strp++;
     }
-    param.text[i] = '\0';
-    ((display_msg_t*)vp)->param = &param;
+    param_text.text[i] = '\0';
+    ((display_msg_t*)vp)->param = &param_text;
     snd_mbx(MBX_DISPLAY, vp);
 }
 
@@ -239,25 +241,24 @@ void disp_bmpfile(const char *filename)
     int i;
     const char *strp;
     VP vp;
-    display_bmpfile_t param;
     get_mpf(MPF_DISPLAY, &vp);
     ((display_msg_t*)vp)->cmd = DISPLAY_CMD_BMPFILE;
     strp = filename;
     i = 0;
     while (*strp) {
-        param.filename[i] = *strp;
+        param_bmpfile.filename[i] = *strp;
         i++;
         strp++;
     }
-    param.filename[i] = '\0';
-    ((display_msg_t*)vp)->param = &param;
+    param_bmpfile.filename[i] = '\0';
+    ((display_msg_t*)vp)->param = &param_bmpfile;
     snd_mbx(MBX_DISPLAY, vp);
 }
 
 void cmd_clear(display_clear_t *p)
 {
-Color c;
-c.r = p->r;
+    Color c;
+    c.r = p->r;
     c.g = p->g;
     c.b = p->b;
 
@@ -344,9 +345,6 @@ FATFS fatfs[_VOLUMES];
 DIR dir;
 FIL fil;
 FILINFO filinfo;
-bmp_file_t bmpfile;
-bmp_info_t bmpinfo;
-bmp_rgbquad_t bmprgbquad;
 
 int ff_getc(void)
 {
@@ -369,10 +367,17 @@ void dispfunc(int x, int y, int r, int g, int b)
 
 void cmd_bmpfile(display_bmpfile_t *p)
 {
+    bmp_file_t bmpfile;
+    bmp_info_t bmpinfo;
+    bmp_rgbquad_t bmprgbquad;
+
+    syslog(LOG_NOTICE, "[%s] filename is %s", __func__, p->filename);
+
     int a = f_mount(0, &fatfs[0]);
     int b = f_opendir(&dir, "");
     if ((a == 0) && (b == 0)) {
-        if (f_open(&fil, p->filename, FA_READ) == FR_OK) {
+        FRESULT res = f_open(&fil, p->filename, FA_OPEN_EXISTING|FA_READ);
+        if (res == FR_OK) {
             bmplowio_header_read(ff_getc, &bmpfile, &bmpinfo);
             if (have_palette(&bmpinfo)) {
                 bmplowio_palette_read(
@@ -386,7 +391,7 @@ void cmd_bmpfile(display_bmpfile_t *p)
                     &bmpinfo,
                     dispfunc);
         } else {
-            syslog(LOG_NOTICE, "open failed.");
+            syslog(LOG_NOTICE, "file open failed.(%d)", res);
         }
     } else {
         syslog(LOG_NOTICE, "mount failed.");

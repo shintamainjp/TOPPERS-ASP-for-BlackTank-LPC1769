@@ -18,17 +18,6 @@
 
 void task_audio_init(intptr_t exinf)
 {
-    tslp_tsk(500);
-    DISP_CLEAR(0x00, 0x00, 0x00);
-    tslp_tsk(500);
-    DISP_TEXT(0, 10 * 0, 0xFF, 0xFF, 0xFF, "Special thanks to");
-    tslp_tsk(500);
-    DISP_TEXT(30, 10 * 1, 0xFF, 0xFF, 0xFF, "Mr. Takemasa Nakamura");
-    tslp_tsk(500);
-    DISP_TEXT(30, 10 * 2, 0xFF, 0xFF, 0xFF, "Mr. Shinichi Kaneko");
-    tslp_tsk(500);
-
-    tslp_tsk(1000);
     DISP_CLEAR(0x00, 0x00, 0x00);
 
     /* リアルタイム・ステータス用のテストピンを出力にする */
@@ -63,8 +52,6 @@ void task_audio_init(intptr_t exinf)
     i2s_start();
     DISP_TEXT(0, 10 * 5, 0xFF, 0xFF, 0xFF, "Started I2S.");
     tslp_tsk(500);
-
-    DISP_BMPFILE("logo.bmp");
 
     int cnt = 0;
     while (1) {

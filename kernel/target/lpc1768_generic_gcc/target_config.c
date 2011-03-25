@@ -61,17 +61,13 @@
  * \brief UART0のTX信号にピンを割り付けるためのビットフィールド定義
  *
  */
-#define PINSEL_UART0_TX	0x10
+#define PINSEL_UART0_TX 0x10
 
 /**
  * \brief UART0のRX信号にピンを割り付けるためのビットフィールド定義
  *
  */
-#define PINSEL_UART0_RX	0x40
-
-
-
-
+#define PINSEL_UART0_RX 0x40
 
 /**
  * \brief ターゲット依存部　初期化処理
@@ -81,42 +77,27 @@
  */
 void target_initialize(void)
 {
-	/*
-	 *  チップ依存部の初期化。この呼び出しは削除してはいけない。
-	 */
-	chip_initialize();
+    /*
+     *  チップ依存部の初期化。この呼び出しは削除してはいけない。
+     */
+    chip_initialize();
 
-	/* Flash Accelerator を初期化。100MHz動作に対応 */
-	LPC_SC->FLASHCFG = 0x403a;
+    /*
+     * CMSISのSystemInitを使ってターゲットを初期化する。
+     */
+    SystemInit();
 
-	/*
-	 *  プロセッサクロックの初期化
-	 */
-		// PLLの設定 (2 * 50 * 4MHz)/1/4 = 100MHz
-	initPLL0(
-			eIrc, 	// pllClockSource_type 	clkSrc,
-			0,		// unsigned int 			isMainOsc20MHzMore,
-			1,		// unsigned int			N,
-			50,		// unsigned int			M,
-			4		// unsigned int			cpuClkDiv
-		);
+    /*
+     *  I/Oポートの初期化
+     */
+    /* bit5:4=01, bit7:6=01, ピンをUART0に割り当てる。*/
+    LPC_PINCON->PINSEL0 = PINSEL_UART0_TX | PINSEL_UART0_RX;
 
-
-	/*
-	 *  I/Oポートの初期化
-	 */
-	/* bit5:4=01, bit7:6=01, ピンをUART0に割り当てる。*/
-	LPC_PINCON->PINSEL0 = PINSEL_UART0_TX | PINSEL_UART0_RX;
-
-
-	/*
-	 *  バナー出力用のシリアル初期化
-	 */
-	target_uart_init(SIO_PORTID);
+    /*
+     *  バナー出力用のシリアル初期化
+     */
+    target_uart_init(SIO_PORTID);
 }
-
-
-
 
 /**
  * \brief ターゲット依存部　終了処理
@@ -125,11 +106,10 @@ void target_initialize(void)
  */
 void target_exit(void)
 {
-	/* チップ依存部の終了処理 */
-	chip_exit();
+    /* チップ依存部の終了処理 */
+    chip_exit();
 
-	while(1)
-		;
+    while(1) {}
 }
 
 /**
@@ -140,10 +120,8 @@ void target_exit(void)
  */
 void target_fput_log(char_t c)
 {
-	chip_fput_log(c);
+    chip_fput_log(c);
 }
-
-
 
 /**
  * \}
