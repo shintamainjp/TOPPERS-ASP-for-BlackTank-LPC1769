@@ -16,7 +16,7 @@ void task_led(intptr_t exinf)
     led_init();
     while(1)
     {
-        while (prcv_dtq(DTQ_LED, (intptr_t *)&msg) == E_OK) {
+        if (rcv_dtq(DTQ_LED, (intptr_t *)&msg) == E_OK) {
             switch (MSG_TARGET(msg)) {
                 case DBLED0:
                     led_debug_write(0, MSG_CONTROL(msg));

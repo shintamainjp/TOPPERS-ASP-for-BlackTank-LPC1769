@@ -15,8 +15,8 @@
 #define MSG_VALUE(n)  (((n) & 0x03FF) >>  0)
 
 /*
- * $B%a%K%e!<%?%9%/$N?w7A!#(B
- * $B4JC1$K3,AX2=$,$G$-$k!#(B
+ * メニュータスクの雛形。
+ * 簡単に階層化ができる。
  */
 
 typedef enum {
@@ -41,6 +41,12 @@ typedef struct {
 
 static PAGEID curr_page = PAGE_TOP;
 
+typedef struct {
+    int val[4];
+} menu_work_t;
+
+menu_work_t menu_work;
+
 #define DISP_MENUNAME(NAME) \
     do { \
         DISP_FILLBOX(0, 0, OLED_X - 1, 8, \
@@ -62,8 +68,8 @@ static PAGEID curr_page = PAGE_TOP;
 
 void page_splash(ACTION act)
 {
-    /* $BB>$N%?%9%/$,=i4|2=>uBV$rI=<($9$k$?$a(B
-     * $B$3$N%?%9%/$G$O2?$bI=<($7$J$$!#(B
+    /* 他のタスクが初期化状態を表示するため
+     * このタスクでは何も表示しない。
      */
 }
 
@@ -73,6 +79,25 @@ void page_top(ACTION act)
         DISP_CLEAR(0x00, 0x00, 0x00);
         DISP_MENUNAME("[TOP]");
         DISP_MENUTAG("M-1", "M-2", "M-3", "VER");
+    }
+    if (act == PAGE_TICK) {
+        int i;
+        for (i = 0; i < 4; i++) {
+            static const int MAXVAL = (1024/ 32);
+            static const int XOFS = 10;
+            static const int YOFS = 15;
+            int val = MAXVAL - (menu_work.val[i] / 32);
+            DISP_FILLBOX(
+                    XOFS + i * 20, YOFS + 0,
+                    XOFS + i * 20 + 10, YOFS + val,
+                    0x00, 0x00, 0x00,
+                    0x00, 0x00, 0x00);
+            DISP_FILLBOX(
+                    XOFS + i * 20, YOFS + val,
+                    XOFS + i * 20 + 10, YOFS + MAXVAL,
+                    0xFF, 0xFF, 0xFF,
+                    0xFF, 0xFF, 0xFF);
+        }
     }
     if (act == PAGE_OUT) {
         DISP_CLEAR(0x00, 0x00, 0x00);
@@ -172,9 +197,20 @@ void task_menu(intptr_t exinf)
     execute_pagefunc(curr_page, PAGE_IN);
     while(1)
     {
+        /*
+         * ページにティックを与える。
+         */
         execute_pagefunc(curr_page, PAGE_TICK);
+
+        /*
+         * データキューの受信状態を見る。
+         * ここではポーリングして、データがなければスルーする。
+         */
         while (prcv_dtq(DTQ_USERINPUT, (intptr_t *)&msg) == E_OK) {
             if ((SW0 <= MSG_DEVICE(msg)) && (MSG_DEVICE(msg) <= SW3)) {
+                /*
+                 * スイッチがONエッジならばページの遷移処理を実行。
+                 */
                 if (MSG_VALUE(msg)) {
                     PAGEID next_page = get_next_page(
                             curr_page, MSG_DEVICE(msg));
@@ -184,6 +220,9 @@ void task_menu(intptr_t exinf)
                         execute_pagefunc(curr_page, PAGE_IN);
                     }
                 }
+                /*
+                 * 押されたスイッチのLEDを点灯させる。
+                 */
                 switch (MSG_DEVICE(msg)) {
                     case SW0:
                         LEDMSG(SWLED0, MSG_VALUE(msg));
@@ -201,27 +240,12 @@ void task_menu(intptr_t exinf)
             }
             if ((VOL0 <= MSG_DEVICE(msg)) && (MSG_DEVICE(msg) <= VOL3)) {
                 /*
-                 * Draw the level meter.
+                 * 作業用変数に与えられたレベルを格納しておく。
                  */
-                if (curr_page == PAGE_TOP) {
-                    static const int MAXVAL = (1024/ 32);
-                    static const int XOFS = 10;
-                    static const int YOFS = 15;
-                    int ch = MSG_DEVICE(msg) - VOL0;
-                    int val = MAXVAL - (MSG_VALUE(msg) / 32);
-                    DISP_FILLBOX(
-                            XOFS + ch * 20, YOFS + 0,
-                            XOFS + ch * 20 + 10, YOFS + val,
-                            0x00, 0x00, 0x00,
-                            0x00, 0x00, 0x00);
-                    DISP_FILLBOX(
-                            XOFS + ch * 20, YOFS + val,
-                            XOFS + ch * 20 + 10, YOFS + MAXVAL,
-                            0xFF, 0xFF, 0xFF,
-                            0xFF, 0xFF, 0xFF);
-                }
+                int ch = MSG_DEVICE(msg) - VOL0;
+                menu_work.val[ch] = MSG_VALUE(msg);
                 /*
-                 * Call the parameter setup interface.
+                 * オーディオパラメータをオーディオタスクに伝達する。
                  */
                 switch (MSG_DEVICE(msg)) {
                     case VOL0:

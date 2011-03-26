@@ -445,12 +445,23 @@ void task_display(intptr_t exinf)
 {
     display_msg_t *p;
 
+    /*
+     * OLEDを初期化する。
+     */
     oled_init();
     oled_clear(0, 0, OLED_X - 1, OLED_Y - 1);
 
     while(1)
     {
+        /*
+         * メールボックスの受信を待つ。
+         * 待つまでタスクは受信待ちとなる。
+         */
         if (rcv_mbx(MBX_DISPLAY, (T_MSG**)&p) == E_OK) {
+            /*
+             * コマンドによってパラメータの型が決まる。
+             * コマンドによって処理関数が決まる。
+             */
             uint8_t cmd = ((display_msg_t*)p)->cmd;
             void* param = ((display_msg_t*)p)->param;
             switch (cmd) {
