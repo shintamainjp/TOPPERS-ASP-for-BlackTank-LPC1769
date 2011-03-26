@@ -23,8 +23,8 @@ typedef struct {
  */
 void audio_effect_through(
         effect_param_t *param,
-        AUDIOSAMPLE input[2][AUDIOBUFSIZE/2],
-        AUDIOSAMPLE output[2][AUDIOBUFSIZE/2],
+        AUDIOSAMPLE input[2][AUDIOBUFSIZE / 2],
+        AUDIOSAMPLE output[2][AUDIOBUFSIZE / 2],
         int count);
 
 #endif

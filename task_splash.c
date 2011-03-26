@@ -13,7 +13,7 @@ void task_splash(intptr_t exinf)
     tslp_tsk(500);
 
     DISP_BMPFILE("0:LOGO.BMP");
-    tslp_tsk(2000);
+    tslp_tsk(2500);
 
     DISP_CLEAR(0x00, 0x00, 0x00);
     tslp_tsk(500);
@@ -25,11 +25,11 @@ void task_splash(intptr_t exinf)
             0xFF, 0xFF, 0xFF, "Special thanks to");
     tslp_tsk(500);
 
-    DISP_TEXT(XOFS + 0, YOFS + 10 * 1,
+    DISP_TEXT(XOFS + 20, YOFS + 10 * 2,
             0xFF, 0xFF, 0xFF, "Horie-san");
     tslp_tsk(500);
 
-    DISP_TEXT(XOFS + 0, YOFS + 10 * 2,
+    DISP_TEXT(XOFS + 20, YOFS + 10 * 3,
             0xFF, 0xFF, 0xFF, "Kaneko-san");
     tslp_tsk(500);
 

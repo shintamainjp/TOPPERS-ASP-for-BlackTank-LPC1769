@@ -106,6 +106,7 @@ void task_audio(intptr_t exinf)
 
     while(1)
     {
+        // 外部タスクからパラメータを取得する。
         if (prcv_dtq(DTQ_AUDIOPARAM, (intptr_t *)&msg) == E_OK) {
             switch (MSG_TARGET(msg)) {
                 case AUDIO_PARAM_VAR0:
@@ -125,10 +126,10 @@ void task_audio(intptr_t exinf)
             }
         }
 
-        // DMAバッファ転送の終了を待つ
+        // DMAバッファ転送の終了を待つ。
         wai_sem(SEM_I2SDMA);
 
-        // 同期状態を示すためのテストピン信号を作成する
+        // 同期状態を示すためのテストピン信号を作成する。
         testpin_tp1_toggle();
 
         // プログラムが使用してもよいバッファのアドレスを取得する。
@@ -145,7 +146,7 @@ void task_audio(intptr_t exinf)
                 &effect_param,
                 audio_data.inputBuffer,
                 audio_data.outputBuffer,
-                AUDIOBUFSIZE/2);
+                AUDIOBUFSIZE / 2);
         index = 0;
         for (sample = 0; sample < AUDIOBUFSIZE / 2; sample++) {
             for (ch = 0; ch < 2; ch++) {
@@ -153,16 +154,16 @@ void task_audio(intptr_t exinf)
             }
         }
 
-#if 1
+#if 0
         /*
          * サンプルの頭の値だけを抜き出してディスプレイタスクに
          * オーディオレベルメータを要求する手抜きレベルメータ。
          */
-        int level_l = audio_data.outputBuffer[LCH][0];
-        int level_r = audio_data.outputBuffer[RCH][0];
         static int divcnt = 0;
         divcnt++;
-        if ((divcnt % 128) == 0) {
+        if ((divcnt % 512) == 0) {
+            int level_l = txbuf[0];
+            int level_r = txbuf[1];
             DISP_AUDIO_LEVELMETER(level_l, level_r);
         }
 #endif

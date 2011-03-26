@@ -8,100 +8,144 @@
 #include "task_led.h"
 #include "task_display.h"
 #include "task_audio.h"
+#include "oled.h"
 
 #define MSG_DEVICE(n) (((n) & 0xF000) >> 12)
 #define MSG_TYPE(n)   (((n) & 0x0C00) >> 10)
 #define MSG_VALUE(n)  (((n) & 0x03FF) >>  0)
 
+/*
+ * メニュータスクの雛形。
+ * 簡単に階層化ができる。
+ */
+
 typedef enum {
-    PAGE_SPLASH,
     PAGE_TOP,
     PAGE_100,
     PAGE_200,
     PAGE_300,
-    PAGE_400
+    PAGE_VER
 } PAGEID;
+
+typedef enum {
+    PAGE_IN,
+    PAGE_TICK,
+    PAGE_OUT
+} ACTION;
 
 typedef struct {
     PAGEID curr_page;
     PAGEID next_page[4];
-    void (*func)(void);
+    void (*func)(ACTION act);
 } menu_t;
 
-static PAGEID page = PAGE_SPLASH;
-static uint32_t life = 0;
+static PAGEID curr_page = PAGE_TOP;
+
+#define DISP_MENUNAME(NAME) \
+    do { \
+        DISP_FILLBOX(0, 0, OLED_X - 1, 8, \
+                0x00, 0x00, 0x00, \
+                0x00, 0x00, 0x00); \
+        DISP_TEXT(0, 0, 0xFF, 0xFF, 0xFF, (NAME)); \
+    } while(0)
 
 #define DISP_MENUTAG(A,B,C,D) \
     do { \
+        DISP_FILLBOX(0, 52, OLED_X - 1, OLED_Y - 1, \
+                0x00, 0x00, 0x00, \
+                0x00, 0x00, 0x00); \
         DISP_TEXT(2 + (24 * 0), 52, 0xFF, 0xFF, 0xFF, (A)); \
         DISP_TEXT(2 + (24 * 1), 52, 0xFF, 0xFF, 0xFF, (B)); \
         DISP_TEXT(2 + (24 * 2), 52, 0xFF, 0xFF, 0xFF, (C)); \
         DISP_TEXT(2 + (24 * 3), 52, 0xFF, 0xFF, 0xFF, (D)); \
     } while(0)
 
-void page_splash(void)
+void page_splash(ACTION act)
 {
     /* 他のタスクが初期化状態を表示するため
      * このタスクでは何も表示しない。
      */
 }
 
-void page_top(void)
+void page_top(ACTION act)
 {
-    if (life == 0) {
+    if (act == PAGE_IN) {
         DISP_CLEAR(0x00, 0x00, 0x00);
-        DISP_MENUTAG("SEL1", "SEL2", "SEL3", "SEL4");
+        DISP_MENUNAME("[TOP]");
+        DISP_MENUTAG("M-1", "M-2", "M-3", "VER");
+    }
+    if (act == PAGE_OUT) {
+        DISP_CLEAR(0x00, 0x00, 0x00);
     }
 }
 
-void page_100(void)
+void page_100(ACTION act)
 {
-    if (life == 0) {
+    if (act == PAGE_IN) {
         DISP_CLEAR(0x00, 0x00, 0x00);
-        DISP_MENUTAG("110", "120", "130", "140");
+        DISP_MENUNAME("[MENU-1]");
+        DISP_TEXT(20, 30, 0xFF, 0xFF, 0xFF, "-- MENU 1 --");
+        DISP_MENUTAG("", "", "", "RET");
+    }
+    if (act == PAGE_OUT) {
+        DISP_CLEAR(0x00, 0x00, 0x00);
     }
 }
 
-void page_200(void)
+void page_200(ACTION act)
 {
-    if (life == 0) {
+    if (act == PAGE_IN) {
         DISP_CLEAR(0x00, 0x00, 0x00);
-        DISP_MENUTAG("210", "220", "230", "240");
+        DISP_MENUNAME("[MENU-2]");
+        DISP_TEXT(20, 30, 0xFF, 0xFF, 0xFF, "-- MENU 2 --");
+        DISP_MENUTAG("", "", "", "RET");
+    }
+    if (act == PAGE_OUT) {
+        DISP_CLEAR(0x00, 0x00, 0x00);
     }
 }
 
-void page_300(void)
+void page_300(ACTION act)
 {
-    if (life == 0) {
+    if (act == PAGE_IN) {
         DISP_CLEAR(0x00, 0x00, 0x00);
-        DISP_MENUTAG("310", "320", "330", "340");
+        DISP_MENUNAME("[MENU-3]");
+        DISP_TEXT(20, 30, 0xFF, 0xFF, 0xFF, "-- MENU 3 --");
+        DISP_MENUTAG("", "", "", "RET");
+    }
+    if (act == PAGE_OUT) {
+        DISP_CLEAR(0x00, 0x00, 0x00);
     }
 }
 
-void page_400(void)
+void page_ver(ACTION act)
 {
-    if (life == 0) {
+    if (act == PAGE_IN) {
         DISP_CLEAR(0x00, 0x00, 0x00);
-        DISP_MENUTAG("410", "420", "430", "440");
+        DISP_MENUNAME("[Version]");
+        DISP_TEXT(20, 30, 0xFF, 0xFF, 0xFF, "Preliminary");
+        DISP_MENUTAG("", "", "", "RET");
+    }
+    if (act == PAGE_OUT) {
+        DISP_CLEAR(0x00, 0x00, 0x00);
     }
 }
 
 static const menu_t menu[6] = {
-    {PAGE_SPLASH, {PAGE_TOP, PAGE_TOP, PAGE_TOP, PAGE_TOP}, page_splash},
-    {PAGE_TOP, {PAGE_100, PAGE_200, PAGE_300, PAGE_400}, page_top},
-    {PAGE_100, {PAGE_TOP, PAGE_TOP, PAGE_TOP, PAGE_TOP}, page_100},
-    {PAGE_200, {PAGE_TOP, PAGE_TOP, PAGE_TOP, PAGE_TOP}, page_200},
-    {PAGE_300, {PAGE_TOP, PAGE_TOP, PAGE_TOP, PAGE_TOP}, page_300},
-    {PAGE_400, {PAGE_TOP, PAGE_TOP, PAGE_TOP, PAGE_TOP}, page_400}
+    {PAGE_TOP, {PAGE_100, PAGE_200, PAGE_300, PAGE_VER}, page_top},
+    {PAGE_100, {PAGE_100, PAGE_100, PAGE_100, PAGE_TOP}, page_100},
+    {PAGE_200, {PAGE_200, PAGE_200, PAGE_200, PAGE_TOP}, page_200},
+    {PAGE_300, {PAGE_300, PAGE_300, PAGE_300, PAGE_TOP}, page_300},
+    {PAGE_VER, {PAGE_VER, PAGE_VER, PAGE_VER, PAGE_TOP}, page_ver}
 };
 
-void execute_pagefunc(PAGEID page)
+void execute_pagefunc(PAGEID page, ACTION act)
 {
     int i;
     for (i = 0; i < sizeof(menu) / sizeof(menu[0]); i++) {
         if (menu[i].curr_page == page) {
             if (menu[i].func != NULL) {
-                menu[i].func();
+                menu[i].func(act);
                 return;
             }
         }
@@ -125,15 +169,20 @@ void task_menu(intptr_t exinf)
 
     DISP_CLEAR(0x00, 0x00, 0x00);
 
+    execute_pagefunc(curr_page, PAGE_IN);
     while(1)
     {
-        execute_pagefunc(page);
-        life++;
+        execute_pagefunc(curr_page, PAGE_TICK);
         while (prcv_dtq(DTQ_USERINPUT, (intptr_t *)&msg) == E_OK) {
             if ((SW0 <= MSG_DEVICE(msg)) && (MSG_DEVICE(msg) <= SW3)) {
                 if (MSG_VALUE(msg)) {
-                    page = get_next_page(page, MSG_DEVICE(msg));
-                    life = 0;
+                    PAGEID next_page = get_next_page(
+                            curr_page, MSG_DEVICE(msg));
+                    if (next_page != curr_page) {
+                        execute_pagefunc(curr_page, PAGE_OUT);
+                        curr_page = next_page;
+                        execute_pagefunc(curr_page, PAGE_IN);
+                    }
                 }
                 switch (MSG_DEVICE(msg)) {
                     case SW0:
@@ -154,21 +203,23 @@ void task_menu(intptr_t exinf)
                 /*
                  * Draw the level meter.
                  */
-                static const int MAXVAL = (1024/ 32);
-                static const int XOFS = 10;
-                static const int YOFS = 15;
-                int ch = MSG_DEVICE(msg) - VOL0;
-                int val = MAXVAL - (MSG_VALUE(msg) / 32);
-                DISP_FILLBOX(
-                        XOFS + ch * 20, YOFS + 0,
-                        XOFS + ch * 20 + 10, YOFS + val,
-                        0x00, 0x00, 0x00,
-                        0x00, 0x00, 0x00);
-                DISP_FILLBOX(
-                        XOFS + ch * 20, YOFS + val,
-                        XOFS + ch * 20 + 10, YOFS + MAXVAL,
-                        0xFF, 0xFF, 0xFF,
-                        0xFF, 0xFF, 0xFF);
+                if (curr_page == PAGE_TOP) {
+                    static const int MAXVAL = (1024/ 32);
+                    static const int XOFS = 10;
+                    static const int YOFS = 15;
+                    int ch = MSG_DEVICE(msg) - VOL0;
+                    int val = MAXVAL - (MSG_VALUE(msg) / 32);
+                    DISP_FILLBOX(
+                            XOFS + ch * 20, YOFS + 0,
+                            XOFS + ch * 20 + 10, YOFS + val,
+                            0x00, 0x00, 0x00,
+                            0x00, 0x00, 0x00);
+                    DISP_FILLBOX(
+                            XOFS + ch * 20, YOFS + val,
+                            XOFS + ch * 20 + 10, YOFS + MAXVAL,
+                            0xFF, 0xFF, 0xFF,
+                            0xFF, 0xFF, 0xFF);
+                }
                 /*
                  * Call the parameter setup interface.
                  */

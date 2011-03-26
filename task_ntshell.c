@@ -68,8 +68,10 @@ void cmd_lcd(int argc, char **argv) {
     if (argc == 2) {
         if (ntlibc_strcmp(argv[1], "cls") == 0) {
             DISP_CLEAR(0x00, 0x00, 0x00);
+            return;
         }
     }
+    syslog(LOG_NOTICE, "lcd cls : Clear the LCD.");
 }
 
 void cmd_led(int argc, char **argv) {

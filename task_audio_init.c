@@ -50,14 +50,13 @@ void task_audio_init(intptr_t exinf)
     act_tsk(TASK_MENU);
     act_tsk(TASK_USERINPUT);
 
+    tslp_tsk(200);
+
     /* DMAによるI2S転送を始める */
     i2s_start();
-    DISP_TEXT(0, 10 * 5, 0xFF, 0xFF, 0xFF, "Started I2S.");
-    tslp_tsk(500);
 
     int cnt = 0;
     while (1) {
-        tslp_tsk(200);
         /*
          * 動作を示すマーキング.
          */
@@ -77,6 +76,7 @@ void task_audio_init(intptr_t exinf)
                 break;
         }
         cnt++;
+        tslp_tsk(200);
     }
 }
 

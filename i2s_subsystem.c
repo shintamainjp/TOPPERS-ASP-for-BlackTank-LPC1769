@@ -14,39 +14,42 @@
 
 void i2s_init()
 {
-
     /* I2Sの電源をオン */
     LPC_SC->PCONP |= 1 << 27;
     /*  I2SのPCLKを 1/4 にセット (25MHz) */
     LPC_SC->PCLKSEL0 &= ~(0x3 << 22);
 
-		/** P0.4 - P0.9を I2Sに */
+    /** P0.4 - P0.9を I2Sに */
     LPC_PINCON->PINSEL0 &= ~(0xFFF << 8);
 //      LPC_PINCON->PINSEL0 |= 0x555 << 8;
     LPC_PINCON->PINSEL0 |= 0x550 << 8;	// RX ws/clk disconnect
 
     /*
      * I2Sのモード設定。
-     * I2S, 32bit, 4-wire transmitter slave mode sharing the receiver bit clock and WS
-     * Typical receiver slave mode
+     * I2S, 32bit, 4-wire transmitter slave mode sharing the
+     * receiver bit clock and WS Typical receiver slave mode
      * stereo, stop & reset.
      *
-     * TXのビット/ワードクロックはRXから供給を受け、RXのビット/ワードクロックは外部から供給を受ける。
-     * この場合、TXはデバイダ関係の設定が不要のはずである。また、UM10360 rev 2 Fig111によると
-     * I2SRXBITRATEはdiv by 1になるよう設定しなければならない。
-     *
+     * TXのビット/ワードクロックはRXから供給を受け、RXの
+     * ビット/ワードクロックは外部から供給を受ける。
+     * この場合、TXはデバイダ関係の設定が不要のはずである。
+     * また、UM10360 rev 2 Fig111によるとI2SRXBITRATEは
+     * div by 1になるよう設定しなければならない。
      */
 
-    /* Digital Audio Output & Input */
     /*
-     * UM10360には詳細がしるされていないが、NXPによるCMSISの例題を読む限り、
-     * 設定前にDAO/DAIをreset, stop状態に置き、処理開始時にresetから解除し、
-     * stopから解除する動作になっている。reset状態でレジスタを操作する事には
-     * 不安を感じるが、例題しか情報源がないのでそれにしたがう。
+     * Digital Audio Output & Input
+     */
+
+    /*
+     * UM10360には詳細がしるされていないが、NXPによるCMSISの例題を
+     * 読む限り、設定前にDAO/DAIをreset, stop状態に置き、
+     * 処理開始時にresetから解除し、stopから解除する動作になっている。
+     * reset状態でレジスタを操作する事には不安を感じるが、例題しか
+     * 情報源がないのでそれにしたがう。
      */
     LPC_I2S->I2SDAO = 0x0;	/* Disable */
     LPC_I2S->I2SDAI = 0x0;	/* Disable */
-
 
     LPC_I2S->I2SDAO = 3 << 0	// 32bit data
 	| 0 << 2		// mono : 1 is mono, 0 is stereo
@@ -70,9 +73,10 @@ void i2s_init()
     LPC_I2S->I2SDMA2 = 1 << 1	// TX DMA Enable
 	| 2 << 16;		// FIFO depth = 2;
 
+    /*
+     * I2SRXBITRATE
+     */
 
-
-    /* I2SRXBITRATE */
     /*
      * 外部ビットクロックから内部ビットクロックを生成する分周器。1で割る。
      */
@@ -85,25 +89,19 @@ void i2s_init()
     LPC_I2S->I2SRXMODE = 4;	/* Receive slave typical mode */
 //      LPC_I2S->I2SRXMODE = 0;                                 /* Receive slave 4-wire mode */
 
-
-
 }
-
-
 
 void i2s_start()
 {
-    /* TX I2S をリセットから開放 */
-    LPC_I2S->I2SDAO &= ~(1 << 4);
-    /* RX I2S をリセットから開放 */
-    LPC_I2S->I2SDAI &= ~(1 << 4);
     /* TX I2S をストップから開放 */
     LPC_I2S->I2SDAO &= ~(1 << 3);
     /* RX I2S をストップから開放 */
     LPC_I2S->I2SDAI &= ~(1 << 3);
+    /* TX I2S をリセットから開放 */
+    LPC_I2S->I2SDAO &= ~(1 << 4);
+    /* RX I2S をリセットから開放 */
+    LPC_I2S->I2SDAI &= ~(1 << 4);
 }
-
-
 
 void i2s_dma_init(struct I2S_AUDIO_DATA *audio_data)
 {
@@ -113,7 +111,6 @@ void i2s_dma_init(struct I2S_AUDIO_DATA *audio_data)
     LPC_SC->PCONP |= 1 << 29;
     /* DMA Controler Enable */
     LPC_GPDMA->DMACConfig = 0x01;	/* Little Endian, Enable */
-
 
     /* 送信LLIの初期化 */
     audio_data->txI2SLLI[0].SrcAddr = audio_data->txBuffer[0];	/* 送信データのバッファ */
@@ -177,7 +174,6 @@ void i2s_dma_init(struct I2S_AUDIO_DATA *audio_data)
         audio_data->txBuffer[1][i] = 0x00;
     }
 
-
     /* 受信バッファのクリア */
     for (i = 0; i < AUDIOBUFSIZE; i++) {
         audio_data->rxBuffer[0][i] = 0x00;	/* ゼロフィル */
@@ -228,15 +224,16 @@ void i2s_dma_init(struct I2S_AUDIO_DATA *audio_data)
     LPC_GPDMACH1->DMACCConfig |= 1;
 }
 
-
 /**
  * \brief 現在ソフトウェアが使えるI2S TXバッファをかえす。
  * \return プログラムが書き込んでいい送信バッファの先頭アドレス
  * \details
- * DMAが使用していないバッファをかえす。DMAと同期したプログラムを書く場合には必ず
- * このルーチンを使用してプログラムが使ってもよいバッファを決定する。
+ * DMAが使用していないバッファをかえす。
+ * DMAと同期したプログラムを書く場合には必ずこのルーチンを使用して
+ * プログラムが使ってもよいバッファを決定する。
  * \todo
- * DMAチャンネルの番号は決め打ちである。適切なDMA管理機構を使った方式への変更が必要である。
+ * DMAチャンネルの番号は決め打ちである。
+ * 適切なDMA管理機構を使った方式への変更が必要である。
  */
 AUDIOSAMPLE *i2s_getTxBuf()
 {
@@ -265,7 +262,8 @@ AUDIOSAMPLE *i2s_getRxBuf()
     struct LLI *nextLLI;
 
     // このプログラムではDMACH1をI2S RXに使っている。
-    // 使用していないバッファとは、現在使用中のLLIの、次のLLIが指し示すバッファである。
+    // 使用していないバッファとは、現在使用中のLLIの、
+    // 次のLLIが指し示すバッファである。
     nextLLI = (struct LLI *) LPC_GPDMACH1->DMACCLLI;
     return nextLLI->DstAddr;
 }
