@@ -16,7 +16,7 @@
 
 #include "target_test.h"
 
-#define TSKPRI_DISPLAY    12
+#define TSKPRI_DISPLAY    11
 #define TSKSTK_DISPLAY    STACK_SIZE
 
 #define DISPLAY_CMD_CLEAR 0

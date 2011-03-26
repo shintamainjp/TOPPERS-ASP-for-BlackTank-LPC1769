@@ -11,7 +11,7 @@
 
 #include "target_test.h"
 
-#define TSKPRI_LED  12
+#define TSKPRI_LED  11
 #define TSKSTK_LED  STACK_SIZE
 
 #ifndef TOPPERS_MACRO_ONLY

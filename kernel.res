@@ -33,7 +33,7 @@
 			{
 				"id"    :2,
 				"atr"   :"TA_ACT",
-				"pri"   :12,
+				"pri"   :11,
 				"exinf" :"0",
 				"task"  :"task_display",
 				"stksz" :1024,
@@ -47,7 +47,7 @@
 			{
 				"id"    :3,
 				"atr"   :"TA_ACT",
-				"pri"   :12,
+				"pri"   :11,
 				"exinf" :"0",
 				"task"  :"task_led",
 				"stksz" :1024,
@@ -75,7 +75,7 @@
 			{
 				"id"    :5,
 				"atr"   :"TA_ACT",
-				"pri"   :12,
+				"pri"   :13,
 				"exinf" :"0",
 				"task"  :"task_splash",
 				"stksz" :1024,
@@ -103,7 +103,7 @@
 			{
 				"id"    :7,
 				"atr"   :"0",
-				"pri"   :8,
+				"pri"   :10,
 				"exinf" :"0",
 				"task"  :"task_audio",
 				"stksz" :2048,
@@ -131,7 +131,7 @@
 			{
 				"id"    :9,
 				"atr"   :"0",
-				"pri"   :14,
+				"pri"   :12,
 				"exinf" :"0",
 				"task"  :"task_userinput",
 				"stksz" :1024,

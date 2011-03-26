@@ -9,7 +9,6 @@
 #include "audio_effect.h"
 #include "i2s_subsystem.h"
 #include "i2c_subsystem.h"
-#include "adc_subsystem.h"
 #include "codec_subsystem.h"
 #include "testpin.h"
 #include "task_display.h"
@@ -46,8 +45,8 @@
  * \param ercd サービスコールの結果（エラー値）
  * \brief サービスコールのエラーのログ出力を行う補助関数
  * \details
- * TOPPERS/ASPのサービスコールのエラー出力を行うためのサポート関数。 \ref SVC_PERROR マクロの中から使う。
- *
+ * TOPPERS/ASPのサービスコールのエラー出力を行うためのサポート関数。
+ * \ref SVC_PERROR マクロの中から使う。
  */
 Inline void
 svc_perror(const char *file, int_t line, const char *expr, ER ercd)
@@ -103,6 +102,11 @@ void task_audio(intptr_t exinf)
     int index, ch, sample;
     uint16_t msg;
     effect_param_t effect_param;
+
+    /*
+     * リアルタイム・ステータス用のテストピンを出力にする。
+     */
+    testpin_init();
 
     while(1)
     {

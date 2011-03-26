@@ -20,16 +20,17 @@ void task_splash(intptr_t exinf)
 
     static const int XOFS = 5;
     static const int YOFS = 10;
+    static const int YSTP = 12;
 
-    DISP_TEXT(XOFS + 0, YOFS + 10 * 0,
+    DISP_TEXT(XOFS + 0, YOFS + YSTP * 0,
             0xFF, 0xFF, 0xFF, "Special thanks to");
     tslp_tsk(500);
 
-    DISP_TEXT(XOFS + 20, YOFS + 10 * 2,
+    DISP_TEXT(XOFS + 22, YOFS + YSTP * 2,
             0xFF, 0xFF, 0xFF, "Horie-san");
     tslp_tsk(500);
 
-    DISP_TEXT(XOFS + 20, YOFS + 10 * 3,
+    DISP_TEXT(XOFS + 20, YOFS + YSTP * 3,
             0xFF, 0xFF, 0xFF, "Kaneko-san");
     tslp_tsk(500);
 

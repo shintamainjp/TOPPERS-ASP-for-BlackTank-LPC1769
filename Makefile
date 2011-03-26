@@ -130,12 +130,12 @@ CFG2_OUT := kernel_cfg.c kernel_cfg.h $(CFG2_OUT)
 #
 #  共通コンパイルオプションの定義
 #
-COPTS := $(COPTS) -g
+COPTS := $(COPTS) -gstabs
 ifndef OMIT_WARNING_ALL
   COPTS := $(COPTS) -Wall
 endif
 ifndef OMIT_OPTIMIZATION
-  COPTS := $(COPTS) -O3
+  COPTS := $(COPTS) -O0
 endif
 CDEFS := $(CDEFS)
 INCLUDES := -I. -I$(SRCDIR)/include -I$(SRCDIR)/arch -I$(SRCDIR) -I./drivers/ff -I./drivers/oled -I./drivers/led -I./drivers/hid $(INCLUDES)
@@ -179,10 +179,10 @@ MYOBJS = sys_init.o \
 	 task_splash.o \
 	 \
 	 audio_effect.o \
+	 i2c_subsystem.o \
 	 i2s_subsystem.o \
 	 codec_subsystem.o \
-	 i2c_subsystem.o \
-	 adc_subsystem.o \
+	 \
 	 testpin.o \
 	 bmplowio.o
 
