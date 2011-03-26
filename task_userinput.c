@@ -22,10 +22,10 @@ void task_userinput(intptr_t exinf)
         uint16_t s1curr = hid_swread(1);
         uint16_t s2curr = hid_swread(2);
         uint16_t s3curr = hid_swread(3);
-        uint16_t v0curr = (uint16_t)(hid_volread(0) >> 5);
-        uint16_t v1curr = (uint16_t)(hid_volread(1) >> 5);
-        uint16_t v2curr = (uint16_t)(hid_volread(2) >> 5);
-        uint16_t v3curr = (uint16_t)(hid_volread(3) >> 5);
+        uint16_t v0curr = (uint16_t)(hid_volread(0) >> 2);
+        uint16_t v1curr = (uint16_t)(hid_volread(1) >> 2);
+        uint16_t v2curr = (uint16_t)(hid_volread(2) >> 2);
+        uint16_t v3curr = (uint16_t)(hid_volread(3) >> 2);
 
         /*
          * Diff.

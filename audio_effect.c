@@ -6,10 +6,12 @@
  */
 
 #include "i2s_subsystem.h"
+#include "audio_effect.h"
 
 void audio_effect_through(
-        AUDIOSAMPLE input[2][AUDIOBUFSIZE/2],
-        AUDIOSAMPLE output[2][AUDIOBUFSIZE/2],
+        effect_param_t *param,
+        AUDIOSAMPLE input[2][AUDIOBUFSIZE / 2],
+        AUDIOSAMPLE output[2][AUDIOBUFSIZE / 2],
         int count)
 {
     int i;
@@ -24,11 +26,11 @@ void audio_effect_through(
      */
     for (i = 0; i < count; i++)
     {
-#if 0
+#if 1
         // 1にするとボリューム制御、0にすると単純TalkThrough
         // ボリューム0の値で音量調整する
-        output[LCH][i] = (input[LCH][i]>>15)*adc_read(0);
-        output[RCH][i] = (input[RCH][i]>>15)*adc_read(1);
+        output[LCH][i] = (input[LCH][i] >> 10) * param->var0;
+        output[RCH][i] = (input[RCH][i] >> 10) * param->var1;
 #else
         // 単なる入出力コピー
         output[LCH][i] = input[LCH][i];

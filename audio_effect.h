@@ -1,6 +1,13 @@
 #ifndef AUDIO_EFFECT_H
 #define AUDIO_EFFECT_H
 
+typedef struct {
+    int var0;
+    int var1;
+    int var2;
+    int var3;
+} effect_param_t;
+
 /**
  * @brief オーディオ信号処理関数
  * @param input 入力のオーディオデータ列。LchとRchに分かれて配列になっている
@@ -15,6 +22,7 @@
  * countはサンプル数を表す。
  */
 void audio_effect_through(
+        effect_param_t *param,
         AUDIOSAMPLE input[2][AUDIOBUFSIZE/2],
         AUDIOSAMPLE output[2][AUDIOBUFSIZE/2],
         int count);

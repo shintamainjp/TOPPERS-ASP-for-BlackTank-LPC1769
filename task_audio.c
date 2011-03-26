@@ -14,6 +14,9 @@
 #include "testpin.h"
 #include "task_display.h"
 
+#define MSG_TARGET(n) (((n) & 0xF000) >> 12)
+#define MSG_VALUE(n)  (((n) & 0x0FFF) >>  0)
+
 /**
  * \mainpage
  * LPC1768を使用したAudio信号のTalkthrough (ループバック)デモ
@@ -98,9 +101,30 @@ void task_audio(intptr_t exinf)
 {
     AUDIOSAMPLE * txbuf, *rxbuf;
     int index, ch, sample;
+    uint16_t msg;
+    effect_param_t effect_param;
 
     while(1)
     {
+        if (prcv_dtq(DTQ_AUDIOPARAM, (intptr_t *)&msg) == E_OK) {
+            switch (MSG_TARGET(msg)) {
+                case AUDIO_PARAM_VAR0:
+                    effect_param.var0 = MSG_VALUE(msg);
+                    break;
+                case AUDIO_PARAM_VAR1:
+                    effect_param.var1 = MSG_VALUE(msg);
+                    break;
+                case AUDIO_PARAM_VAR2:
+                    effect_param.var2 = MSG_VALUE(msg);
+                    break;
+                case AUDIO_PARAM_VAR3:
+                    effect_param.var3 = MSG_VALUE(msg);
+                    break;
+                default:
+                    break;
+            }
+        }
+
         // DMAバッファ転送の終了を待つ
         wai_sem(SEM_I2SDMA);
 
@@ -118,6 +142,7 @@ void task_audio(intptr_t exinf)
             }
         }
         audio_effect_through(
+                &effect_param,
                 audio_data.inputBuffer,
                 audio_data.outputBuffer,
                 AUDIOBUFSIZE/2);
@@ -128,7 +153,7 @@ void task_audio(intptr_t exinf)
             }
         }
 
-#if 1
+#if 0
         /*
          * サンプルの頭の値だけを抜き出してディスプレイタスクに
          * オーディオレベルメータを要求する手抜きレベルメータ。

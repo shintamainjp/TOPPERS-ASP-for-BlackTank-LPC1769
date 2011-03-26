@@ -7,6 +7,7 @@
 #include "task_menu.h"
 #include "task_led.h"
 #include "task_display.h"
+#include "task_audio.h"
 
 #define MSG_DEVICE(n) (((n) & 0xF000) >> 12)
 #define MSG_TYPE(n)   (((n) & 0x0C00) >> 10)
@@ -150,11 +151,14 @@ void task_menu(intptr_t exinf)
                 }
             }
             if ((VOL0 <= MSG_DEVICE(msg)) && (MSG_DEVICE(msg) <= VOL3)) {
-                static const int MAXVAL = (127 / 3);
+                /*
+                 * Draw the level meter.
+                 */
+                static const int MAXVAL = (1024/ 32);
                 static const int XOFS = 10;
-                static const int YOFS = 5;
+                static const int YOFS = 10;
                 int ch = MSG_DEVICE(msg) - VOL0;
-                int val = MAXVAL - (MSG_VALUE(msg) / 3);
+                int val = MAXVAL - (MSG_VALUE(msg) / 32);
                 DISP_FILLBOX(
                         XOFS + ch * 20, YOFS + 0,
                         XOFS + ch * 20 + 10, YOFS + val,
@@ -165,6 +169,25 @@ void task_menu(intptr_t exinf)
                         XOFS + ch * 20 + 10, YOFS + MAXVAL,
                         0xFF, 0xFF, 0xFF,
                         0xFF, 0xFF, 0xFF);
+                /*
+                 * Call the parameter setup interface.
+                 */
+                switch (MSG_DEVICE(msg)) {
+                    case VOL0:
+                        AUDIO_PARAM(AUDIO_PARAM_VAR0, MSG_VALUE(msg));
+                        break;
+                    case VOL1:
+                        AUDIO_PARAM(AUDIO_PARAM_VAR1, MSG_VALUE(msg));
+                        break;
+                    case VOL2:
+                        AUDIO_PARAM(AUDIO_PARAM_VAR2, MSG_VALUE(msg));
+                        break;
+                    case VOL3:
+                        AUDIO_PARAM(AUDIO_PARAM_VAR3, MSG_VALUE(msg));
+                        break;
+                    default:
+                        break;
+                }
             }
         }
         tslp_tsk(100);
