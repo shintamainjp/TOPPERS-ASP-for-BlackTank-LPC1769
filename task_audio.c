@@ -153,7 +153,7 @@ void task_audio(intptr_t exinf)
             }
         }
 
-#if 0
+#if 1
         /*
          * サンプルの頭の値だけを抜き出してディスプレイタスクに
          * オーディオレベルメータを要求する手抜きレベルメータ。
@@ -162,7 +162,7 @@ void task_audio(intptr_t exinf)
         int level_r = audio_data.outputBuffer[RCH][0];
         static int divcnt = 0;
         divcnt++;
-        if ((divcnt % 64) == 0) {
+        if ((divcnt % 128) == 0) {
             DISP_AUDIO_LEVELMETER(level_l, level_r);
         }
 #endif

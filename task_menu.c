@@ -156,7 +156,7 @@ void task_menu(intptr_t exinf)
                  */
                 static const int MAXVAL = (1024/ 32);
                 static const int XOFS = 10;
-                static const int YOFS = 10;
+                static const int YOFS = 15;
                 int ch = MSG_DEVICE(msg) - VOL0;
                 int val = MAXVAL - (MSG_VALUE(msg) / 32);
                 DISP_FILLBOX(

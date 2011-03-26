@@ -8,6 +8,8 @@
 #include "i2s_subsystem.h"
 #include "audio_effect.h"
 
+#define VOLUME_CONTROL_ENABLED 1
+
 void audio_effect_through(
         effect_param_t *param,
         AUDIOSAMPLE input[2][AUDIOBUFSIZE / 2],
@@ -24,13 +26,17 @@ void audio_effect_through(
      * （つまり1.31形式固定小数点数）である。
      * 出力データの形式も同じである。
      */
+#if VOLUME_CONTROL_ENABLED
+    const int var0 = param->var0;
+    const int var1 = param->var1;
+#endif
     for (i = 0; i < count; i++)
     {
-#if 1
+#if VOLUME_CONTROL_ENABLED
         // 1にするとボリューム制御、0にすると単純TalkThrough
         // ボリューム0の値で音量調整する
-        output[LCH][i] = (input[LCH][i] >> 10) * param->var0;
-        output[RCH][i] = (input[RCH][i] >> 10) * param->var1;
+        output[LCH][i] = (input[LCH][i] >> 10) * var0;
+        output[RCH][i] = (input[RCH][i] >> 10) * var1;
 #else
         // 単なる入出力コピー
         output[LCH][i] = input[LCH][i];
