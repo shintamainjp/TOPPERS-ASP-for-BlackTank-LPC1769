@@ -2,7 +2,6 @@
 #include <kernel.h>
 #include <t_syslog.h>
 #include <t_stdlib.h>
-#include "task_audio.h"
 #include <LPC17xx.h>
 #include "kernel_cfg.h"
 #include "audio_common.h"
@@ -11,6 +10,7 @@
 #include "i2c_subsystem.h"
 #include "codec_subsystem.h"
 #include "testpin.h"
+#include "task_audio.h"
 #include "task_display.h"
 
 #define MSG_TARGET(n) (((n) & 0xF000) >> 12)
@@ -26,10 +26,9 @@
  * 出力する。内部コピーは \ref process_audio 関数で行っており
  * 内部を書き換えることでどのようなアルゴリズムでも実装できる。
  *
- * \ref task_audio_init は各種の初期化を行った後、 \ref audio_task を
- * アクティブにする。 audio_taskはDMA割り込みハンドラ
- * \ref dma_intr_handler からのシグナルに同期して動作しており、
- * ピンポンバッファを使ってDMAとソフトウェア処理の並列化を図っている。
+ * audio_taskはDMA割り込みハンドラ \ref dma_intr_handler からの
+ * シグナルに同期して動作し、ピンポンバッファを使ってDMAと
+ * ソフトウェア処理の並列化を図っている。
  *
  * このプログラムが使用しているコーデックはTI社のTLV320AIC23Bである。
  * 初期化データ列は \ref codec_init ルーチンから送出している。
@@ -104,9 +103,25 @@ void task_audio(intptr_t exinf)
     effect_param_t effect_param;
 
     /*
+     * ペリフェラルを初期化する。
+     */
+    i2c_init();
+    codec_init();
+    i2s_init();
+    i2s_dma_init(get_audio_data());
+
+    /*
      * リアルタイム・ステータス用のテストピンを出力にする。
      */
     testpin_init();
+
+    /*
+     * @TODO
+     * i2s_start()を呼ぶとDMA割り込みの無限ループに陥る。
+     * 現象が発生するのはコールドスタートの時だけ。
+     * 現在調査中。
+     */
+    i2s_start();
 
     while(1)
     {

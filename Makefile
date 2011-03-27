@@ -165,6 +165,7 @@ MYOBJS = sys_init.o \
 	 ffrtc.o \
 	 ffspi.o \
 	 diskio_mmc_ff.o \
+	 \
 	 oled.o \
 	 led.o \
 	 hid.o \
@@ -174,7 +175,6 @@ MYOBJS = sys_init.o \
 	 task_userinput.o \
 	 task_display.o \
 	 task_menu.o \
-	 task_audio_init.o \
 	 task_audio.o \
 	 task_splash.o \
 	 \

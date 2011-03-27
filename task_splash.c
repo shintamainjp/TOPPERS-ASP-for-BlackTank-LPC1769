@@ -36,8 +36,44 @@ void task_splash(intptr_t exinf)
 
     tslp_tsk(2000);
 
-    act_tsk(TASK_AUDIO_INIT);
+    act_tsk(TASK_MENU);
+    act_tsk(TASK_USERINPUT);
+    tslp_tsk(500);
 
-    ext_tsk();
+#if TASK_AUDIO_ENABLED
+    /*
+     * メニューが表示された頃合いを見てオーディオ処理を開始する。
+     */
+    act_tsk(TASK_AUDIO);
+#else
+    /*
+     * オーディオ機能オフ.
+     */
+    syslog(LOG_NOTICE, "task_audio disabled in this build.");
+#endif
+
+    int cnt = 0;
+    while (1) {
+        /*
+         * 動作を示すマーキング.
+         */
+        DISP_FILLBOX(90, 0, 95, 6, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00);
+        switch (cnt % 4) {
+            case 0:
+                DISP_TEXT(90, 0, 0xFF, 0xFF, 0xFF, "-");
+                break;
+            case 1:
+                DISP_TEXT(90, 0, 0xFF, 0xFF, 0xFF, "\\");
+                break;
+            case 2:
+                DISP_TEXT(90, 0, 0xFF, 0xFF, 0xFF, "|");
+                break;
+            case 3:
+                DISP_TEXT(90, 0, 0xFF, 0xFF, 0xFF, "/");
+                break;
+        }
+        cnt++;
+        tslp_tsk(100);
+    }
 }
 

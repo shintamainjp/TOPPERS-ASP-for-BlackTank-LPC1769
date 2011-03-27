@@ -9,6 +9,7 @@
 #include "task_display.h"
 #include "task_audio.h"
 #include "oled.h"
+#include "config.h"
 
 #define MSG_DEVICE(n) (((n) & 0xF000) >> 12)
 #define MSG_TYPE(n)   (((n) & 0x0C00) >> 10)
@@ -98,6 +99,9 @@ void page_top(ACTION act)
                     0xFF, 0xFF, 0xFF,
                     0xFF, 0xFF, 0xFF);
         }
+#if !TASK_AUDIO_ENABLED
+        DISP_TEXT(10, 8, 0xFF, 0xFF, 0xFF, "AUDIO DISABLED");
+#endif
     }
     if (act == PAGE_OUT) {
         DISP_CLEAR(0x00, 0x00, 0x00);
@@ -247,6 +251,7 @@ void task_menu(intptr_t exinf)
                 /*
                  * オーディオパラメータをオーディオタスクに伝達する。
                  */
+#if TASK_AUDIO_ENABLED
                 switch (MSG_DEVICE(msg)) {
                     case VOL0:
                         AUDIO_PARAM(AUDIO_PARAM_VAR0, MSG_VALUE(msg));
@@ -263,6 +268,7 @@ void task_menu(intptr_t exinf)
                     default:
                         break;
                 }
+#endif
             }
         }
         tslp_tsk(100);
