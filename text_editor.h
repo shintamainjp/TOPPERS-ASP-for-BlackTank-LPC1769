@@ -1,3 +1,10 @@
+/**
+ * @file text_editor.h
+ * @author Shinichiro Nakamura
+ * @brief
+ * NT-Shell用テキストエディタモジュールの定義。
+ */
+
 /*
  * ===============================================================
  *  Natural Tiny Shell (NT-Shell)

@@ -1,5 +1,5 @@
 /**
- * \file audio_processing.c
+ * \file audio_effect.c
  * \brief コーデックから受け取ったデータに対して、実際の信号処理を施す
  * \date 2011/02/19
  * \author: Takemasa Nakamura

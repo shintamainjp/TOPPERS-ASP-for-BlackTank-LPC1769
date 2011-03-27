@@ -1,3 +1,8 @@
+/**
+ * @file testpin.c
+ * @author Shinichiro Nakamura
+ * @brief テストピン制御ライブラリの実装。
+ */
 
 #include <LPC17xx.h>
 #include "testpin.h"

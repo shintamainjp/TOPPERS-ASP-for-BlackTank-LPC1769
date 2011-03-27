@@ -1,8 +1,10 @@
 /**
  * @file task_led.h
- * @brief LEDタスク(task_led)
- * LEDタスクはLEDの点灯を制御するタスクです。
- * 点灯は各タスクから次のマクロのみで指示することができます。
+ * @author Shinichiro Nakamura
+ * @brief LEDタスクの定義(task_led)
+ * @details
+ * LEDタスクはLEDの点灯を制御するタスクである。
+ * 点灯は各タスクから次のマクロのみで指示することができる。
  * LEDMSG(target, control);
  */
 

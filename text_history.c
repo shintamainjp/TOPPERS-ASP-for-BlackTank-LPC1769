@@ -1,3 +1,10 @@
+/**
+ * @file text_history.c
+ * @author Shinichiro Nakamura
+ * @brief
+ * NT-Shell用テキストヒストリモジュールの実装。
+ */
+
 /*
  * ===============================================================
  *  Natural Tiny Shell (NT-Shell)

@@ -1,8 +1,10 @@
 /**
  * @file task_userinput.h
- * @brief ユーザインプットタスク(task_userinput)
- * ユーザインプットタスクは４系統のユーザ入力の変化を観察するタスクです。
- * 変化があればデータキューを介してメニュータスクに通知されます。
+ * @author Shinichiro Nakamura
+ * @brief ユーザインプットタスクの定義(task_userinput)
+ * @details
+ * ユーザインプットタスクは４系統のユーザ入力の変化を観察するタスク。
+ * 変化があればデータキューを介してメニュータスクに通知を行う。
  */
 
 #ifndef _TASK_USERINPUT_H_

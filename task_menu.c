@@ -1,3 +1,12 @@
+/**
+ * @file task_menu.c
+ * @author Shinichiro Nakamura
+ * @brief メニュータスクの実装(task_menu)
+ * @details
+ * メニュータスクはユーザにシステムのサービスを提示し、
+ * ユーザからの要求をシステムに伝達する役目を果たす。
+ * ユーザからの入力はそれらを管理するタスクからの通知に依存する。
+ */
 
 #include <LPC17xx.h>
 #include <kernel.h>

@@ -1,6 +1,6 @@
 /**
  * \file i2c_subsystem.c
- * \brief I2C制御サブシステム
+ * \brief I2C制御関数群
  * \date 2011/02/19
  * \author Takemasa Nakamura
  */

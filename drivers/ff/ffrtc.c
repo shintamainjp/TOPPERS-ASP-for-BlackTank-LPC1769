@@ -1,3 +1,7 @@
+/**
+ * @file ffrtc.c
+ * @brief FATファイルシステムドライバ用RTCモジュールの実装。
+ */
 
 #include "ffrtc.h"
 #include "lpc17xx_rtc.h"

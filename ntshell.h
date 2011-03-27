@@ -1,3 +1,9 @@
+/**
+ * @file ntshell.h
+ * @author Shinichiro Nakamura
+ * @brief 小規模組み込みシステム向けのシェルシステムの定義。
+ */
+
 /*
  * ===============================================================
  *  Natural Tiny Shell (NT-Shell)

@@ -1,8 +1,11 @@
 /**
  * @file task_menu.h
- * @brief メニュータスク(task_menu)
+ * @author Shinichiro Nakamura
+ * @brief メニュータスクの定義(task_menu)
+ * @details
  * メニュータスクはユーザにシステムのサービスを提示し、
- * ユーザからの要求をシステムに伝達する役目を果たします。
+ * ユーザからの要求をシステムに伝達する役目を果たす。
+ * ユーザからの入力はそれらを管理するタスクからの通知に依存する。
  */
 
 #ifndef _TASK_MENU_H_

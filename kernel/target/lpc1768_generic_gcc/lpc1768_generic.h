@@ -54,7 +54,6 @@
  */
 
 /**
- * \mainpage
  * NXP社LPC1768用のターゲット依存部。TOPPERS/ASPターゲット非依存部1.6に対応している。
  * 最新ソースコードは http://sourceforge.jp/projects/toppersasp4lpc/ より入手できる。
  *

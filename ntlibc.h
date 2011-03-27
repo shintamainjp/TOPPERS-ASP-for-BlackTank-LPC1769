@@ -1,3 +1,9 @@
+/**
+ * @file ntlibc.h
+ * @author Shinichiro Nakamura
+ * @brief NT-Shellで用いる小規模libcの定義。
+ */
+
 /*
  * ===============================================================
  *  Natural Tiny Shell (NT-Shell)

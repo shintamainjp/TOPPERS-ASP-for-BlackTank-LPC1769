@@ -1,3 +1,8 @@
+/**
+ * @file ffspi.c
+ * @brief FATファイルシステム用下層SPIドライバの実装。
+ */
+
 #include "ffspi.h"
 
 #include <lpc17xx_spi.h>

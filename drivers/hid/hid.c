@@ -1,3 +1,11 @@
+/**
+ * @file hid.c
+ * @author Shinichiro Nakamura
+ * @brief ヒューマンインターフェースデバイスドライバの実装。
+ * @details
+ * ここで言う「ヒューマンインターフェースデバイス」とは
+ * ボリュームとスイッチを指す。
+ */
 
 #include "hid.h"
 

@@ -1,3 +1,10 @@
+/**
+ * \file audio_effect.h
+ * \brief コーデックから受け取ったデータに対して、実際の信号処理を施す
+ * \date 2011/02/19
+ * \author: Takemasa Nakamura
+ */
+
 #ifndef AUDIO_EFFECT_H
 #define AUDIO_EFFECT_H
 

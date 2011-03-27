@@ -1,3 +1,12 @@
+/**
+ * @file hid.h
+ * @author Shinichiro Nakamura
+ * @brief ヒューマンインターフェースデバイスドライバの定義。
+ * @details
+ * ここで言う「ヒューマンインターフェースデバイス」とは
+ * ボリュームとスイッチを指す。
+ */
+
 #ifndef HID_H
 #define HID_H
 

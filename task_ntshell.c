@@ -1,7 +1,11 @@
 /**
- * \file task_ntshell.c
- * \brief アプリケーションの本体ファイル。
-*/
+ * @file task_ntshell.c
+ * @author Shinichiro Nakamura
+ * @brief ナチュラルタイニーシェルタスクの実装(task_ntshell)
+ * @details
+ * システムをコンソールから制御することのできるインターフェースタスク。
+ * 主に開発者のために提供される。
+ */
 
 #include <kernel.h>
 #include <t_syslog.h>

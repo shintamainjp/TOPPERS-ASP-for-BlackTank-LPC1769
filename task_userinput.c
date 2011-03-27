@@ -1,3 +1,12 @@
+/**
+ * @file task_userinput.c
+ * @author Shinichiro Nakamura
+ * @brief ユーザインプットタスクの実装(task_userinput)
+ * @details
+ * ユーザインプットタスクは４系統のユーザ入力の変化を観察するタスク。
+ * 変化があればデータキューを介してメニュータスクに通知を行う。
+ */
+
 #include <LPC17xx.h>
 #include <kernel.h>
 #include <t_syslog.h>

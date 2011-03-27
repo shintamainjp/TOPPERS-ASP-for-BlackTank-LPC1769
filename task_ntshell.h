@@ -1,7 +1,10 @@
 /**
  * @file task_ntshell.h
- * @brief ナチュラルタイニーシェルタスク(task_ntshell)
- * システムをコンソールから制御することのできるインターフェースタスクです。
+ * @author Shinichiro Nakamura
+ * @brief ナチュラルタイニーシェルタスクの定義(task_ntshell)
+ * @details
+ * システムをコンソールから制御することのできるインターフェースタスク。
+ * 主に開発者のために提供される。
  */
 
 #ifndef _TASK_NTSHELL_H_

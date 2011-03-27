@@ -1,3 +1,8 @@
+/**
+ * @file led.h
+ * @author Shinichiro Nakamura
+ * @brief LEDドライバの定義。
+ */
 
 #ifndef LED_H
 #define LED_H

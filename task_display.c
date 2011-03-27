@@ -1,3 +1,19 @@
+/**
+ * @file task_display.c
+ * @author Shinichiro Nakamura
+ * @brief ディスプレイタスクの実装(task_display)
+ * @details
+ * ディスプレイタスクは有機ELディスプレイを制御するタスクである。
+ * ディスプレイの制御は以下のマクロを使って行うことができる。
+ *
+ * DISP_CLEAR(r, g, b);
+ * DISP_LINE(x1, y1, x2, y2, r, g, b);
+ * DISP_BOX(x1, y1, x2, y2, r, g, b);
+ * DISP_FILLBOX(x1, y1, x2, y2, r1, g1, b1, r2, g2, b2);
+ * DISP_TEXT(x, y, r, g, b, "text");
+ * DISP_BMPFILE("filename");
+ */
+
 #include <LPC17xx.h>
 #include <kernel.h>
 #include <t_syslog.h>

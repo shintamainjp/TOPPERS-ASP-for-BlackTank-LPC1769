@@ -1,8 +1,9 @@
 /**
- * @file ledblink.h
- * @brief アプリケーション用インクルードファイル。
- * コンフィギュレータも読み込む。
+ * @file sys_init.h
+ * @author Shinichiro Nakamura
+ * @brief システムで優先的に初期化したい処理の定義。
  */
+
 #ifndef _SYS_INIT_H_
 #define _SYS_INIT_H_
 

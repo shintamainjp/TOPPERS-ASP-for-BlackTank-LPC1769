@@ -1,3 +1,13 @@
+/**
+ * @file task_splash.c
+ * @author Shinichiro Nakamura
+ * @brief スプラッシュタスクの実装(task_splash)
+ * @details
+ * よくあるスプラッシュ画面を表示するタスク。
+ * このタスクは自身の処理が完了後に、本当に必要なタスクを起動する。
+ * 本当に必要なタスクを起動した後は、システムの動作をユーザに通知する
+ * だけのタスクとして動作する。
+ */
 
 #include <LPC17xx.h>
 #include <kernel.h>

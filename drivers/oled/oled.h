@@ -1,35 +1,49 @@
 /**
- * =============================================================================
- * Aitendo OLED device driver library. (Version 0.0.2)
- *
- * [The product]
- * OLED-2P-095BWNN-SPI : http://www.aitendo.co.jp/product/2099
- * ALO-095BWNN-J9      : http://www.aitendo.co.jp/product/1449
- *
- * [References]
- * http://serdisplib.sourceforge.net/ser/doc/Treiber_IC-SSD1332_OLED_96x64_COLOR.pdf
- * =============================================================================
- * Copyright (c) 2010 Shinichiro Nakamura (CuBeatSystems)
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
- * =============================================================================
+ * @file oled.h
+ * @author Shinichiro Nakamura
+ * @brief OLEDドライバの定義。
+ * @details
+ * OLED(96x64dots)の下層ドライバ。
+ * リソースに対するロックは上層で行うこと。
+ * 焼付防止のような処理はアプリケーション層に委ねる。
  */
+
+/*
+ * ===============================================================
+ *  Aitendo OLED device driver library. (Version 0.0.2)
+ *
+ *  [The product]
+ *   OLED-2P-095BWNN-SPI : http://www.aitendo.co.jp/product/2099
+ *   ALO-095BWNN-J9      : http://www.aitendo.co.jp/product/1449
+ *
+ *  [References]
+ *  http://serdisplib.sourceforge.net/ser/doc/Treiber_IC-SSD1332_OLED_96x64_COLOR.pdf
+ * ===============================================================
+ * Copyright (c) 2010-2011 Shinichiro Nakamura
+ *
+ * Permission is hereby granted, free of charge, to any person
+ * obtaining a copy of this software and associated documentation
+ * files (the "Software"), to deal in the Software without
+ * restriction, including without limitation the rights to use,
+ * copy, modify, merge, publish, distribute, sublicense, and/or
+ * sell copies of the Software, and to permit persons to whom the
+ * Software is furnished to do so, subject to the following
+ * conditions:
+ *
+ * The above copyright notice and this permission notice shall be
+ * included in all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+ * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+ * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+ * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+ * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+ * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+ * OTHER DEALINGS IN THE SOFTWARE.
+ * ===============================================================
+ */
+
 #ifndef AITENDO_OLED_H
 #define AITENDO_OLED_H
 

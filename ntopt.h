@@ -1,3 +1,9 @@
+/**
+ * @file ntopt.h
+ * @author Shinichiro Nakamura
+ * @brief NT-Shell用オプション解析モジュールの定義。
+ */
+
 /*
  * ===============================================================
  *  Natural Tiny Shell (NT-Shell)

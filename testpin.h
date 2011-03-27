@@ -1,3 +1,9 @@
+/**
+ * @file testpin.h
+ * @author Shinichiro Nakamura
+ * @brief テストピン制御ライブラリの定義。
+ */
+
 #ifndef TESTPIN_H
 #define TESTPIN_H
 

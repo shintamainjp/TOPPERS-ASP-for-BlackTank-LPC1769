@@ -1,3 +1,8 @@
+/**
+ * @file led.c
+ * @author Shinichiro Nakamura
+ * @brief LEDドライバの実装。
+ */
 
 #include "led.h"
 #include <LPC17xx.h>

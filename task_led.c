@@ -1,3 +1,12 @@
+/**
+ * @file task_led.c
+ * @author Shinichiro Nakamura
+ * @brief LEDタスクの実装(task_led)
+ * @details
+ * LEDタスクはLEDの点灯を制御するタスクである。
+ * 点灯は各タスクから次のマクロのみで指示することができる。
+ * LEDMSG(target, control);
+ */
 
 #include <LPC17xx.h>
 #include <kernel.h>

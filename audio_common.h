@@ -1,3 +1,8 @@
+/**
+ * @file audio_common.h
+ * @brief オーディオに関する共通の定義。
+ */
+
 #ifndef AUDIO_COMMON_H
 #define AUDIO_COMMON_H
 

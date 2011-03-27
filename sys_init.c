@@ -1,6 +1,7 @@
 /**
- * \file sys_init.c
- * \brief アプリケーションに関連する初期化用ファイル。
+ * @file sys_init.c
+ * @author Shinichiro Nakamura
+ * @brief システムで優先的に初期化したい処理の実装。
  */
 
 #include <LPC17xx.h>

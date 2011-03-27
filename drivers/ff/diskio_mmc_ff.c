@@ -1,5 +1,10 @@
+/**
+ * @file diskio_mmc_ff.c
+ * @brief 低レベルディスクI/Oインターフェースモジュールの実装。(SPI版)
+ */
+
 /*------------------------------------------------------------------------/
-/  Bitbanging MMCv3/SDv1/SDv2 (in SPI mode) control module
+/  SPI MMCv3/SDv1/SDv2 (in SPI mode) control module
 /-------------------------------------------------------------------------/
 /
 /  Copyright (C) 2010, ChaN, all right reserved.

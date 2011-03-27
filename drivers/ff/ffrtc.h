@@ -1,3 +1,7 @@
+/**
+ * @file ffrtc.h
+ * @brief FATファイルシステムドライバ用RTCモジュールの定義。
+ */
 
 #ifndef FFRTC_H
 #define FFRTC_H
