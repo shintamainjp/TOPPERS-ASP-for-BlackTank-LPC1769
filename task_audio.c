@@ -88,7 +88,7 @@ void dma_intr_handler(intptr_t exinf)
  * DMAのLLIやバッファなどはすべてこの変数にパッケージしている。
  * こうすることで、グローバル空間に名前が散らかることを阻止できる。
  */
-static struct I2S_AUDIO_DATA audio_data;
+struct I2S_AUDIO_DATA audio_data;
 
 struct I2S_AUDIO_DATA* get_audio_data(void)
 {
@@ -103,17 +103,16 @@ void task_audio(intptr_t exinf)
     effect_param_t effect_param;
 
     /*
-     * ペリフェラルを初期化する。
+     * オーディオコーデックを初期化する。
      */
     i2c_init();
     codec_init();
-    i2s_init();
-    i2s_dma_init(get_audio_data());
 
     /*
-     * リアルタイム・ステータス用のテストピンを出力にする。
+     * ペリフェラルを初期化する。
      */
-    testpin_init();
+    i2s_init();
+    i2s_dma_init(get_audio_data());
 
     /*
      * @TODO
@@ -122,6 +121,11 @@ void task_audio(intptr_t exinf)
      * 現在調査中。
      */
     i2s_start();
+
+    /*
+     * リアルタイム・ステータス用のテストピンを出力にする。
+     */
+    testpin_init();
 
     while(1)
     {
