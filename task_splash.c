@@ -7,6 +7,7 @@
 #include "task_splash.h"
 #include "kernel_cfg.h"
 #include "task_display.h"
+#include "config.h"
 
 void task_splash(intptr_t exinf)
 {
@@ -40,17 +41,17 @@ void task_splash(intptr_t exinf)
     act_tsk(TASK_USERINPUT);
     tslp_tsk(500);
 
-#if TASK_AUDIO_ENABLED
-    /*
-     * メニューが表示された頃合いを見てオーディオ処理を開始する。
-     */
-    act_tsk(TASK_AUDIO);
-#else
-    /*
-     * オーディオ機能オフ.
-     */
-    syslog(LOG_NOTICE, "task_audio disabled in this build.");
-#endif
+    if (TASK_AUDIO_ENABLED()) {
+        /*
+         * メニューが表示された頃合いを見てオーディオ処理を開始する。
+         */
+        act_tsk(TASK_AUDIO);
+    } else {
+        /*
+         * オーディオ機能オフ.
+         */
+        syslog(LOG_NOTICE, "task_audio disabled in this build.");
+    }
 
     int cnt = 0;
     while (1) {

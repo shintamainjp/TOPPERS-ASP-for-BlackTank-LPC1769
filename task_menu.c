@@ -99,9 +99,9 @@ void page_top(ACTION act)
                     0xFF, 0xFF, 0xFF,
                     0xFF, 0xFF, 0xFF);
         }
-#if !TASK_AUDIO_ENABLED
-        DISP_TEXT(10, 8, 0xFF, 0xFF, 0xFF, "AUDIO DISABLED");
-#endif
+        if (!TASK_AUDIO_ENABLED()) {
+            DISP_TEXT(10, 8, 0xFF, 0xFF, 0xFF, "AUDIO DISABLED");
+        }
     }
     if (act == PAGE_OUT) {
         DISP_CLEAR(0x00, 0x00, 0x00);
@@ -251,24 +251,24 @@ void task_menu(intptr_t exinf)
                 /*
                  * オーディオパラメータをオーディオタスクに伝達する。
                  */
-#if TASK_AUDIO_ENABLED
-                switch (MSG_DEVICE(msg)) {
-                    case VOL0:
-                        AUDIO_PARAM(AUDIO_PARAM_VAR0, MSG_VALUE(msg));
-                        break;
-                    case VOL1:
-                        AUDIO_PARAM(AUDIO_PARAM_VAR1, MSG_VALUE(msg));
-                        break;
-                    case VOL2:
-                        AUDIO_PARAM(AUDIO_PARAM_VAR2, MSG_VALUE(msg));
-                        break;
-                    case VOL3:
-                        AUDIO_PARAM(AUDIO_PARAM_VAR3, MSG_VALUE(msg));
-                        break;
-                    default:
-                        break;
+                if (TASK_AUDIO_ENABLED()) {
+                    switch (MSG_DEVICE(msg)) {
+                        case VOL0:
+                            AUDIO_PARAM(AUDIO_PARAM_VAR0, MSG_VALUE(msg));
+                            break;
+                        case VOL1:
+                            AUDIO_PARAM(AUDIO_PARAM_VAR1, MSG_VALUE(msg));
+                            break;
+                        case VOL2:
+                            AUDIO_PARAM(AUDIO_PARAM_VAR2, MSG_VALUE(msg));
+                            break;
+                        case VOL3:
+                            AUDIO_PARAM(AUDIO_PARAM_VAR3, MSG_VALUE(msg));
+                            break;
+                        default:
+                            break;
+                    }
                 }
-#endif
             }
         }
         tslp_tsk(100);
