@@ -18,6 +18,12 @@
 
 #ifndef TOPPERS_MACRO_ONLY
 
+/**
+ * @defgroup BLACKTANK_LPC1769_TASK_MENU_CLIENT
+ * @ingroup BLACKTANK_LPC1769_TASK_MENU
+ * @{
+ */
+
 #define SW0 0
 #define SW1 1
 #define SW2 2
@@ -35,6 +41,10 @@
                 ((device & 0x000F) << 12) \
                 | ((type & 0x0003) << 10) \
                 | ((value & 0x03FF) << 0)))
+
+/**
+ * @}
+ */
 
 /**
  * @defgroup BLACKTANK_LPC1769_TASK_MENU

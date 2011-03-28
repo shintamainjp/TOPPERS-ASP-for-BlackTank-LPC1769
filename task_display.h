@@ -4,7 +4,12 @@
  * @brief ディスプレイタスクの定義(task_display)
  * @details
  * ディスプレイタスクは有機ELディスプレイを制御するタスクである。
- * ディスプレイの制御は以下のマクロを使って行うことができる。
+ * ディスプレイの制御はマクロを使って行うことができる。
+ */
+
+/**
+ * @example
+ * ディスプレイへの表示は以下のマクロを使って行うことができる。
  *
  * @code
  * DISP_CLEAR(r, g, b);
@@ -95,6 +100,12 @@ typedef struct {
     int right;
 } display_audio_levelmeter_t;
 
+/**
+ * @defgroup BLACKTANK_LPC1769_TASK_DISPLAY_CLIENT
+ * @ingroup BLACKTANK_LPC1769_TASK_DISPLAY
+ * @{
+ */
+
 void disp_clear(const uint8_t r, const uint8_t g, const uint8_t b);
 void disp_line(
         const uint8_t x1,
@@ -147,6 +158,10 @@ void disp_audio_levelmeter(const int left, const int right);
     disp_bmpfile((FN))
 #define DISP_AUDIO_LEVELMETER(L,R) \
     disp_audio_levelmeter((L),(R))
+
+/**
+ * @}
+ */
 
 #ifndef TOPPERS_MACRO_ONLY
 

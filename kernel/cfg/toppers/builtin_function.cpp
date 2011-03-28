@@ -193,13 +193,13 @@ namespace toppers
    *  第1マクロ実引数として与えた順序付きリストの各要素を、第2マクロ実引数の添え字とした場合の変数を評価し、
    *  その評価結果に基づき昇順に整列する。
    *
-   *  \example
+   *  \code
    *  $FOO[1] = 20$
    *  $FOO[2] = 10$
    *  $FOO[3] = 30$
    *  $SORT({ 1,2,3 }, "FOO")$
    *  → { 2,1,3 }
-   *  \endexample
+   *  \endcode
    */
   var_t bf_sort( text_line const& line, std::vector< var_t > const& arg_list, context* p_ctx )
   {

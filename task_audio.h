@@ -30,7 +30,7 @@
                 | (((VALUE)& 0x0FFF) << 0)))
 
 /**
- * @defgroup BLACKTANK_LPC1769_TASK_DISPLAY
+ * @defgroup BLACKTANK_LPC1769_TASK_AUDIO
  * @ingroup BLACKTANK_LPC1769_TASK
  * @{
  */
