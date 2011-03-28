@@ -17,7 +17,17 @@
 
 #ifndef TOPPERS_MACRO_ONLY
 
+/**
+ * @defgroup BLACKTANK_LPC1769_TASK_USERINPUT
+ * @ingroup BLACKTANK_LPC1769_TASK
+ * @{
+ */
+
 void task_userinput(intptr_t exinf);
+
+/**
+ * @}
+ */
 
 #endif
 

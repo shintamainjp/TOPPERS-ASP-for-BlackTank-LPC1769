@@ -5,7 +5,10 @@
  * @details
  * LEDタスクはLEDの点灯を制御するタスクである。
  * 点灯は各タスクから次のマクロのみで指示することができる。
+ *
+ * @code
  * LEDMSG(target, control);
+ * @endcode
  */
 
 #ifndef _TASK_LED_H_
@@ -33,7 +36,17 @@
 #define LEDMSG(target, control) \
     snd_dtq(DTQ_LED, (intptr_t)(((control) ? 0x80:0x00) | (target & 0x0F)))
 
+/**
+ * @defgroup BLACKTANK_LPC1769_TASK_LED
+ * @ingroup BLACKTANK_LPC1769_TASK
+ * @{
+ */
+
 void task_led(intptr_t exinf);
+
+/**
+ * @}
+ */
 
 #endif
 

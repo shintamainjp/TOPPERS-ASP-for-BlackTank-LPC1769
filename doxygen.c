@@ -3,7 +3,7 @@
  *
  * @section about
  *
- * この文章はmainpage.cに記述されているが、実際にコンパイル対象ではない。
+ * この文章はdoxygen.cに記述されているが、実際にコンパイル対象ではない。
  * Doxygenの処理の便宜上付けたファイル名である。
  *
  * @section sec1 BlackTank LPC1769

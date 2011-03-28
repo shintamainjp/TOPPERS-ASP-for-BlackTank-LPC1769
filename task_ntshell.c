@@ -22,7 +22,6 @@
 #include "ntshell.h"
 #include "ntopt.h"
 #include "ntlibc.h"
-#include "diskio.h"
 #include "ff.h"
 
 char curdir[32];

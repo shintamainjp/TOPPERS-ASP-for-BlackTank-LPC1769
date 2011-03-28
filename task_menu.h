@@ -36,7 +36,17 @@
                 | ((type & 0x0003) << 10) \
                 | ((value & 0x03FF) << 0)))
 
+/**
+ * @defgroup BLACKTANK_LPC1769_TASK_MENU
+ * @ingroup BLACKTANK_LPC1769_TASK
+ * @{
+ */
+
 void task_menu(intptr_t exinf);
+
+/**
+ * @}
+ */
 
 #endif
 

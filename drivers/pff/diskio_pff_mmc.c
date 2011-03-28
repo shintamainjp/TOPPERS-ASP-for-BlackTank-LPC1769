@@ -3,7 +3,7 @@
 /*-------------------------------------------------------------------------*/
 
 #include "pff.h"
-#include "diskio.h"
+#include "diskio_pff.h"
 #include "pffspi.h"
 
 #define SPI_INIT() pffspi_init()

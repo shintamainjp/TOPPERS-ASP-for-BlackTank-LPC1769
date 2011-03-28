@@ -29,9 +29,19 @@
                 (((TARGET) & 0x000F) << 12) \
                 | (((VALUE)& 0x0FFF) << 0)))
 
+/**
+ * @defgroup BLACKTANK_LPC1769_TASK_DISPLAY
+ * @ingroup BLACKTANK_LPC1769_TASK
+ * @{
+ */
+
 void task_audio(intptr_t exinf);
 void dma_intr_handler(intptr_t exinf);
 struct I2S_AUDIO_DATA* get_audio_data(void);
+
+/**
+ * @}
+ */
 
 #endif
 

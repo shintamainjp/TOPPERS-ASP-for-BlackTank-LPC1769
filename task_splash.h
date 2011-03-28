@@ -15,7 +15,17 @@
 #define TSKPRI_SPLASH 13
 #define TSKSTK_SPLASH STACK_SIZE
 
+/**
+ * @defgroup BLACKTANK_LPC1769_TASK_SPLASH
+ * @ingroup BLACKTANK_LPC1769_TASK
+ * @{
+ */
+
 void task_splash(intptr_t exinf);
+
+/**
+ * @}
+ */
 
 #endif
 

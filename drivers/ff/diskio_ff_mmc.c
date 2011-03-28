@@ -1,5 +1,5 @@
 /**
- * @file diskio_mmc_ff.c
+ * @file diskio_ff_mmc.c
  * @brief 低レベルディスクI/Oインターフェースモジュールの実装。(SPI版)
  */
 
@@ -33,7 +33,7 @@
 /-------------------------------------------------------------------------*/
 
 
-#include "diskio.h"		/* Common include file for FatFs and disk I/O layer */
+#include "diskio_ff.h"		/* Common include file for FatFs and disk I/O layer */
 
 
 /*-------------------------------------------------------------------------*/

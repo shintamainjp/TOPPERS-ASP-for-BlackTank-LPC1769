@@ -1,5 +1,5 @@
 /**
- * @file diskio.h
+ * @file diskio_ff.h
  * @brief 低レベルディスクI/Oインターフェースモジュールの定義。
  */
 
@@ -7,10 +7,10 @@
 /  Low level disk interface modlue include file   (C)ChaN, 2009
 /-----------------------------------------------------------------------*/
 
-#ifndef _DISKIO
-#define _DISKIO
+#ifndef DISKIO_FF_H
+#define DISKIO_FF_H
 
-#include "integer.h"
+#include "integer_ff.h"
 
 
 /* Status of Disk Functions */

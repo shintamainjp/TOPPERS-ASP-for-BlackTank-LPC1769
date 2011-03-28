@@ -23,7 +23,7 @@
 /----------------------------------------------------------------------------*/
 
 #include "pff.h"		/* Petit FatFs configurations and declarations */
-#include "diskio.h"		/* Declarations of low level disk I/O functions */
+#include "diskio_pff.h"		/* Declarations of low level disk I/O functions */
 
 
 

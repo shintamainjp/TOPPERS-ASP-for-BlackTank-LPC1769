@@ -164,7 +164,7 @@ MYOBJS = sys_init.o \
 	 ff.o \
 	 ffrtc.o \
 	 ffspi.o \
-	 diskio_mmc_ff.o \
+	 diskio_ff_mmc.o \
 	 \
 	 oled.o \
 	 led.o \

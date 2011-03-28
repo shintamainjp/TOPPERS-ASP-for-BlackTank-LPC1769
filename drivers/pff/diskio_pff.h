@@ -2,9 +2,9 @@
 /  PFF - Low level disk interface modlue include file    (C)ChaN, 2009
 /-----------------------------------------------------------------------*/
 
-#ifndef _DISKIO
+#ifndef DISKIO_PFF_H
 
-#include "integer.h"
+#include "integer_pff.h"
 
 
 /* Status of Disk Functions */

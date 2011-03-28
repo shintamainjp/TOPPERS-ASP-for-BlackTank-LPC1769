@@ -56,6 +56,12 @@ typedef struct color {
 #define OLED_X 96
 #define OLED_Y 64
 
+/**
+ * @defgroup BLACKTANK_LPC1769_DRIVER_OLED
+ * @ingroup BLACKTANK_LPC1769_DRIVER
+ * @{
+ */
+
 void oled_init(void);
 
 /**
@@ -121,5 +127,9 @@ void oled_darker(int x1, int y1, int x2, int y2);
  * @param y2 Y2.
  */
 void oled_clear(int x1, int y1, int x2, int y2);
+
+/**
+ * @}
+ */
 
 #endif

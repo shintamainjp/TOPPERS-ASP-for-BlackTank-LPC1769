@@ -2,8 +2,8 @@
 /* Integer type definitions for FatFs module */
 /*-------------------------------------------*/
 
-#ifndef _INTEGER
-#define _INTEGER
+#ifndef INTEGER_PFF_H
+#define INTEGER_PFF_H
 
 /* These types must be 16-bit, 32-bit or larger integer */
 #ifndef TOPPERS_ITRON_H
