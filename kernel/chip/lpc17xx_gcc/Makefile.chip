@@ -31,7 +31,7 @@ KERNEL_CFLAGS := $(KERNEL_CFLAGS) -fno-strict-aliasing -mcpu=cortex-m3
 #  システムサービスに関する定義
 #
 SYSSVC_DIR := $(SYSSVC_DIR) $(SRCDIR)/pdic/common $(SRCDIR)/pdic/i2c $(SRCDIR)/pdic/spi $(SRCDIR)/pdic/uart $(SRCDIR)/pdic/gpio $(SRCDIR)/pdic/ssp $(SRCDIR)/pdic/adc $(SRCDIR)/pdic/rtc
-SYSSVC_COBJS := $(SYSSVC_COBJS) lpc17xx_clkpwr.o lpc17xx_libcfg_default.o lpc17xx_pinsel.o lpc17xx_i2c.o lpc17xx_spi.o lpc17xx_gpio.o uart.o lpc17xx_ssp.o lpc17xx_adc.o lpc17xx_rtc.o
+SYSSVC_COBJS := $(SYSSVC_COBJS) lpc17xx_clkpwr.o lpc17xx_libcfg_default.o lpc17xx_pinsel.o lpc17xx_i2c.o lpc17xx_spi.o lpc17xx_gpio.o uart.o lpc17xx_ssp.o lpc17xx_adc.o lpc17xx_rtc.o lpc17xx_uart.o
 
 
 #
