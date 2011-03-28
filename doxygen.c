@@ -1,6 +1,8 @@
 /**
  * @mainpage
  *
+ * @image html logo.bmp
+ *
  * @section about
  *
  * この文章はdoxygen.cに記述されているが、実際にコンパイル対象ではない。

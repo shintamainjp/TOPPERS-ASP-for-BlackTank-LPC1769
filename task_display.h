@@ -19,6 +19,8 @@
  * DISP_TEXT(x, y, r, g, b, "text");
  * DISP_BMPFILE("filename");
  * @endcode
+ *
+ * このマクロは、タスクコンテキスト内のどこからでも呼ぶことができる。
  */
 
 #ifndef _TASK_DISPLAY_H_

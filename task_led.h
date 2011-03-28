@@ -14,6 +14,8 @@
  * @code
  * LEDMSG(target, control);
  * @endcode
+ *
+ * このマクロは、タスクコンテキスト内のどこからでも呼ぶことができる。
  */
 
 #ifndef _TASK_LED_H_
