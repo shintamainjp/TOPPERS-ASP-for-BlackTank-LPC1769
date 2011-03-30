@@ -1,4 +1,9 @@
 /**
+ * @file doxygen_development.c
+ * @author Shinichiro Nakamura
+ * @brief Doxygen用のファイル。開発に関するトピックを記述してある。
+ * @details
+ *
  * @page development 開発に関するトピック
  *
  * @section debugging デバッグ方法

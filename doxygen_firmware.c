@@ -1,4 +1,9 @@
 /**
+ * @file doxygen_firmware.c
+ * @author Shinichiro Nakamura
+ * @brief Doxygen用のファイル。ファームウェアに関するトピックを記述してある。
+ * @details
+ *
  * @page firmware ファームウェアに関するトピック
  *
  * ファームウェアに関する既知の問題点については @ref problems_firmware をご覧下さい。

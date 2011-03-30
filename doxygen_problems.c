@@ -1,4 +1,9 @@
 /**
+ * @file doxygen_problems.c
+ * @author Shinichiro Nakamura
+ * @brief Doxygen用のファイル。既知の問題点が記述してある。
+ * @details
+ *
  * @page problems 既知の問題点
  *
  * @section problems_hardware ハードウェアに関する既知の問題点

@@ -1,4 +1,9 @@
 /**
+ * @file doxygen_hardware.c
+ * @author Shinichiro Nakamura
+ * @brief Doxygen用のファイル。ハードウェアに関するトピックが記述してある。
+ * @details
+ *
  * @page hardware ハードウェアに関するトピック
  *
  * ハードウェアに関する既知の問題点については @ref problems_hardware をご覧下さい。
