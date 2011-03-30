@@ -1,7 +1,6 @@
 /**
  * @file task_audio.c
  * @brief オーディオDMAに同期して動くタスク
- * @param exinf コンフィギュレータがタスクに引き渡す変数。
  * @details
  * @ref dma_intr_handler からのSEM_I2SDMA セマフォ・シグナルを受けて
  * しかるべきデータ・バッファを特定し、信号処理を行う。
@@ -120,10 +119,9 @@ void task_audio(intptr_t exinf)
     i2s_dma_init(get_audio_data());
 
     /*
-     * @TODO
+     * @todo
      * i2s_start()を呼ぶとDMA割り込みの無限ループに陥る。
-     * 現象が発生するのはコールドスタートの時だけ。
-     * 現在調査中。
+     * 現象が発生するのはコールドスタートの時だけ。要調査。
      */
     i2s_start();
 

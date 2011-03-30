@@ -175,7 +175,9 @@ int bmplowio_image_write(
         const bmp_file_t *filehead,
         const bmp_info_t *infohead,
         void(*func)(int x, int y, int *r, int *g, int *b)) {
-    // TODO
+    /**
+     * @todo 書き込みが必要になったら対応する。
+     */
     return 0;
 }
 
