@@ -402,8 +402,8 @@
  *  {
  *      const int var0 = param->var0;
  *      const int var1 = param->var1;
- *      *out_left = (*in_left) * var0;
- *      *out_right = (*in_right) * var0;
+ *      *out_left = ((*in_left) >> 10) * var0;
+ *      *out_right = ((*in_right) >> 10) * var1;
  *  }
  * @endcode
  *
