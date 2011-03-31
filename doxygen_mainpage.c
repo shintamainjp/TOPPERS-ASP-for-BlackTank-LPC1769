@@ -6,10 +6,11 @@
  *
  * @mainpage
  *
- * @subpage overview
- * @subpage hardware
- * @subpage firmware
- * @subpage development
- * @subpage problems
+ * このドキュメントは以下の要素で構成されている。
+ * - @subpage overview
+ * - @subpage hardware
+ * - @subpage firmware
+ * - @subpage development
+ * - @subpage problems
  */
 

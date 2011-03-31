@@ -89,24 +89,6 @@ struct I2S_AUDIO_DATA {
      * バッファを取得するには、 @ref i2s_getRxBuf 関数を使う。
      */
     AUDIOSAMPLE rxBuffer[2][AUDIOBUFSIZE];
-
-    /**
-     * @brief @ref process_audio へ渡すためのデータバッファ
-     * @details
-     * audio_processing関数は右と左のチャンネルを分離して受けとるが、
-     * TLV320AIC23BはLRLRLR...形式でデータを送ってくる。
-     * そのため、あらかじめ並び替えて渡すためのバッファである。
-     */
-    AUDIOSAMPLE inputBuffer[2][AUDIOBUFSIZE/2];
-
-    /**
-     * @brief @ref process_audio からデータを受け取るためのデータバッファ
-     * @details
-     * audio_processing関数は右と左のチャンネルを分離して生成するが、
-     * TLV320AIC23BはLRLRLR...形式でデータを受信する。
-     * そのため、一旦受け取って並べ替えるためのバッファである。
-     */
-    AUDIOSAMPLE outputBuffer[2][AUDIOBUFSIZE/2];
 };
 
 /**

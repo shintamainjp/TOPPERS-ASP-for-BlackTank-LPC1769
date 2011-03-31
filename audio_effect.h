@@ -1,8 +1,8 @@
 /**
- * \file audio_effect.h
- * \brief コーデックから受け取ったデータに対して、実際の信号処理を施す
- * \date 2011/02/19
- * \author: Takemasa Nakamura
+ * @file audio_effect.h
+ * @brief コーデックから受け取ったデータに対して、実際の信号処理を施す。
+ * @date 2011/02/19
+ * @author: Takemasa Nakamura (Modified: Shinichiro Nakamura)
  */
 
 #ifndef AUDIO_EFFECT_H
@@ -16,23 +16,20 @@ typedef struct {
 } effect_param_t;
 
 /**
- * @brief オーディオ信号処理関数
- * @param input 入力のオーディオデータ列。LchとRchに分かれて配列になっている
- * @param output 出力のオーディオデータ列。LchとRchに分かれて配列になっている
- * @param count 入出力データオンサンプル数。
- * count=8のとき、入出力のデータ数はステレオなのでそれぞれ16となる。
- * @details
- * ユーザー信号処理を行う関数である。
- * 入力はあらかじめLとRに分離されて関数に渡される。
- * 同様に出力はLとRを分離して受け取る。
- * 配列の添字としては、Lが0、Rが1である。
- * countはサンプル数を表す。
+ * オーディオエフェクト(スルー)を実行する。
+ *
+ * @param param エフェクトパラメータ。
+ * @param in_left 入力データ。(L)
+ * @param in_right 入力データ。(R)
+ * @param out_left 出力データ。(L)
+ * @param out_right 出力データ。(R)
  */
 void audio_effect_through(
-        effect_param_t *param,
-        AUDIOSAMPLE input[2][AUDIOBUFSIZE / 2],
-        AUDIOSAMPLE output[2][AUDIOBUFSIZE / 2],
-        int count);
+        const effect_param_t *param,
+        const AUDIOSAMPLE *in_left,
+        const AUDIOSAMPLE *in_right,
+        AUDIOSAMPLE *out_left,
+        AUDIOSAMPLE *out_right);
 
 #endif
 

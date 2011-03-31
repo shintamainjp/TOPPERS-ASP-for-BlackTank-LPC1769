@@ -101,8 +101,9 @@ struct I2S_AUDIO_DATA* get_audio_data(void)
 
 void task_audio(intptr_t exinf)
 {
-    AUDIOSAMPLE * txbuf, *rxbuf;
-    int index, ch, sample;
+    AUDIOSAMPLE *txbuf;
+    const AUDIOSAMPLE *rxbuf;
+    int index;
     uint16_t msg;
     effect_param_t effect_param;
 
@@ -155,13 +156,14 @@ void task_audio(intptr_t exinf)
         // DMAバッファ転送の終了を待つ。
         wai_sem(SEM_I2SDMA);
 
-        // 同期状態を示すためのテストピン信号を作成する。
-        testpin_tp1_toggle();
-
         // プログラムが使用してもよいバッファのアドレスを取得する。
         txbuf = i2s_getTxBuf();
         rxbuf = i2s_getRxBuf();
 
+        // 同期状態を示すためのテストピン信号を作成する。
+        testpin_tp1_write(1);
+
+#if 0
         index = 0;
         for (sample = 0; sample < AUDIOBUFSIZE / 2; sample++) {
             for (ch = 0; ch < 2; ch++) {
@@ -179,6 +181,17 @@ void task_audio(intptr_t exinf)
                 txbuf[index++] = audio_data.outputBuffer[ch][sample];
             }
         }
+#endif
+
+        for (index = 0; index < AUDIOBUFSIZE; index+=2) {
+            audio_effect_through(
+                    &effect_param,
+                    rxbuf + (index + 0), rxbuf + (index + 1),
+                    txbuf + (index + 0), txbuf + (index + 1));
+        }
+
+        // 同期状態を示すためのテストピン信号を作成する
+        testpin_tp1_write(0);
 
 #if 0
         /*
@@ -193,9 +206,6 @@ void task_audio(intptr_t exinf)
             DISP_AUDIO_LEVELMETER(level_l, level_r);
         }
 #endif
-
-        // 同期状態を示すためのテストピン信号を作成する
-        testpin_tp2_toggle();
     }
 }
 

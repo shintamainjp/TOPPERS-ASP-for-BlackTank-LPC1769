@@ -16,7 +16,7 @@ void testpin_init(void)
     LPC_GPIO1->FIODIR |= (1 << TP2_PIN_NUM);
 }
 
-void testpin_tp1(uint8_t on)
+void testpin_tp1_write(uint8_t on)
 {
     if (on) {
         LPC_GPIO1->FIOPIN |= (1 << TP1_PIN_NUM);
@@ -25,7 +25,7 @@ void testpin_tp1(uint8_t on)
     }
 }
 
-void testpin_tp2(uint8_t on)
+void testpin_tp2_write(uint8_t on)
 {
     if (on) {
         LPC_GPIO1->FIOPIN |= (1 << TP2_PIN_NUM);
