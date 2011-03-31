@@ -106,6 +106,12 @@ void task_audio(intptr_t exinf)
     int index;
     uint16_t msg;
     effect_param_t effect_param;
+    void (*effect_func)(
+            const effect_param_t *param,
+            const AUDIOSAMPLE *in_left,
+            const AUDIOSAMPLE *in_right,
+            AUDIOSAMPLE *out_left,
+            AUDIOSAMPLE *out_right);
 
     /*
      * オーディオコーデックを初期化する。
@@ -131,11 +137,23 @@ void task_audio(intptr_t exinf)
      */
     testpin_init();
 
+    effect_func = audio_effect_through;
+
     while(1)
     {
         // 外部タスクからパラメータを取得する。
         if (prcv_dtq(DTQ_AUDIOPARAM, (intptr_t *)&msg) == E_OK) {
             switch (MSG_TARGET(msg)) {
+                case AUDIO_PARAM_MODE:
+                    switch (MSG_VALUE(msg)) {
+                        case AUDIO_VALUE_MODE_THROUGH:
+                            effect_func = audio_effect_through;
+                            break;
+                        case AUDIO_VALUE_MODE_VOCAL_CANCEL:
+                            effect_func = audio_effect_vocal_cancel;
+                            break;
+                    }
+                    break;
                 case AUDIO_PARAM_VAR0:
                     effect_param.var0 = MSG_VALUE(msg);
                     break;
@@ -184,7 +202,7 @@ void task_audio(intptr_t exinf)
 #endif
 
         for (index = 0; index < AUDIOBUFSIZE; index+=2) {
-            audio_effect_through(
+            effect_func(
                     &effect_param,
                     rxbuf + (index + 0), rxbuf + (index + 1),
                     txbuf + (index + 0), txbuf + (index + 1));

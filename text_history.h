@@ -38,7 +38,7 @@
 #ifndef TEXT_HISTORY_H
 #define TEXT_HISTORY_H
 
-#define TEXTHISTORY_MAXLEN 16
+#define TEXTHISTORY_MAXLEN 32
 #define TEXTHISTORY_DEPTH 8
 
 typedef struct {

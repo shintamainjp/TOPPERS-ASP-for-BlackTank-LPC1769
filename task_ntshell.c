@@ -18,6 +18,7 @@
 #include "task_ntshell.h"
 #include "task_led.h"
 #include "task_display.h"
+#include "task_audio.h"
 
 #include "ntshell.h"
 #include "ntopt.h"
@@ -34,6 +35,7 @@ text_editor_t editor;
 text_history_t history;
 int ledspd = 100;
 
+void cmd_audio(int argc, char **argv);
 void cmd_lcd(int argc, char **argv);
 void cmd_led(int argc, char **argv);
 void cmd_mount(int argc, char **argv);
@@ -56,6 +58,7 @@ typedef struct {
 } command_table_t;
 
 const command_table_t table[] = {
+    {"audio", "Audio task parameter.", cmd_audio},
     {"lcd", "Control the LCD.", cmd_lcd},
     {"led", "Set state of the debug purpose LED.", cmd_led},
     {"mount", "Mount a SD card.", cmd_mount},
@@ -66,6 +69,17 @@ const command_table_t table[] = {
     {"help", "Display help.", cmd_help},
     {NULL, NULL, NULL}
 };
+
+void cmd_audio(int argc, char **argv) {
+    if (argc == 2) {
+        if (ntlibc_strcmp(argv[1], "through") == 0) {
+            AUDIO_PARAM(AUDIO_PARAM_MODE, AUDIO_VALUE_MODE_THROUGH);
+        }
+        if (ntlibc_strcmp(argv[1], "vocal_cancel") == 0) {
+            AUDIO_PARAM(AUDIO_PARAM_MODE, AUDIO_VALUE_MODE_VOCAL_CANCEL);
+        }
+    }
+}
 
 void cmd_lcd(int argc, char **argv) {
     if (argc == 2) {
