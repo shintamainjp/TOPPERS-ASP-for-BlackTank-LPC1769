@@ -12,5 +12,6 @@
  * - @subpage firmware
  * - @subpage development
  * - @subpage problems
+ * - @subpage requests
  */
 
