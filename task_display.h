@@ -28,6 +28,9 @@
 
 #include "target_test.h"
 
+/**
+ * @brief タスクプライオリティ。(ディスプレイタスク)
+ */
 #define TSKPRI_DISPLAY    11
 #define TSKSTK_DISPLAY    STACK_SIZE
 

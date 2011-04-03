@@ -21,10 +21,17 @@ typedef int AUDIOSAMPLE;
  * AUDIOBUFSIZEがNならば、ステレオなので、N/2サンプルのデータを
  * 一回のDMAで転送することになる。
  */
-#define AUDIOBUFSIZE 64 /* I2Sバッファの長さ。48kHzサンプルの時、1mSにするには96を選ぶ */
+#define AUDIOBUFSIZE 64
 
-#define LCH 0 /*左チャンネルインデックス*/
-#define RCH 1 /*右チャンネルインデックス*/
+/**
+ * @brief 左チャンネルインデックス
+ */
+#define LCH 0
+
+/**
+ * @brief 右チャンネルインデックス
+ */
+#define RCH 1
 
 #endif
 

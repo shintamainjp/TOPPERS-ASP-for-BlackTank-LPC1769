@@ -15,6 +15,9 @@
 
 #include "i2s_subsystem.h"
 
+/**
+ * @brief タスクプライオリティ。(オーディオタスク)
+ */
 #define TSKPRI_AUDIO 10
 #define TSKSTK_AUDIO STACK_SIZE
 
@@ -26,6 +29,8 @@
 
 #define AUDIO_VALUE_MODE_THROUGH 0
 #define AUDIO_VALUE_MODE_VOCAL_CANCEL 1
+#define AUDIO_VALUE_MODE_FIR 2
+#define AUDIO_VALUE_MODE_IIR 3
 
 #define AUDIO_PARAM(TARGET,VALUE) \
     snd_dtq(DTQ_AUDIOPARAM, \

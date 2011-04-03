@@ -30,11 +30,18 @@ void cmd_audio(int argc, char **argv) {
     if (argc == 2) {
         if (ntlibc_strcmp(argv[1], "through") == 0) {
             AUDIO_PARAM(AUDIO_PARAM_MODE, AUDIO_VALUE_MODE_THROUGH);
+            return;
         }
         if (ntlibc_strcmp(argv[1], "vocal_cancel") == 0) {
             AUDIO_PARAM(AUDIO_PARAM_MODE, AUDIO_VALUE_MODE_VOCAL_CANCEL);
+            return;
+        }
+        if (ntlibc_strcmp(argv[1], "fir") == 0) {
+            AUDIO_PARAM(AUDIO_PARAM_MODE, AUDIO_VALUE_MODE_FIR);
+            return;
         }
     }
+    syslog(LOG_NOTICE, "audio [through | vocal_cancel | fir]");
 }
 
 void cmd_lcd(int argc, char **argv) {
@@ -201,9 +208,9 @@ void cmd_trace(int argc, char **argv) {
     trace_sta_log(TRACE_STOP);
     trace_sta_log(TRACE_CLEAR);
     trace_sta_log(TRACE_AUTOSTOP);
-    syslog(LOG_NOTICE, "\r\ntrace started.");
+    syslog(LOG_NOTICE, "trace started.");
 #else
-    syslog(LOG_NOTICE, "\r\ntrace disabled in this build.");
+    syslog(LOG_NOTICE, "trace disabled in this build.");
 #endif
 }
 

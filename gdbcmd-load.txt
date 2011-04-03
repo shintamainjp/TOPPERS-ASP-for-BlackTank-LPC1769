@@ -1,5 +1,7 @@
 target remote localhost:3333
 monitor soft_reset_halt
 #monitor halt
+shell sleep 2
 load TOPPERS-ASP_BlackTank-LPC1769.axf
+shell sleep 2
 continue

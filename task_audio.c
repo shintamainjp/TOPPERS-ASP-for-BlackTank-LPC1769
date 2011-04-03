@@ -152,6 +152,17 @@ void task_audio(intptr_t exinf)
                         case AUDIO_VALUE_MODE_VOCAL_CANCEL:
                             effect_func = audio_effect_vocal_cancel;
                             break;
+                        case AUDIO_VALUE_MODE_FIR:
+                            effect_func = audio_effect_fir;
+                            break;
+                        case AUDIO_VALUE_MODE_IIR:
+                            effect_func = audio_effect_iir;
+                            break;
+                        default:
+                            syslog(LOG_NOTICE,
+                                    "Unknown effect mode %d.",
+                                    MSG_VALUE(msg));
+                            break;
                     }
                     break;
                 case AUDIO_PARAM_VAR0:

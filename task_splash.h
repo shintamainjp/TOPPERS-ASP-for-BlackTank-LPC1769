@@ -12,6 +12,9 @@
 #ifndef TASK_SPLASH_H
 #define TASK_SPLASH_H
 
+/**
+ * @brief タスクプライオリティ。(スプラッシュ)
+ */
 #define TSKPRI_SPLASH 13
 #define TSKSTK_SPLASH STACK_SIZE
 

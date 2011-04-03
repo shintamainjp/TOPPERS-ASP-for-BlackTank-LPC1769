@@ -85,6 +85,7 @@ void func_ntopt(int argc, char **argv)
     const command_table_t *p = &table[0];
     while (p->command != NULL) {
         if (ntlibc_strcmp((const char *)argv[0], p->command) == 0) {
+            syslog(LOG_NOTICE, "");
             p->func(argc, argv);
             execnt++;
         }
@@ -92,6 +93,7 @@ void func_ntopt(int argc, char **argv)
     }
     if (execnt == 0) {
         if (argc > 0) {
+            syslog(LOG_NOTICE, "");
             cmd_help();
         } else {
             syslog(LOG_NOTICE,

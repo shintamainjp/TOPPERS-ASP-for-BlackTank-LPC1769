@@ -1,3 +1,8 @@
+/**
+ * @file pffspi.h
+ * @brief FATファイルシステム用下層SPIドライバの定義。
+ */
+
 #ifndef PFFSPI_H
 #define PFFSPI_H
 

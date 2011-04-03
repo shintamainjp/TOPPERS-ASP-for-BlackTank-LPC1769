@@ -1,10 +1,10 @@
-/*
- * VTParse
+/**
+ * @file vtparse.c
+ * @brief VTParse
+ * @details
  * An implementation of Paul Williams' DEC compatible state machine parser
- *
- * Author: Joshua Haberman <joshua@reverberate.org>
- *
  * This code is in the public domain.
+ * @author Joshua Haberman <joshua@reverberate.org>
  */
 
 #include <string.h>

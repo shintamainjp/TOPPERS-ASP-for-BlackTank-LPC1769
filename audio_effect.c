@@ -37,11 +37,7 @@ void audio_effect_vocal_cancel(
         AUDIOSAMPLE *out_left,
         AUDIOSAMPLE *out_right)
 {
-    const int var0 = param->var0;
-    const int var1 = param->var1;
-    AUDIOSAMPLE mix = ((*in_left) / 2) + ((*in_right) / 2);
-    *out_left = (mix >> 10) * var0;
-    *out_right = (mix >> 10) * var1;
+    /** @todo ボーカルキャンセルフィルタを挿入する。 */
 }
 
 /**
@@ -60,24 +56,25 @@ void audio_effect_fir(
         AUDIOSAMPLE *out_left,
         AUDIOSAMPLE *out_right)
 {
-#define FIR_TAPS 11
-    static int FIR_POS = 0;
-    static AUDIOSAMPLE buf_left[FIR_TAPS];
-    static AUDIOSAMPLE buf_right[FIR_TAPS];
-    static const double coe[FIR_TAPS] = {
-        0.1,
-        0.1,
-        0.1,
-        0.1,
-        0.1,
-        0.1,
-        0.1,
-        0.1,
-        0.1,
-        0.1,
-        0.1
-    };
-    buf_left[FIR_POS] = in_left;
-    buf_right[FIR_POS] = in_right;
+    /** @todo FIRフィルタを挿入する。 */
+}
+
+/**
+ * オーディオエフェクト(IIR: Infinite Impulse Response)を実行する。
+ *
+ * @param param エフェクトパラメータ。
+ * @param in_left 入力データ。(L)
+ * @param in_right 入力データ。(R)
+ * @param out_left 出力データ。(L)
+ * @param out_right 出力データ。(R)
+ */
+void audio_effect_iir(
+        const effect_param_t *param,
+        const AUDIOSAMPLE *in_left,
+        const AUDIOSAMPLE *in_right,
+        AUDIOSAMPLE *out_left,
+        AUDIOSAMPLE *out_right)
+{
+    /** @todo IIRフィルタを挿入する。 */
 }
 

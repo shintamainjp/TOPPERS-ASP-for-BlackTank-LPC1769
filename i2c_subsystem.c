@@ -10,6 +10,8 @@
 #include <kernel.h>
 #include <t_syslog.h>
 
+#define I2C_DEBUG 0
+
 void i2c_init()
 {
     /* I2C0の電源をオン */
@@ -37,9 +39,11 @@ void i2c_send_2bytes(int addr, int data0, int data1)
     LPC_I2C0->I2CONSET = 0x20;
     tslp_tsk(10);
     if (LPC_I2C0->I2STAT != 0x08) {
+#if I2C_DEBUG
         syslog(LOG_NOTICE, "I2C0 Start. Expects 0x08 ");
         syslog(LOG_NOTICE, "I2CONSET0 %02x", LPC_I2C0->I2CONSET);
         syslog(LOG_NOTICE, "I2STAT0 %02x", LPC_I2C0->I2STAT);
+#endif
     }
 
     /* I2C アドレス TLV320AIC23B CS=0, Write */
@@ -49,9 +53,11 @@ void i2c_send_2bytes(int addr, int data0, int data1)
     LPC_I2C0->I2CONCLR = 0x28;
     tslp_tsk(10);
     if (LPC_I2C0->I2STAT != 0x18) {
+#if I2C_DEBUG
         syslog(LOG_NOTICE, "SI&STA Clear, SLA + W sent. Expects 0x18 ");
         syslog(LOG_NOTICE, "I2CONSET0 %02x", LPC_I2C0->I2CONSET);
         syslog(LOG_NOTICE, "I2STAT0 %02x", LPC_I2C0->I2STAT);
+#endif
     }
 
     /* 最初のデータの転送 */
@@ -60,9 +66,11 @@ void i2c_send_2bytes(int addr, int data0, int data1)
     LPC_I2C0->I2CONCLR = 0x08;
     tslp_tsk(10);
     if (LPC_I2C0->I2STAT != 0x28) {
+#if I2C_DEBUG
         syslog(LOG_NOTICE, "SI Clear, dataH sent. Expects 0x28 ");
         syslog(LOG_NOTICE, "I2CONSET0 %02x", LPC_I2C0->I2CONSET);
         syslog(LOG_NOTICE, "I2STAT0 %02x", LPC_I2C0->I2STAT);
+#endif
     }
     /* 次のデータの転送 */
     LPC_I2C0->I2DAT = data1;
@@ -70,9 +78,11 @@ void i2c_send_2bytes(int addr, int data0, int data1)
     LPC_I2C0->I2CONCLR = 0x08;
     tslp_tsk(10);
     if (LPC_I2C0->I2STAT != 0x28) {
+#if I2C_DEBUG
         syslog(LOG_NOTICE, "SI Clear, dataL sent. Expects 0x28 ");
         syslog(LOG_NOTICE, "I2CONSET0 %02x", LPC_I2C0->I2CONSET);
         syslog(LOG_NOTICE, "I2STAT0 %02x", LPC_I2C0->I2STAT);
+#endif
     }
     /* set STOP */
     LPC_I2C0->I2CONSET = 0x10;
@@ -81,8 +91,10 @@ void i2c_send_2bytes(int addr, int data0, int data1)
     LPC_I2C0->I2CONCLR = 0x08;
     tslp_tsk(10);
     if (LPC_I2C0->I2STAT != 0xF8) {
+#if I2C_DEBUG
         syslog(LOG_NOTICE, "SI Clear. Expects 0xF8, NO SI ");
         syslog(LOG_NOTICE, "I2CONSET0 %02x", LPC_I2C0->I2CONSET);
         syslog(LOG_NOTICE, "I2STAT0 %02x", LPC_I2C0->I2STAT);
+#endif
     }
 }

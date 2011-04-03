@@ -12,6 +12,9 @@
 
 #include "target_test.h"
 
+/**
+ * @brief タスクプライオリティ。(ユーザ入力タスク)
+ */
 #define TSKPRI_USERINPUT    12
 #define TSKSTK_USERINPUT    STACK_SIZE
 

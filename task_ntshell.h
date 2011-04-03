@@ -19,6 +19,9 @@
  *  各タスクの優先度の定義
  */
 
+/**
+ * @brief タスクプライオリティ。(シェルタスク)
+ */
 #define TSKPRI_NTSHELL    14
 #define TSKSTK_NTSHELL    STACK_SIZE
 

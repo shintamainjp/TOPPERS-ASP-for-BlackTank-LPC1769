@@ -13,6 +13,9 @@
 
 #include "target_test.h"
 
+/**
+ * @brief タスクプライオリティ。(メニュータスク)
+ */
 #define TSKPRI_MENU    12
 #define TSKSTK_MENU    STACK_SIZE
 

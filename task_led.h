@@ -23,6 +23,9 @@
 
 #include "target_test.h"
 
+/**
+ * @brief タスクプライオリティ。(LEDタスク)
+ */
 #define TSKPRI_LED  11
 #define TSKSTK_LED  STACK_SIZE
 
