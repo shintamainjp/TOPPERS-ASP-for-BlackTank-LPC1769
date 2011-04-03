@@ -92,7 +92,7 @@
 				"pri"   :10,
 				"exinf" :"0",
 				"task"  :"task_audio",
-				"stksz" :2048,
+				"stksz" :1024,
 				"stk"   :"NULL",
 				"state" :"DORMANT"
 			}

@@ -16,7 +16,7 @@
 #include "i2s_subsystem.h"
 
 #define TSKPRI_AUDIO 10
-#define TSKSTK_AUDIO 2048
+#define TSKSTK_AUDIO STACK_SIZE
 
 #define AUDIO_PARAM_MODE 0
 #define AUDIO_PARAM_VAR0 1

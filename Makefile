@@ -184,7 +184,8 @@ MYOBJS = sys_init.o \
 	 codec_subsystem.o \
 	 \
 	 testpin.o \
-	 bmplowio.o
+	 bmplowio.o \
+	 cmd.o
 
 APPL_DIR = $(APPLDIR) $(SRCDIR)/library ./drivers/ff ./drivers/oled ./drivers/led ./drivers/hid
 APPL_ASMOBJS =
