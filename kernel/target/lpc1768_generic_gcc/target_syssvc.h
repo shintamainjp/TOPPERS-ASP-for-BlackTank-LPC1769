@@ -116,17 +116,16 @@
  * \brief シリアルポートのデフォルトボーレート
  * \details
  * TOPPERS/ASPのシリアルポート1に対するボーレート設定値である。
- * シリアルポートの番号は1オリジンになっている。特に設定しない限り、
- * ２番以降のシリアルポートに対しても同じ値が設定される。２番以降の
- * シリアルポートの速度を変えたければ、マクロSIOx_BAUD_RATEを宣言する。
+ * シリアルポートの番号は1オリジンになっている。
+ * 特に設定しない限り、シリアルポートにはデフォルトの値が設定される。
+ * シリアルポートの速度を変えたければ、マクロSIO_BAUD_RATE_PORTxを宣言する。
  */
 #define SIO_BAUD_RATE_DEFAULT		(57600)
-#if 0
-#define SIO2_BAUD_RATE				115200
-#define SIO3_BAUD_RATE				115200
-#define SIO4_BAUD_RATE				115200
-#endif
 
+//#define SIO_BAUD_RATE_PORT1		(57600)
+//#define SIO_BAUD_RATE_PORT2		(57600)
+//#define SIO_BAUD_RATE_PORT3		(57600)
+//#define SIO_BAUD_RATE_PORT4		(57600)
 
 /**
  * \brief システムログの低レベル出力のための文字出力

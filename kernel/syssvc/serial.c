@@ -95,6 +95,21 @@ static char_t	snd_buffer3[SERIAL_SND_BUFSZ3];
 
 #endif /* TNUM_PORT >= 3 */
 
+#if TNUM_PORT >= 4						/* ポート4に関する定義 */
+
+#ifndef SERIAL_RCV_BUFSZ4
+#define	SERIAL_RCV_BUFSZ4	256			/* ポート4の受信バッファサイズ */
+#endif /* SERIAL_RCV_BUFSZ4 */
+
+#ifndef SERIAL_SND_BUFSZ4
+#define	SERIAL_SND_BUFSZ4	256			/* ポート4の送信バッファサイズ */
+#endif /* SERIAL_SND_BUFSZ4 */
+
+static char_t	rcv_buffer4[SERIAL_RCV_BUFSZ4];
+static char_t	snd_buffer4[SERIAL_SND_BUFSZ4];
+
+#endif /* TNUM_PORT >= 4 */
+
 /*
  *  フロー制御に関連する定数とマクロ
  */

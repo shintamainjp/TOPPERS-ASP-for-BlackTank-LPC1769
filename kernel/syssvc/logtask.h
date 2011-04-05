@@ -65,7 +65,7 @@ extern "C" {
 #endif /* LOGTASK_STACK_SIZE */
 
 #ifndef LOGTASK_PORTID
-#define LOGTASK_PORTID		1		/* システムログ用のシリアルポート番号 */
+#define LOGTASK_PORTID		SIO_PORTID	/* システムログ用のシリアルポート番号 */
 #endif /* LOGTASK_PORTID */
 
 #ifndef LOGTASK_INTERVAL

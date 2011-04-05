@@ -61,6 +61,7 @@
 /*
  * レジスタ設定値
  */
+
 /**
  * \brief SIOPCBのインデックスからポートID番号への変換
  * \details
@@ -70,6 +71,7 @@
  *
  */
 #define INDEX2SIOPID(x)	((x) + 1)
+
 /**
  * \brief ポート番号からSIOPCBのインデックスへの変換
  * \details
@@ -78,13 +80,13 @@
  * PCBを取得するためのインデックスを作り出す。
  */
 #define SIOPID2INDEX(x)	((x) - 1)
+
 /**
  * \brief ポートID番号からSIOPCBを取得する
  * \details
  * ポートID番号を元に、SIOPCBへのポインタを取得する。
  */
 #define GET_SIOPCB(x)	(&siopcb_table[SIOPID2INDEX(x)])
-
 
 /**
  * \brief ペリフェラル・レジスタの間隔
@@ -97,6 +99,7 @@
 #else
 #error "You must define UART_BOUNDARY for your architecture"
 #endif
+
 /**
  * \brief 8250, 16450, 16550各レジスタのアドレス・オフセット。
  * \details
@@ -126,7 +129,7 @@
 #define ISR_RX            0x01       /* 受信割り込み発生 */
 #define IER_RX            0x01       /* 受信割り込み許可 */
 
-#define LCR_DLAB			  0x80       /* Divisor Enable */
+#define LCR_DLAB          0x80       /* Divisor Enable */
 #define LCR_NP_8_1        0x03       /* 8bit,1stop,Noparity,No break */
 #define FCR_FIFO_DISABLE  0x00
 
@@ -303,35 +306,48 @@ void target_uart_init(ID siopid)
 
 	/* ボーレートの設定 */
 	uart_write( reg, UART_LCR, LCR_DLAB );	/* ディバイザ設定モードに移行 */
-	uart_write( reg, UART_DLL, DLL((SIO_UART_CLOCK/SIO_BAUD_RATE_DEFAULT/16)) );
-	uart_write( reg, UART_DLM, DLM((SIO_UART_CLOCK/SIO_BAUD_RATE_DEFAULT/16)) );
 
-#if defined(SIO2_BAUD_RATE)
-	if ( siopid == 2 )
-	{
-		uart_write( reg, UART_DLL, DLL((SIO_UART_CLOCK/SIO2_BAUD_RATE/16)) );
-		uart_write( reg, UART_DLM, DLM((SIO_UART_CLOCK/SIO2_BAUD_RATE/16)) );
-	}
+        switch (siopid) {
+            case 1:
+#if defined(SIO_BAUD_RATE_PORT1)
+                uart_write( reg, UART_DLL, DLL((SIO_UART_CLOCK/SIO_BAUD_RATE_PORT1/16)) );
+                uart_write( reg, UART_DLM, DLM((SIO_UART_CLOCK/SIO_BAUD_RATE_PORT1/16)) );
+#else
+                uart_write( reg, UART_DLL, DLL((SIO_UART_CLOCK/SIO_BAUD_RATE_DEFAULT/16)) );
+                uart_write( reg, UART_DLM, DLM((SIO_UART_CLOCK/SIO_BAUD_RATE_DEFAULT/16)) );
 #endif
-
-#if defined(SIO3_BAUD_RATE)
-	if ( siopid == 3 )
-	{
-		uart_write( reg, UART_DLL, DLL((SIO_UART_CLOCK/SIO3_BAUD_RATE/16)) );
-		uart_write( reg, UART_DLM, DLM((SIO_UART_CLOCK/SIO3_BAUD_RATE/16)) );
-	}
+                break;
+            case 2:
+#if defined(SIO_BAUD_RATE_PORT2)
+                uart_write( reg, UART_DLL, DLL((SIO_UART_CLOCK/SIO_BAUD_RATE_PORT2/16)) );
+                uart_write( reg, UART_DLM, DLM((SIO_UART_CLOCK/SIO_BAUD_RATE_PORT2/16)) );
+#else
+                uart_write( reg, UART_DLL, DLL((SIO_UART_CLOCK/SIO_BAUD_RATE_DEFAULT/16)) );
+                uart_write( reg, UART_DLM, DLM((SIO_UART_CLOCK/SIO_BAUD_RATE_DEFAULT/16)) );
 #endif
-
-#if defined(SIO4_BAUD_RATE)
-	if ( siopid == 4 )
-	{
-		uart_write( reg, UART_DLL, DLL((SIO_UART_CLOCK/SIO4_BAUD_RATE/16)) );
-		uart_write( reg, UART_DLM, DLM((SIO_UART_CLOCK/SIO4_BAUD_RATE/16)) );
-	}
+                break;
+            case 3:
+#if defined(SIO_BAUD_RATE_PORT3)
+                uart_write( reg, UART_DLL, DLL((SIO_UART_CLOCK/SIO_BAUD_RATE_PORT3/16)) );
+                uart_write( reg, UART_DLM, DLM((SIO_UART_CLOCK/SIO_BAUD_RATE_PORT3/16)) );
+#else
+                uart_write( reg, UART_DLL, DLL((SIO_UART_CLOCK/SIO_BAUD_RATE_DEFAULT/16)) );
+                uart_write( reg, UART_DLM, DLM((SIO_UART_CLOCK/SIO_BAUD_RATE_DEFAULT/16)) );
 #endif
+                break;
+            case 4:
+#if defined(SIO_BAUD_RATE_PORT4)
+                uart_write( reg, UART_DLL, DLL((SIO_UART_CLOCK/SIO_BAUD_RATE_PORT4/16)) );
+                uart_write( reg, UART_DLM, DLM((SIO_UART_CLOCK/SIO_BAUD_RATE_PORT4/16)) );
+#else
+                uart_write( reg, UART_DLL, DLL((SIO_UART_CLOCK/SIO_BAUD_RATE_DEFAULT/16)) );
+                uart_write( reg, UART_DLM, DLM((SIO_UART_CLOCK/SIO_BAUD_RATE_DEFAULT/16)) );
+#endif
+                break;
+        }
 
 	/* デバイザ設定モードから、通常モードに戻す */
-	uart_write( reg, UART_LCR, 0 );					/* 通常モードに移行 */
+	uart_write( reg, UART_LCR, 0 );				/* 通常モードに移行 */
 
 	/* プロトコルを設定。8bit, 1stop bit, parityなし */
 	uart_write( reg, UART_LCR, LCR_NP_8_1 );		/* 通常モードに移行 */
