@@ -104,6 +104,7 @@ void task_audio(intptr_t exinf)
     AUDIOSAMPLE *txbuf;
     const AUDIOSAMPLE *rxbuf;
     int index;
+    AUDIOSAMPLE lm_left, lm_right;
     uint16_t msg;
     effect_param_t effect_param;
     void (*effect_func)(
@@ -192,47 +193,29 @@ void task_audio(intptr_t exinf)
         // 同期状態を示すためのテストピン信号を作成する。
         testpin_tp1_write(1);
 
-#if 0
-        index = 0;
-        for (sample = 0; sample < AUDIOBUFSIZE / 2; sample++) {
-            for (ch = 0; ch < 2; ch++) {
-                audio_data.inputBuffer[ch][sample] = rxbuf[index++];
-            }
-        }
-        audio_effect_through(
-                &effect_param,
-                audio_data.inputBuffer,
-                audio_data.outputBuffer,
-                AUDIOBUFSIZE / 2);
-        index = 0;
-        for (sample = 0; sample < AUDIOBUFSIZE / 2; sample++) {
-            for (ch = 0; ch < 2; ch++) {
-                txbuf[index++] = audio_data.outputBuffer[ch][sample];
-            }
-        }
-#endif
-
+        lm_left = 0;
+        lm_right = 0;
         for (index = 0; index < AUDIOBUFSIZE; index+=2) {
             effect_func(
                     &effect_param,
                     rxbuf + (index + 0), rxbuf + (index + 1),
                     txbuf + (index + 0), txbuf + (index + 1));
+            lm_left = (lm_left >> 1) + (*(txbuf + (index + 0)) >> 1);
+            lm_right = (lm_right >> 1) + (*(txbuf + (index + 1)) >> 1);
         }
 
         // 同期状態を示すためのテストピン信号を作成する
         testpin_tp1_write(0);
 
-#if 0
+#if 1
         /*
          * サンプルの頭の値だけを抜き出してディスプレイタスクに
          * オーディオレベルメータを要求する手抜きレベルメータ。
          */
         static int divcnt = 0;
         divcnt++;
-        if ((divcnt % 512) == 0) {
-            int level_l = txbuf[0];
-            int level_r = txbuf[1];
-            DISP_AUDIO_LEVELMETER(level_l, level_r);
+        if ((divcnt % 64) == 0) {
+            DISP_AUDIO_LEVELMETER(lm_left, lm_right);
         }
 #endif
     }

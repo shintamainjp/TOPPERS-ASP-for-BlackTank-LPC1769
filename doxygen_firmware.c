@@ -116,6 +116,9 @@
  *  遷移しない実装にしてあります。
  *  今回のタスク設計ではメニュータスクがブロックの対象となります。
  *
+ * @subsection task_init 初期化タスク(task_init)
+ * 初期化するタスクです。
+ *
  * @subsection task_ntshell ナチュラルタイニーシェルタスク(task_ntshell)
  *  システムをコンソールから制御することのできるインターフェース
  *  タスクです。
@@ -170,35 +173,35 @@
  *   </tr>
  *   <tr>
  *     <td>リアルタイム・タスク</td>
- *     <td>task_audio</td>
+ *     <td>@ref task_audio</td>
  *     <td>10</td>
  *   </tr>
  *   <tr>
  *     <td rowspan="2">サーバ・タスク</td>
- *     <td>task_display</td>
+ *     <td>@ref task_display</td>
  *     <td>11</td>
  *   </tr>
  *   <tr>
- *     <td>task_led</td>
+ *     <td>@ref task_led</td>
  *     <td>11</td>
  *   </tr>
  *   <tr>
  *     <td rowspan="2">クライアント・タスク</td>
- *     <td>task_menu</td>
+ *     <td>@ref task_menu</td>
  *     <td>12</td>
  *   </tr>
  *   <tr>
- *     <td>task_userinput</td>
+ *     <td>@ref task_userinput</td>
  *     <td>12</td>
  *   </tr>
  *   <tr>
  *     <td>イニシャライザ</td>
- *     <td>task_splash</td>
+ *     <td>@ref task_init</td>
  *     <td>13</td>
  *   </tr>
  *   <tr>
  *     <td>デバッガ</td>
- *     <td>task_ntshell</td>
+ *     <td>@ref task_ntshell</td>
  *     <td>14</td>
  *   </tr>
  * </table>

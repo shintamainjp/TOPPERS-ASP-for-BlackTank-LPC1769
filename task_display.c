@@ -436,9 +436,13 @@ void cmd_audio_levelmeter(display_audio_levelmeter_t *p)
 
     static const int LVW = OLED_X;
     static const int LVH = 2;
+    static const int LVOFSX = 0;
+    static const int LVOFSY = 10;
 
-    unsigned int PL = ((((uint32_t)p->left ) ^ 0x80000000) >> 26);
-    unsigned int PR = ((((uint32_t)p->right) ^ 0x80000000) >> 26);
+    unsigned int PL = ((((uint32_t)p->left ) ^ 0x80000000) >> 24) - 128;
+    unsigned int PR = ((((uint32_t)p->right) ^ 0x80000000) >> 24) - 128;
+    PL = PL / 5;
+    PR = PR / 5;
     if (PL < 0) { PL = 0; }
     if (PR < 0) { PR = 0; }
     if (LVW <= PL) { PL = LVW - 1; }
@@ -447,14 +451,26 @@ void cmd_audio_levelmeter(display_audio_levelmeter_t *p)
     /*
      * Left side.
      */
-    oled_fill_box(0, 0, PL - 1, LVH - 1, c1, c1);
-    oled_fill_box(PL, 0, OLED_X - 1, LVH - 1, c2, c2);
+    oled_fill_box(
+            LVOFSX + 0, LVOFSY + 0,
+            LVOFSX + PL - 1, LVOFSY + LVH - 1,
+            c1, c1);
+    oled_fill_box(
+            LVOFSX + PL, LVOFSY + 0,
+            LVOFSX + OLED_X - 1, LVOFSY + LVH - 1,
+            c2, c2);
 
     /*
      * Right side.
      */
-    oled_fill_box(0, LVH, PR - 1, LVH + LVH - 1, c1, c1);
-    oled_fill_box(PR, LVH, OLED_X - 1, LVH + LVH - 1, c2, c2);
+    oled_fill_box(
+            LVOFSX + 0, LVOFSY + LVH,
+            LVOFSX + PR - 1, LVOFSY + LVH + LVH - 1,
+            c1, c1);
+    oled_fill_box(
+            LVOFSX + PR, LVOFSY + LVH,
+            LVOFSX + OLED_X - 1, LVOFSY + LVH + LVH - 1,
+            c2, c2);
 }
 
 void task_display(intptr_t exinf)

@@ -21,22 +21,40 @@
 #define TSKPRI_AUDIO 10
 #define TSKSTK_AUDIO STACK_SIZE
 
-#define AUDIO_PARAM_MODE 0
-#define AUDIO_PARAM_VAR0 1
-#define AUDIO_PARAM_VAR1 2
-#define AUDIO_PARAM_VAR2 3
-#define AUDIO_PARAM_VAR3 4
+/**
+ * @defgroup BLACKTANK_LPC1769_TASK_AUDIO_CLIENT
+ * @ingroup BLACKTANK_LPC1769_TASK_AUDIO
+ * @{
+ */
 
-#define AUDIO_VALUE_MODE_THROUGH 0
-#define AUDIO_VALUE_MODE_VOCAL_CANCEL 1
-#define AUDIO_VALUE_MODE_FIR 2
-#define AUDIO_VALUE_MODE_IIR 3
+#define AUDIO_PARAM_MODE 0 /**< @brief モードパラメータ。 */
+#define AUDIO_PARAM_VAR0 1 /**< @brief VAR0パラメータ。 */
+#define AUDIO_PARAM_VAR1 2 /**< @brief VAR1パラメータ。 */
+#define AUDIO_PARAM_VAR2 3 /**< @brief VAR2パラメータ。 */
+#define AUDIO_PARAM_VAR3 4 /**< @brief VAR3パラメータ。 */
 
-#define AUDIO_PARAM(TARGET,VALUE) \
+#define AUDIO_VALUE_MODE_THROUGH 0 /**< @brief モードに対する値。 */
+#define AUDIO_VALUE_MODE_VOCAL_CANCEL 1 /**< @brief モードに対する値。 */
+#define AUDIO_VALUE_MODE_FIR 2 /**< @brief モードに対する値。 */
+#define AUDIO_VALUE_MODE_IIR 3 /**< @brief モードに対する値。 */
+
+/**
+ * @brief オーディオパラメータを設定する。
+ * @details
+ * このマクロを使うとオーディオパラメータを設定することができる。
+ * マクロはタスクコンテキスト内から呼び出す事ができる。
+ * @param PARAM 設定対象パラメータ。
+ * @param VALUE 設定対象パラメータに対する設定値。
+ */
+#define AUDIO_PARAM(PARAM,VALUE) \
     snd_dtq(DTQ_AUDIOPARAM, \
             (intptr_t)( \
-                (((TARGET) & 0x000F) << 12) \
+                (((PARAM) & 0x000F) << 12) \
                 | (((VALUE)& 0x0FFF) << 0)))
+
+/**
+ * @}
+ */
 
 /**
  * @defgroup BLACKTANK_LPC1769_TASK_AUDIO

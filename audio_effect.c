@@ -37,7 +37,11 @@ void audio_effect_vocal_cancel(
         AUDIOSAMPLE *out_left,
         AUDIOSAMPLE *out_right)
 {
-    /** @todo ボーカルキャンセルフィルタを挿入する。 */
+    const int var0 = param->var0;
+    const int var1 = param->var1;
+    const AUDIOSAMPLE mix = ((*in_left) - (*in_right)) >> 1;
+    *out_left = (mix >> 10) * var0;
+    *out_right = (mix >> 10) * var1;
 }
 
 /**

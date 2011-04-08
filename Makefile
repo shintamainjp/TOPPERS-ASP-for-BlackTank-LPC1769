@@ -176,7 +176,7 @@ MYOBJS = sys_init.o \
 	 task_display.o \
 	 task_menu.o \
 	 task_audio.o \
-	 task_splash.o \
+	 task_init.o \
 	 \
 	 audio_effect.o \
 	 i2c_subsystem.o \

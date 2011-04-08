@@ -27,60 +27,60 @@
 				"state" :"RUNNABLE"
 			}
 		},
-		"TASK_DISPLAY":{
+		"TASK_INIT":{
 			"Type":"Task",
 			"Attributes":
 			{
 				"id"    :2,
 				"atr"   :"TA_ACT",
+				"pri"   :13,
+				"exinf" :"0",
+				"task"  :"task_init",
+				"stksz" :2048,
+				"stk"   :"NULL",
+				"state" :"RUNNABLE"
+			}
+		},
+		"TASK_DISPLAY":{
+			"Type":"Task",
+			"Attributes":
+			{
+				"id"    :3,
+				"atr"   :"0",
 				"pri"   :11,
 				"exinf" :"0",
 				"task"  :"task_display",
-				"stksz" :1024,
+				"stksz" :2048,
 				"stk"   :"NULL",
-				"state" :"RUNNABLE"
+				"state" :"DORMANT"
 			}
 		},
 		"TASK_LED":{
 			"Type":"Task",
 			"Attributes":
 			{
-				"id"    :3,
-				"atr"   :"TA_ACT",
+				"id"    :4,
+				"atr"   :"0",
 				"pri"   :11,
 				"exinf" :"0",
 				"task"  :"task_led",
-				"stksz" :1024,
+				"stksz" :2048,
 				"stk"   :"NULL",
-				"state" :"RUNNABLE"
+				"state" :"DORMANT"
 			}
 		},
 		"TASK_NTSHELL":{
 			"Type":"Task",
 			"Attributes":
 			{
-				"id"    :4,
-				"atr"   :"TA_ACT",
+				"id"    :5,
+				"atr"   :"0",
 				"pri"   :14,
 				"exinf" :"0",
 				"task"  :"task_ntshell",
-				"stksz" :1024,
+				"stksz" :2048,
 				"stk"   :"NULL",
-				"state" :"RUNNABLE"
-			}
-		},
-		"TASK_SPLASH":{
-			"Type":"Task",
-			"Attributes":
-			{
-				"id"    :5,
-				"atr"   :"TA_ACT",
-				"pri"   :13,
-				"exinf" :"0",
-				"task"  :"task_splash",
-				"stksz" :1024,
-				"stk"   :"NULL",
-				"state" :"RUNNABLE"
+				"state" :"DORMANT"
 			}
 		},
 		"TASK_AUDIO":{
@@ -92,7 +92,7 @@
 				"pri"   :10,
 				"exinf" :"0",
 				"task"  :"task_audio",
-				"stksz" :1024,
+				"stksz" :2048,
 				"stk"   :"NULL",
 				"state" :"DORMANT"
 			}
@@ -106,7 +106,7 @@
 				"pri"   :12,
 				"exinf" :"0",
 				"task"  :"task_menu",
-				"stksz" :1024,
+				"stksz" :2048,
 				"stk"   :"NULL",
 				"state" :"DORMANT"
 			}
@@ -120,7 +120,7 @@
 				"pri"   :12,
 				"exinf" :"0",
 				"task"  :"task_userinput",
-				"stksz" :1024,
+				"stksz" :2048,
 				"stk"   :"NULL",
 				"state" :"DORMANT"
 			}

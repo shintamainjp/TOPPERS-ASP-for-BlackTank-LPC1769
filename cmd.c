@@ -40,8 +40,12 @@ void cmd_audio(int argc, char **argv) {
             AUDIO_PARAM(AUDIO_PARAM_MODE, AUDIO_VALUE_MODE_FIR);
             return;
         }
+        if (ntlibc_strcmp(argv[1], "iir") == 0) {
+            AUDIO_PARAM(AUDIO_PARAM_MODE, AUDIO_VALUE_MODE_IIR);
+            return;
+        }
     }
-    syslog(LOG_NOTICE, "audio [through | vocal_cancel | fir]");
+    syslog(LOG_NOTICE, "audio [through | vocal_cancel | fir | iir]");
 }
 
 void cmd_lcd(int argc, char **argv) {

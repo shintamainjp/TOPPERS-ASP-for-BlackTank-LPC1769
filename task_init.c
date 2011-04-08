@@ -1,7 +1,7 @@
 /**
- * @file task_splash.c
+ * @file task_init.c
  * @author Shinichiro Nakamura
- * @brief スプラッシュタスクの実装(task_splash)
+ * @brief 初期化タスクの実装(task_init)
  * @details
  * よくあるスプラッシュ画面を表示するタスク。
  * このタスクは自身の処理が完了後に、本当に必要なタスクを起動する。
@@ -14,13 +14,17 @@
 #include <t_syslog.h>
 #include <t_stdlib.h>
 
-#include "task_splash.h"
+#include "task_init.h"
 #include "kernel_cfg.h"
 #include "task_display.h"
 #include "config.h"
 
-void task_splash(intptr_t exinf)
+void task_init(intptr_t exinf)
 {
+    act_tsk(TASK_DISPLAY);
+    act_tsk(TASK_LED);
+    act_tsk(TASK_NTSHELL);
+
     tslp_tsk(500);
 
     DISP_BMPFILE("0:LOGO.BMP");
