@@ -6,6 +6,8 @@
  * This code is in the public domain.
  * @author Joshua Haberman <joshua@reverberate.org>
  */
+#ifndef VTPARSE_TABLE_H
+#define VTPARSE_TABLE_H
 
 typedef enum {
    VTPARSE_STATE_ANYWHERE = 0,
@@ -43,9 +45,12 @@ typedef enum {
 } vtparse_action_t;
 
 typedef unsigned char state_change_t;
-extern state_change_t STATE_TABLE[15][256];
-extern vtparse_action_t ENTRY_ACTIONS[15];
-extern vtparse_action_t EXIT_ACTIONS[15];
-extern char *ACTION_NAMES[15];
-extern char *STATE_NAMES[15];
+
+const state_change_t GET_STATE_TABLE(const int state, const int ch);
+const vtparse_action_t GET_ENTRY_ACTIONS(const int state);
+const vtparse_action_t GET_EXIT_ACTIONS(const int state);
+const char *GET_ACTION_NAMES(const int n);
+const char *GET_STATE_NAMES(const int n);
+
+#endif
 

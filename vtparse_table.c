@@ -9,7 +9,7 @@
 
 #include "vtparse_table.h"
 
-char *ACTION_NAMES[] = {
+static const char *ACTION_NAMES[] = {
    "<no action>",
    "CLEAR",
    "COLLECT",
@@ -27,7 +27,7 @@ char *ACTION_NAMES[] = {
    "UNHOOK",
 };
 
-char *STATE_NAMES[] = {
+static const char *STATE_NAMES[] = {
    "ANYWHERE",
    "CSI_ENTRY",
    "CSI_IGNORE",
@@ -45,7 +45,7 @@ char *STATE_NAMES[] = {
    "SOS_PM_APC_STRING",
 };
 
-state_change_t STATE_TABLE[15][256] = {
+static const state_change_t STATE_TABLE[15][256] = {
   {  /* VTPARSE_STATE_ANYWHERE */
     0,
     0,
@@ -2175,7 +2175,7 @@ state_change_t STATE_TABLE[15][256] = {
   },
 };
 
-vtparse_action_t ENTRY_ACTIONS[] = {
+static const vtparse_action_t ENTRY_ACTIONS[] = {
    (vtparse_action_t)0  /* none for ANYWHERE */,
    VTPARSE_ACTION_CLEAR, /* CSI_ENTRY */
    (vtparse_action_t)0  /* none for CSI_IGNORE */,
@@ -2193,7 +2193,7 @@ vtparse_action_t ENTRY_ACTIONS[] = {
    (vtparse_action_t)0  /* none for SOS_PM_APC_STRING */,
 };
 
-vtparse_action_t EXIT_ACTIONS[] = {
+static const vtparse_action_t EXIT_ACTIONS[] = {
    (vtparse_action_t)0  /* none for ANYWHERE */,
    (vtparse_action_t)0  /* none for CSI_ENTRY */,
    (vtparse_action_t)0  /* none for CSI_IGNORE */,
@@ -2210,4 +2210,29 @@ vtparse_action_t EXIT_ACTIONS[] = {
    VTPARSE_ACTION_OSC_END, /* OSC_STRING */
    (vtparse_action_t)0  /* none for SOS_PM_APC_STRING */,
 };
+
+const state_change_t GET_STATE_TABLE(const int state, const int ch)
+{
+    return STATE_TABLE[state][ch];
+}
+
+const vtparse_action_t GET_ENTRY_ACTIONS(const int state)
+{
+    return ENTRY_ACTIONS[state];
+}
+
+const vtparse_action_t GET_EXIT_ACTIONS(const int state)
+{
+    return EXIT_ACTIONS[state];
+}
+
+const char *GET_ACTION_NAMES(const int n)
+{
+    return ACTION_NAMES[n];
+}
+
+const char *GET_STATE_NAMES(const int n)
+{
+    return STATE_NAMES[n];
+}
 

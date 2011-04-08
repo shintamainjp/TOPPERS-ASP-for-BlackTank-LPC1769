@@ -12,6 +12,7 @@
 #include <stdio.h>
 
 #include "vtparse.h"
+#include "vtparse_table.h"
 
 void vtparse_init(vtparse_t *parser, vtparse_callback_t cb)
 {
@@ -113,8 +114,8 @@ static void do_state_change(vtparse_t *parser, state_change_t change, char ch)
          *   3. the entry actionk of the new action
          */
 
-        vtparse_action_t exit_action = EXIT_ACTIONS[parser->state];
-        vtparse_action_t entry_action = ENTRY_ACTIONS[new_state];
+        vtparse_action_t exit_action = GET_EXIT_ACTIONS(parser->state);
+        vtparse_action_t entry_action = GET_ENTRY_ACTIONS(new_state);
 
         if(exit_action)
             do_action(parser, exit_action, 0);
@@ -143,10 +144,10 @@ void vtparse(vtparse_t *parser, unsigned char *data, int len)
         /* If a transition is defined from the "anywhere" state, always
          * use that.  Otherwise use the transition from the current state. */
 
-        state_change_t change = STATE_TABLE[VTPARSE_STATE_ANYWHERE][ch];
+        state_change_t change = GET_STATE_TABLE(VTPARSE_STATE_ANYWHERE, ch);
 
         if(!change)
-            change = STATE_TABLE[parser->state][ch];
+            change = GET_STATE_TABLE(parser->state, ch);
 
         do_state_change(parser, change, data[i]);
     }
