@@ -145,6 +145,11 @@ static const SPINIB spinib_table[TNUM_PORT] = {
 	  SERIAL_RCV_BUFSZ3, rcv_buffer3,
 	  SERIAL_SND_BUFSZ3, snd_buffer3 },
 #endif /* TNUM_PORT >= 3 */
+#if TNUM_PORT >= 4
+	{ SERIAL_RCV_SEM4, SERIAL_SND_SEM4,
+	  SERIAL_RCV_BUFSZ4, rcv_buffer4,
+	  SERIAL_SND_BUFSZ4, snd_buffer4 },
+#endif /* TNUM_PORT >= 4 */
 };
 
 /*
