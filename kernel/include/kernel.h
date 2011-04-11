@@ -139,12 +139,12 @@ typedef struct t_rtsk {
 } T_RTSK;
 
 typedef struct t_itsk {
-    PRI tsk_pri_curr;
-    PRI tsk_pri_base;
-    SIZE stk_used;
-    SIZE stk_total;
-    void *stk_head;
-    void *stk_tail;
+    PRI tsk_pri_curr; /* 現在のプライオリティ */
+    PRI tsk_pri_base; /* ベースプライオリティ */
+    SIZE stk_used;  /* タスクスタック使用量 */
+    SIZE stk_total; /* タスクスタック総量 */
+    void *stk_head; /* タスクスタック先頭アドレス */
+    void *stk_tail; /* タスクスタック最終アドレス */
 } T_ITSK;
 
 typedef struct t_rtex {
