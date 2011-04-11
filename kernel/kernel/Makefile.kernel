@@ -52,7 +52,8 @@ KERNEL_FCSRCS = startup.c task.c wait.c time_event.c \
 				task_manage.c task_refer.c task_sync.c task_except.c \
 				semaphore.c eventflag.c dataqueue.c pridataq.c mailbox.c \
 				mempfix.c time_manage.c cyclic.c alarm.c \
-				sys_manage.c interrupt.c exception.c
+				sys_manage.c interrupt.c exception.c \
+				task_info.c
 
 #
 #  各ソースファイルから生成されるオブジェクトファイルのリスト
@@ -71,6 +72,8 @@ task_manage = act_tsk.o iact_tsk.o can_act.o ext_tsk.o ter_tsk.o \
 		chg_pri.o get_pri.o get_inf.o
 
 task_refer = ref_tsk.o
+
+task_info = inf_tsk.o
 
 task_sync = slp_tsk.o tslp_tsk.o wup_tsk.o iwup_tsk.o can_wup.o \
 		rel_wai.o irel_wai.o sus_tsk.o rsm_tsk.o dly_tsk.o
@@ -120,6 +123,7 @@ $(wait) $(wait:.o=.s) $(wait:.o=.d): wait.c
 $(time_event) $(time_event:.o=.s) $(time_event:.o=.d): time_event.c
 $(task_manage) $(task_manage:.o=.s) $(task_manage:.o=.d): task_manage.c
 $(task_refer) $(task_refer:.o=.s) $(task_refer:.o=.d): task_refer.c
+$(task_info) $(task_info:.o=.s) $(task_info:.o=.d): task_info.c
 $(task_sync) $(task_sync:.o=.s) $(task_sync:.o=.d): task_sync.c
 $(task_except) $(task_except:.o=.s) $(task_except:.o=.d): task_except.c
 $(semaphore) $(semaphore:.o=.s) $(semaphore:.o=.d): semaphore.c

@@ -138,6 +138,15 @@ typedef struct t_rtsk {
 	uint_t	wupcnt;		/* 起床要求キューイング数 */
 } T_RTSK;
 
+typedef struct t_itsk {
+    PRI tsk_pri_curr;
+    PRI tsk_pri_base;
+    SIZE stk_used;
+    SIZE stk_total;
+    void *stk_head;
+    void *stk_tail;
+} T_ITSK;
+
 typedef struct t_rtex {
 	STAT	texstat;	/* タスク例外処理の状態 */
 	TEXPTN	pndptn;		/* 保留例外要因 */
@@ -207,6 +216,7 @@ extern ER		chg_pri(ID tskid, PRI tskpri) throw();
 extern ER		get_pri(ID tskid, PRI *p_tskpri) throw();
 extern ER		get_inf(intptr_t *p_exinf) throw();
 extern ER		ref_tsk(ID tskid, T_RTSK *pk_rtsk) throw();
+extern ER		inf_tsk(ID tskid, T_ITSK *pk_itsk) throw();
 
 /*
  *  タスク付属同期機能

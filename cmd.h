@@ -8,6 +8,7 @@
 #ifndef _CMD_H_
 #define _CMD_H_
 
+void cmd_taskinfo(int argc, char **argv);
 void cmd_audio(int argc, char **argv);
 void cmd_lcd(int argc, char **argv);
 void cmd_led(int argc, char **argv);

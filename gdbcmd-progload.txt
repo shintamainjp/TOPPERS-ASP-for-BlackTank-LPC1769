@@ -1,0 +1,16 @@
+#
+# プログラムをロードして開始するスクリプト。
+#
+
+target remote localhost:3333
+shell sleep 2
+
+monitor halt
+# monitor soft_reset_halt
+shell sleep 2
+
+load TOPPERS-ASP_BlackTank-LPC1769.axf
+shell sleep 2
+
+continue
+

@@ -41,6 +41,7 @@ typedef struct {
 } command_table_t;
 
 const command_table_t table[] = {
+    {"taskinfo", "Task information.", cmd_taskinfo},
     {"audio", "Audio task parameter.", cmd_audio},
     {"lcd", "Control the LCD.", cmd_lcd},
     {"led", "Set state of the debug purpose LED.", cmd_led},

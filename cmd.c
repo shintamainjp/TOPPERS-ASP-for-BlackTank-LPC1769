@@ -26,6 +26,26 @@ DIR dir;
 FIL fil;
 FILINFO filinfo;
 
+void cmd_taskinfo(int argc, char **argv) {
+    int i;
+    T_ITSK itsk;
+    syslog(LOG_NOTICE, "TSKID\tSTACK ADDR (HEAD:TAIL)\tSTACK USED (USED/TOTAL)");
+    syslog(LOG_NOTICE, "=========================================================");
+    for (i = 0; i < TNUM_TSKID; i++) {
+        const int tskid = 1 + i;
+        inf_tsk(tskid, &itsk);
+        syslog(LOG_NOTICE, " %2d\t0x%x:0x%x\t%5d/%5d",
+                tskid,
+                itsk.stk_head, itsk.stk_tail,
+                itsk.stk_used, itsk.stk_total);
+#if 0
+        syslog(LOG_NOTICE, " (%02d:%02d)",
+                itsk.tsk_pri_curr, itsk.tsk_pri_base);
+#endif
+    }
+    syslog(LOG_NOTICE, "=========================================================");
+}
+
 void cmd_audio(int argc, char **argv) {
     if (argc == 2) {
         if (ntlibc_strcmp(argv[1], "through") == 0) {

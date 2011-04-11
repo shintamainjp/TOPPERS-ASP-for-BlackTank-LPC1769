@@ -92,6 +92,9 @@
 /* task_refer.c */
 #define TOPPERS_ref_tsk
 
+/* task_info.c */
+#define TOPPERS_inf_tsk
+
 /* task_sync.c */
 #define TOPPERS_slp_tsk
 #define TOPPERS_tslp_tsk
