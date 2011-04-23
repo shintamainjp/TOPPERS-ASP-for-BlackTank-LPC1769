@@ -27,23 +27,23 @@
  * @{
  */
 
-#define SW0 0
-#define SW1 1
-#define SW2 2
-#define SW3 3
-#define VOL0 4
-#define VOL1 5
-#define VOL2 6
-#define VOL3 7
+#define DEVICE_SW0 0    /**< デバイス：スイッチ０ */
+#define DEVICE_SW1 1    /**< デバイス：スイッチ１ */
+#define DEVICE_SW2 2    /**< デバイス：スイッチ２ */
+#define DEVICE_SW3 3    /**< デバイス：スイッチ３ */
+#define DEVICE_VOL0 4   /**< デバイス：ボリューム０ */
+#define DEVICE_VOL1 5   /**< デバイス：ボリューム１ */
+#define DEVICE_VOL2 6   /**< デバイス：ボリューム２ */
+#define DEVICE_VOL3 7   /**< デバイス：ボリューム３ */
 
-#define SW_LONG_PUSH 0x01
-
-#define USERMSG(device, type, value) \
+/**
+ * @brief menuタスクAPI（ユーザメッセージ）の実行。
+ * @param device デバイス番号。
+ * @param value 値。
+ */
+#define TSKAPI_MENU_USERMSG(device, value) \
     snd_dtq(DTQ_USERINPUT, \
-            (intptr_t)( \
-                ((device & 0x000F) << 12) \
-                | ((type & 0x0003) << 10) \
-                | ((value & 0x03FF) << 0)))
+            (intptr_t)(((device & 0x000F) << 12) | ((value & 0x0FFF) << 0)))
 
 /**
  * @}

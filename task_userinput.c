@@ -41,43 +41,43 @@ void task_userinput(intptr_t exinf)
          */
         if ((s0prev != s0curr) || (!initdone)) {
             if (s0curr) {
-                USERMSG(SW0, 0, 1);
+                TSKAPI_MENU_USERMSG(DEVICE_SW0, 1);
             } else {
-                USERMSG(SW0, 0, 0);
+                TSKAPI_MENU_USERMSG(DEVICE_SW0, 0);
             }
         }
         if ((s1prev != s1curr) || (!initdone)) {
             if (s1curr) {
-                USERMSG(SW1, 0, 1);
+                TSKAPI_MENU_USERMSG(DEVICE_SW1, 1);
             } else {
-                USERMSG(SW1, 0, 0);
+                TSKAPI_MENU_USERMSG(DEVICE_SW1, 0);
             }
         }
         if ((s2prev != s2curr) || (!initdone)) {
             if (s2curr) {
-                USERMSG(SW2, 0, 1);
+                TSKAPI_MENU_USERMSG(DEVICE_SW2, 1);
             } else {
-                USERMSG(SW2, 0, 0);
+                TSKAPI_MENU_USERMSG(DEVICE_SW2, 0);
             }
         }
         if ((s3prev != s3curr) || (!initdone)) {
             if (s3curr) {
-                USERMSG(SW3, 0, 1);
+                TSKAPI_MENU_USERMSG(DEVICE_SW3, 1);
             } else {
-                USERMSG(SW3, 0, 0);
+                TSKAPI_MENU_USERMSG(DEVICE_SW3, 0);
             }
         }
         if ((v0prev != v0curr) || (!initdone)) {
-            USERMSG(VOL0, 0, v0curr);
+            TSKAPI_MENU_USERMSG(DEVICE_VOL0, v0curr);
         }
         if ((v1prev != v1curr) || (!initdone)) {
-            USERMSG(VOL1, 0, v1curr);
+            TSKAPI_MENU_USERMSG(DEVICE_VOL1, v1curr);
         }
         if ((v2prev != v2curr) || (!initdone)) {
-            USERMSG(VOL2, 0, v2curr);
+            TSKAPI_MENU_USERMSG(DEVICE_VOL2, v2curr);
         }
         if ((v3prev != v3curr) || (!initdone)) {
-            USERMSG(VOL3, 0, v3curr);
+            TSKAPI_MENU_USERMSG(DEVICE_VOL3, v3curr);
         }
         initdone = 1;
 

@@ -21,8 +21,7 @@
 #include "config.h"
 
 #define MSG_DEVICE(n) (((n) & 0xF000) >> 12)
-#define MSG_TYPE(n)   (((n) & 0x0C00) >> 10)
-#define MSG_VALUE(n)  (((n) & 0x03FF) >>  0)
+#define MSG_VALUE(n)  (((n) & 0x0FFF) >>  0)
 
 /*
  * メニュータスクの雛形。
@@ -220,7 +219,8 @@ void task_menu(intptr_t exinf)
          * ここではポーリングして、データがなければスルーする。
          */
         while (prcv_dtq(DTQ_USERINPUT, (intptr_t *)&msg) == E_OK) {
-            if ((SW0 <= MSG_DEVICE(msg)) && (MSG_DEVICE(msg) <= SW3)) {
+            if ((DEVICE_SW0 <= MSG_DEVICE(msg))
+                    && (MSG_DEVICE(msg) <= DEVICE_SW3)) {
                 /*
                  * スイッチがONエッジならばページの遷移処理を実行。
                  */
@@ -237,41 +237,42 @@ void task_menu(intptr_t exinf)
                  * 押されたスイッチのLEDを点灯させる。
                  */
                 switch (MSG_DEVICE(msg)) {
-                    case SW0:
+                    case DEVICE_SW0:
                         LEDMSG(SWLED0, MSG_VALUE(msg));
                         break;
-                    case SW1:
+                    case DEVICE_SW1:
                         LEDMSG(SWLED1, MSG_VALUE(msg));
                         break;
-                    case SW2:
+                    case DEVICE_SW2:
                         LEDMSG(SWLED2, MSG_VALUE(msg));
                         break;
-                    case SW3:
+                    case DEVICE_SW3:
                         LEDMSG(SWLED3, MSG_VALUE(msg));
                         break;
                 }
             }
-            if ((VOL0 <= MSG_DEVICE(msg)) && (MSG_DEVICE(msg) <= VOL3)) {
+            if ((DEVICE_VOL0 <= MSG_DEVICE(msg))
+                    && (MSG_DEVICE(msg) <= DEVICE_VOL3)) {
                 /*
                  * 作業用変数に与えられたレベルを格納しておく。
                  */
-                int ch = MSG_DEVICE(msg) - VOL0;
+                int ch = MSG_DEVICE(msg) - DEVICE_VOL0;
                 menu_work.val[ch] = MSG_VALUE(msg);
                 /*
                  * オーディオパラメータをオーディオタスクに伝達する。
                  */
                 if (TASK_AUDIO_ENABLED()) {
                     switch (MSG_DEVICE(msg)) {
-                        case VOL0:
+                        case DEVICE_VOL0:
                             AUDIO_PARAM(AUDIO_PARAM_VAR0, MSG_VALUE(msg));
                             break;
-                        case VOL1:
+                        case DEVICE_VOL1:
                             AUDIO_PARAM(AUDIO_PARAM_VAR1, MSG_VALUE(msg));
                             break;
-                        case VOL2:
+                        case DEVICE_VOL2:
                             AUDIO_PARAM(AUDIO_PARAM_VAR2, MSG_VALUE(msg));
                             break;
-                        case VOL3:
+                        case DEVICE_VOL3:
                             AUDIO_PARAM(AUDIO_PARAM_VAR3, MSG_VALUE(msg));
                             break;
                         default:
