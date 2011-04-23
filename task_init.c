@@ -30,11 +30,6 @@ void task_init(intptr_t exinf)
     TASK_START(TASK_USERINPUT, "userinput");
     TASK_START(TASK_NTSHELL, "ntshell");
 
-    if (TASK_AUDIO_ENABLED()) {
-    } else {
-        syslog(LOG_NOTICE, "task_audio disabled in this build.");
-    }
-
     int cnt = 0;
     while (1) {
         /*

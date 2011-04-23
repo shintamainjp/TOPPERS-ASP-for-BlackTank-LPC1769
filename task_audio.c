@@ -206,18 +206,6 @@ void task_audio(intptr_t exinf)
 
         // 同期状態を示すためのテストピン信号を作成する
         testpin_tp1_write(0);
-
-#if 0
-        /*
-         * サンプルの頭の値だけを抜き出してディスプレイタスクに
-         * オーディオレベルメータを要求する手抜きレベルメータ。
-         */
-        static int divcnt = 0;
-        divcnt++;
-        if ((divcnt % 64) == 0) {
-            TSKAPI_DISPLAY_AUDIO_LEVELMETER(lm_left, lm_right);
-        }
-#endif
     }
 }
 

@@ -138,7 +138,7 @@ ifndef OMIT_OPTIMIZATION
   COPTS := $(COPTS) -O0
 endif
 CDEFS := $(CDEFS)
-INCLUDES := -I. -I$(SRCDIR)/include -I$(SRCDIR)/arch -I$(SRCDIR) -I./drivers/ff -I./drivers/oled -I./drivers/led -I./drivers/hid $(INCLUDES)
+INCLUDES := -I. -I$(SRCDIR)/include -I$(SRCDIR)/arch -I$(SRCDIR) -I./drivers/ff -I./drivers/oled -I./drivers/led -I./drivers/hid -I./drivers/tlv320aic23b $(INCLUDES)
 LDFLAGS := $(LDFLAGS)
 LIBS := $(LIBS) $(CXXLIBS)
 CFLAGS = $(COPTS) $(CDEFS) $(INCLUDES)
@@ -182,12 +182,13 @@ MYOBJS = sys_init.o \
 	 i2c_subsystem.o \
 	 i2s_subsystem.o \
 	 codec_subsystem.o \
+	 tlv320aic23b.o \
 	 \
 	 testpin.o \
 	 bmplowio.o \
 	 cmd.o
 
-APPL_DIR = $(APPLDIR) $(SRCDIR)/library ./drivers/ff ./drivers/oled ./drivers/led ./drivers/hid
+APPL_DIR = $(APPLDIR) $(SRCDIR)/library ./drivers/ff ./drivers/oled ./drivers/led ./drivers/hid ./drivers/tlv320aic23b
 APPL_ASMOBJS =
 ifdef USE_CXX
   APPL_CXXOBJS = $(MYOBJS)
