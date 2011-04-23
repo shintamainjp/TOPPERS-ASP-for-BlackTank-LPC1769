@@ -264,16 +264,20 @@ void task_menu(intptr_t exinf)
                 if (TASK_AUDIO_ENABLED()) {
                     switch (MSG_DEVICE(msg)) {
                         case DEVICE_VOL0:
-                            AUDIO_PARAM(AUDIO_PARAM_VAR0, MSG_VALUE(msg));
+                            TSKAPI_AUDIO_PARAM(
+                                    AUDIO_PARAM_VAR0, MSG_VALUE(msg));
                             break;
                         case DEVICE_VOL1:
-                            AUDIO_PARAM(AUDIO_PARAM_VAR1, MSG_VALUE(msg));
+                            TSKAPI_AUDIO_PARAM(
+                                    AUDIO_PARAM_VAR1, MSG_VALUE(msg));
                             break;
                         case DEVICE_VOL2:
-                            AUDIO_PARAM(AUDIO_PARAM_VAR2, MSG_VALUE(msg));
+                            TSKAPI_AUDIO_PARAM(
+                                    AUDIO_PARAM_VAR2, MSG_VALUE(msg));
                             break;
                         case DEVICE_VOL3:
-                            AUDIO_PARAM(AUDIO_PARAM_VAR3, MSG_VALUE(msg));
+                            TSKAPI_AUDIO_PARAM(
+                                    AUDIO_PARAM_VAR3, MSG_VALUE(msg));
                             break;
                         default:
                             break;

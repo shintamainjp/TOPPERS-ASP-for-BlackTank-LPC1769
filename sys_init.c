@@ -13,6 +13,7 @@
 #include "i2s_subsystem.h"
 #include "i2c_subsystem.h"
 #include "codec_subsystem.h"
+#include "task_audio.h"
 
 /**
  * @brief 初期化ルーチン
