@@ -46,7 +46,7 @@
  * @param PARAM 設定対象パラメータ。
  * @param VALUE 設定対象パラメータに対する設定値。
  */
-#define AUDIO_PARAM(PARAM,VALUE) \
+#define TSKAPI_AUDIO_PARAM(PARAM,VALUE) \
     snd_dtq(DTQ_AUDIOPARAM, \
             (intptr_t)( \
                 (((PARAM) & 0x000F) << 12) \

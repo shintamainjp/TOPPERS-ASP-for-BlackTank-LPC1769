@@ -215,7 +215,7 @@ void task_audio(intptr_t exinf)
         static int divcnt = 0;
         divcnt++;
         if ((divcnt % 64) == 0) {
-            DISP_AUDIO_LEVELMETER(lm_left, lm_right);
+            TSKAPI_DISPLAY_AUDIO_LEVELMETER(lm_left, lm_right);
         }
 #endif
     }

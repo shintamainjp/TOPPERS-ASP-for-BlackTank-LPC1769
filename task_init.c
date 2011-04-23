@@ -27,25 +27,25 @@ void task_init(intptr_t exinf)
 
     tslp_tsk(500);
 
-    DISP_BMPFILE("0:LOGO.BMP");
+    TSKAPI_DISPLAY_BMPFILE("0:LOGO.BMP");
     tslp_tsk(2500);
 
-    DISP_CLEAR(0x00, 0x00, 0x00);
+    TSKAPI_DISPLAY_CLEAR(0x00, 0x00, 0x00);
     tslp_tsk(500);
 
     static const int XOFS = 5;
     static const int YOFS = 10;
     static const int YSTP = 12;
 
-    DISP_TEXT(XOFS + 0, YOFS + YSTP * 0,
+    TSKAPI_DISPLAY_TEXT(XOFS + 0, YOFS + YSTP * 0,
             0xFF, 0xFF, 0xFF, "Special thanks to");
     tslp_tsk(500);
 
-    DISP_TEXT(XOFS + 22, YOFS + YSTP * 2,
+    TSKAPI_DISPLAY_TEXT(XOFS + 22, YOFS + YSTP * 2,
             0xFF, 0xFF, 0xFF, "Horie-san");
     tslp_tsk(500);
 
-    DISP_TEXT(XOFS + 20, YOFS + YSTP * 3,
+    TSKAPI_DISPLAY_TEXT(XOFS + 20, YOFS + YSTP * 3,
             0xFF, 0xFF, 0xFF, "Kaneko-san");
     tslp_tsk(500);
 
@@ -72,19 +72,19 @@ void task_init(intptr_t exinf)
         /*
          * 動作を示すマーキング.
          */
-        DISP_FILLBOX(90, 0, 95, 6, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00);
+        TSKAPI_DISPLAY_FILLBOX(90, 0, 95, 6, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00);
         switch (cnt % 4) {
             case 0:
-                DISP_TEXT(90, 0, 0xFF, 0xFF, 0xFF, "-");
+                TSKAPI_DISPLAY_TEXT(90, 0, 0xFF, 0xFF, 0xFF, "-");
                 break;
             case 1:
-                DISP_TEXT(90, 0, 0xFF, 0xFF, 0xFF, "\\");
+                TSKAPI_DISPLAY_TEXT(90, 0, 0xFF, 0xFF, 0xFF, "\\");
                 break;
             case 2:
-                DISP_TEXT(90, 0, 0xFF, 0xFF, 0xFF, "|");
+                TSKAPI_DISPLAY_TEXT(90, 0, 0xFF, 0xFF, 0xFF, "|");
                 break;
             case 3:
-                DISP_TEXT(90, 0, 0xFF, 0xFF, 0xFF, "/");
+                TSKAPI_DISPLAY_TEXT(90, 0, 0xFF, 0xFF, 0xFF, "/");
                 break;
         }
         cnt++;

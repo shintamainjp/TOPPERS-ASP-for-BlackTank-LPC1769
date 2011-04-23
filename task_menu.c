@@ -58,21 +58,21 @@ menu_work_t menu_work;
 
 #define DISP_MENUNAME(NAME) \
     do { \
-        DISP_FILLBOX(0, 0, OLED_X - 1, 8, \
+        TSKAPI_DISPLAY_FILLBOX(0, 0, OLED_X - 1, 8, \
                 0x00, 0x00, 0x00, \
                 0x00, 0x00, 0x00); \
-        DISP_TEXT(0, 0, 0xFF, 0xFF, 0xFF, (NAME)); \
+        TSKAPI_DISPLAY_TEXT(0, 0, 0xFF, 0xFF, 0xFF, (NAME)); \
     } while(0)
 
 #define DISP_MENUTAG(A,B,C,D) \
     do { \
-        DISP_FILLBOX(0, 52, OLED_X - 1, OLED_Y - 1, \
+        TSKAPI_DISPLAY_FILLBOX(0, 52, OLED_X - 1, OLED_Y - 1, \
                 0x00, 0x00, 0x00, \
                 0x00, 0x00, 0x00); \
-        DISP_TEXT(2 + (24 * 0), 52, 0xFF, 0xFF, 0xFF, (A)); \
-        DISP_TEXT(2 + (24 * 1), 52, 0xFF, 0xFF, 0xFF, (B)); \
-        DISP_TEXT(2 + (24 * 2), 52, 0xFF, 0xFF, 0xFF, (C)); \
-        DISP_TEXT(2 + (24 * 3), 52, 0xFF, 0xFF, 0xFF, (D)); \
+        TSKAPI_DISPLAY_TEXT(2 + (24 * 0), 52, 0xFF, 0xFF, 0xFF, (A)); \
+        TSKAPI_DISPLAY_TEXT(2 + (24 * 1), 52, 0xFF, 0xFF, 0xFF, (B)); \
+        TSKAPI_DISPLAY_TEXT(2 + (24 * 2), 52, 0xFF, 0xFF, 0xFF, (C)); \
+        TSKAPI_DISPLAY_TEXT(2 + (24 * 3), 52, 0xFF, 0xFF, 0xFF, (D)); \
     } while(0)
 
 void page_splash(ACTION act)
@@ -85,7 +85,7 @@ void page_splash(ACTION act)
 void page_top(ACTION act)
 {
     if (act == PAGE_IN) {
-        DISP_CLEAR(0x00, 0x00, 0x00);
+        TSKAPI_DISPLAY_CLEAR(0x00, 0x00, 0x00);
         DISP_MENUNAME("[TOP]");
         DISP_MENUTAG("M-1", "M-2", "M-3", "VER");
     }
@@ -96,75 +96,75 @@ void page_top(ACTION act)
             static const int XOFS = 10;
             static const int YOFS = 15;
             int val = MAXVAL - (menu_work.val[i] / 32);
-            DISP_FILLBOX(
+            TSKAPI_DISPLAY_FILLBOX(
                     XOFS + i * 20, YOFS + 0,
                     XOFS + i * 20 + 10, YOFS + val,
                     0x00, 0x00, 0x00,
                     0x00, 0x00, 0x00);
-            DISP_FILLBOX(
+            TSKAPI_DISPLAY_FILLBOX(
                     XOFS + i * 20, YOFS + val,
                     XOFS + i * 20 + 10, YOFS + MAXVAL,
                     0xFF, 0xFF, 0xFF,
                     0xFF, 0xFF, 0xFF);
         }
         if (!TASK_AUDIO_ENABLED()) {
-            DISP_TEXT(10, 8, 0xFF, 0xFF, 0xFF, "AUDIO DISABLED");
+            TSKAPI_DISPLAY_TEXT(10, 8, 0xFF, 0xFF, 0xFF, "AUDIO DISABLED");
         }
     }
     if (act == PAGE_OUT) {
-        DISP_CLEAR(0x00, 0x00, 0x00);
+        TSKAPI_DISPLAY_CLEAR(0x00, 0x00, 0x00);
     }
 }
 
 void page_100(ACTION act)
 {
     if (act == PAGE_IN) {
-        DISP_CLEAR(0x00, 0x00, 0x00);
+        TSKAPI_DISPLAY_CLEAR(0x00, 0x00, 0x00);
         DISP_MENUNAME("[MENU-1]");
-        DISP_TEXT(20, 30, 0xFF, 0xFF, 0xFF, "-- MENU 1 --");
+        TSKAPI_DISPLAY_TEXT(20, 30, 0xFF, 0xFF, 0xFF, "-- MENU 1 --");
         DISP_MENUTAG("", "", "", "RET");
     }
     if (act == PAGE_OUT) {
-        DISP_CLEAR(0x00, 0x00, 0x00);
+        TSKAPI_DISPLAY_CLEAR(0x00, 0x00, 0x00);
     }
 }
 
 void page_200(ACTION act)
 {
     if (act == PAGE_IN) {
-        DISP_CLEAR(0x00, 0x00, 0x00);
+        TSKAPI_DISPLAY_CLEAR(0x00, 0x00, 0x00);
         DISP_MENUNAME("[MENU-2]");
-        DISP_TEXT(20, 30, 0xFF, 0xFF, 0xFF, "-- MENU 2 --");
+        TSKAPI_DISPLAY_TEXT(20, 30, 0xFF, 0xFF, 0xFF, "-- MENU 2 --");
         DISP_MENUTAG("", "", "", "RET");
     }
     if (act == PAGE_OUT) {
-        DISP_CLEAR(0x00, 0x00, 0x00);
+        TSKAPI_DISPLAY_CLEAR(0x00, 0x00, 0x00);
     }
 }
 
 void page_300(ACTION act)
 {
     if (act == PAGE_IN) {
-        DISP_CLEAR(0x00, 0x00, 0x00);
+        TSKAPI_DISPLAY_CLEAR(0x00, 0x00, 0x00);
         DISP_MENUNAME("[MENU-3]");
-        DISP_TEXT(20, 30, 0xFF, 0xFF, 0xFF, "-- MENU 3 --");
+        TSKAPI_DISPLAY_TEXT(20, 30, 0xFF, 0xFF, 0xFF, "-- MENU 3 --");
         DISP_MENUTAG("", "", "", "RET");
     }
     if (act == PAGE_OUT) {
-        DISP_CLEAR(0x00, 0x00, 0x00);
+        TSKAPI_DISPLAY_CLEAR(0x00, 0x00, 0x00);
     }
 }
 
 void page_ver(ACTION act)
 {
     if (act == PAGE_IN) {
-        DISP_CLEAR(0x00, 0x00, 0x00);
+        TSKAPI_DISPLAY_CLEAR(0x00, 0x00, 0x00);
         DISP_MENUNAME("[Version]");
-        DISP_TEXT(20, 30, 0xFF, 0xFF, 0xFF, "Preliminary");
+        TSKAPI_DISPLAY_TEXT(20, 30, 0xFF, 0xFF, 0xFF, "Preliminary");
         DISP_MENUTAG("", "", "", "RET");
     }
     if (act == PAGE_OUT) {
-        DISP_CLEAR(0x00, 0x00, 0x00);
+        TSKAPI_DISPLAY_CLEAR(0x00, 0x00, 0x00);
     }
 }
 
@@ -204,7 +204,7 @@ void task_menu(intptr_t exinf)
 {
     uint16_t msg;
 
-    DISP_CLEAR(0x00, 0x00, 0x00);
+    TSKAPI_DISPLAY_CLEAR(0x00, 0x00, 0x00);
 
     execute_pagefunc(curr_page, PAGE_IN);
     while(1)
@@ -238,16 +238,16 @@ void task_menu(intptr_t exinf)
                  */
                 switch (MSG_DEVICE(msg)) {
                     case DEVICE_SW0:
-                        LEDMSG(SWLED0, MSG_VALUE(msg));
+                        TSKAPI_LED_LEDMSG(SWLED0, MSG_VALUE(msg));
                         break;
                     case DEVICE_SW1:
-                        LEDMSG(SWLED1, MSG_VALUE(msg));
+                        TSKAPI_LED_LEDMSG(SWLED1, MSG_VALUE(msg));
                         break;
                     case DEVICE_SW2:
-                        LEDMSG(SWLED2, MSG_VALUE(msg));
+                        TSKAPI_LED_LEDMSG(SWLED2, MSG_VALUE(msg));
                         break;
                     case DEVICE_SW3:
-                        LEDMSG(SWLED3, MSG_VALUE(msg));
+                        TSKAPI_LED_LEDMSG(SWLED3, MSG_VALUE(msg));
                         break;
                 }
             }

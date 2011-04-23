@@ -49,7 +49,7 @@
 #define LEDOFF 0    /**< LEDを消灯する。 */
 #define LEDON 1     /**< LEDを点灯する。 */
 
-#define LEDMSG(TARGET, CONTROL) \
+#define TSKAPI_LED_LEDMSG(TARGET, CONTROL) \
     snd_dtq(DTQ_LED, (intptr_t)(((CONTROL) ? 0x80:0x00) | ((TARGET)& 0x0F)))
 /**<
  * LEDの点灯指令を行う。

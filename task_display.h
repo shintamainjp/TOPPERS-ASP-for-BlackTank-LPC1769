@@ -12,12 +12,12 @@
  * ディスプレイへの表示は以下のマクロを使って行うことができる。
  *
  * @code
- * DISP_CLEAR(r, g, b);
- * DISP_LINE(x1, y1, x2, y2, r, g, b);
- * DISP_BOX(x1, y1, x2, y2, r, g, b);
- * DISP_FILLBOX(x1, y1, x2, y2, r1, g1, b1, r2, g2, b2);
- * DISP_TEXT(x, y, r, g, b, "text");
- * DISP_BMPFILE("filename");
+ * TSKAPI_DISPLAY_CLEAR(r, g, b);
+ * TSKAPI_DISPLAY_LINE(x1, y1, x2, y2, r, g, b);
+ * TSKAPI_DISPLAY_BOX(x1, y1, x2, y2, r, g, b);
+ * TSKAPI_DISPLAY_FILLBOX(x1, y1, x2, y2, r1, g1, b1, r2, g2, b2);
+ * TSKAPI_DISPLAY_TEXT(x, y, r, g, b, "text");
+ * TSKAPI_DISPLAY_BMPFILE("filename");
  * @endcode
  *
  * このマクロは、タスクコンテキスト内のどこからでも呼ぶことができる。
@@ -149,19 +149,19 @@ void disp_text(
 void disp_bmpfile(const char *filename);
 void disp_audio_levelmeter(const int left, const int right);
 
-#define DISP_CLEAR(R,G,B) \
+#define TSKAPI_DISPLAY_CLEAR(R,G,B) \
     disp_clear((R),(G),(B))
-#define DISP_LINE(X1,Y1,X2,Y2,R,G,B) \
+#define TSKAPI_DISPLAY_LINE(X1,Y1,X2,Y2,R,G,B) \
     disp_line((X1),(Y1),(X2),(Y2),(R),(G),(B))
-#define DISP_BOX(X1,Y1,X2,Y2,R,G,B) \
+#define TSKAPI_DISPLAY_BOX(X1,Y1,X2,Y2,R,G,B) \
     disp_box((X1),(Y1),(X2),(Y2),(R),(G),(B))
-#define DISP_FILLBOX(X1,Y1,X2,Y2,R1,G1,B1,R2,G2,B2) \
+#define TSKAPI_DISPLAY_FILLBOX(X1,Y1,X2,Y2,R1,G1,B1,R2,G2,B2) \
     disp_fillbox((X1),(Y1),(X2),(Y2),(R1),(G1),(B1),(R2),(G2),(B2))
-#define DISP_TEXT(X,Y,R,G,B,TEXT) \
+#define TSKAPI_DISPLAY_TEXT(X,Y,R,G,B,TEXT) \
     disp_text((X),(Y),(R),(G),(B),(TEXT))
-#define DISP_BMPFILE(FN) \
+#define TSKAPI_DISPLAY_BMPFILE(FN) \
     disp_bmpfile((FN))
-#define DISP_AUDIO_LEVELMETER(L,R) \
+#define TSKAPI_DISPLAY_AUDIO_LEVELMETER(L,R) \
     disp_audio_levelmeter((L),(R))
 
 /**

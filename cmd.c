@@ -49,19 +49,19 @@ void cmd_taskinfo(int argc, char **argv) {
 void cmd_audio(int argc, char **argv) {
     if (argc == 2) {
         if (ntlibc_strcmp(argv[1], "through") == 0) {
-            AUDIO_PARAM(AUDIO_PARAM_MODE, AUDIO_VALUE_MODE_THROUGH);
+            TSKAPI_AUDIO_PARAM(AUDIO_PARAM_MODE, AUDIO_VALUE_MODE_THROUGH);
             return;
         }
         if (ntlibc_strcmp(argv[1], "vocal_cancel") == 0) {
-            AUDIO_PARAM(AUDIO_PARAM_MODE, AUDIO_VALUE_MODE_VOCAL_CANCEL);
+            TSKAPI_AUDIO_PARAM(AUDIO_PARAM_MODE, AUDIO_VALUE_MODE_VOCAL_CANCEL);
             return;
         }
         if (ntlibc_strcmp(argv[1], "fir") == 0) {
-            AUDIO_PARAM(AUDIO_PARAM_MODE, AUDIO_VALUE_MODE_FIR);
+            TSKAPI_AUDIO_PARAM(AUDIO_PARAM_MODE, AUDIO_VALUE_MODE_FIR);
             return;
         }
         if (ntlibc_strcmp(argv[1], "iir") == 0) {
-            AUDIO_PARAM(AUDIO_PARAM_MODE, AUDIO_VALUE_MODE_IIR);
+            TSKAPI_AUDIO_PARAM(AUDIO_PARAM_MODE, AUDIO_VALUE_MODE_IIR);
             return;
         }
     }
@@ -71,7 +71,7 @@ void cmd_audio(int argc, char **argv) {
 void cmd_lcd(int argc, char **argv) {
     if (argc == 2) {
         if (ntlibc_strcmp(argv[1], "cls") == 0) {
-            DISP_CLEAR(0x00, 0x00, 0x00);
+            TSKAPI_DISPLAY_CLEAR(0x00, 0x00, 0x00);
             return;
         }
     }
@@ -85,81 +85,81 @@ void cmd_led(int argc, char **argv) {
     }
     if (ntlibc_strcmp(argv[1], "DBLED0") == 0) {
         if (ntlibc_strcmp(argv[2], "ON") == 0) {
-            LEDMSG(DBLED0, LEDON);
+            TSKAPI_LED_LEDMSG(DBLED0, LEDON);
             return;
         }
         if (ntlibc_strcmp(argv[2], "OFF") == 0) {
-            LEDMSG(DBLED0, LEDOFF);
+            TSKAPI_LED_LEDMSG(DBLED0, LEDOFF);
             return;
         }
     }
     if (ntlibc_strcmp(argv[1], "DBLED1") == 0) {
         if (ntlibc_strcmp(argv[2], "ON") == 0) {
-            LEDMSG(DBLED1, LEDON);
+            TSKAPI_LED_LEDMSG(DBLED1, LEDON);
             return;
         }
         if (ntlibc_strcmp(argv[2], "OFF") == 0) {
-            LEDMSG(DBLED1, LEDOFF);
+            TSKAPI_LED_LEDMSG(DBLED1, LEDOFF);
             return;
         }
     }
     if (ntlibc_strcmp(argv[1], "DBLED2") == 0) {
         if (ntlibc_strcmp(argv[2], "ON") == 0) {
-            LEDMSG(DBLED2, LEDON);
+            TSKAPI_LED_LEDMSG(DBLED2, LEDON);
             return;
         }
         if (ntlibc_strcmp(argv[2], "OFF") == 0) {
-            LEDMSG(DBLED2, LEDOFF);
+            TSKAPI_LED_LEDMSG(DBLED2, LEDOFF);
             return;
         }
     }
     if (ntlibc_strcmp(argv[1], "DBLED3") == 0) {
         if (ntlibc_strcmp(argv[2], "ON") == 0) {
-            LEDMSG(DBLED3, LEDON);
+            TSKAPI_LED_LEDMSG(DBLED3, LEDON);
             return;
         }
         if (ntlibc_strcmp(argv[2], "OFF") == 0) {
-            LEDMSG(DBLED3, LEDOFF);
+            TSKAPI_LED_LEDMSG(DBLED3, LEDOFF);
             return;
         }
     }
     if (ntlibc_strcmp(argv[1], "SWLED0") == 0) {
         if (ntlibc_strcmp(argv[2], "ON") == 0) {
-            LEDMSG(SWLED0, LEDON);
+            TSKAPI_LED_LEDMSG(SWLED0, LEDON);
             return;
         }
         if (ntlibc_strcmp(argv[2], "OFF") == 0) {
-            LEDMSG(SWLED0, LEDOFF);
+            TSKAPI_LED_LEDMSG(SWLED0, LEDOFF);
             return;
         }
     }
     if (ntlibc_strcmp(argv[1], "SWLED1") == 0) {
         if (ntlibc_strcmp(argv[2], "ON") == 0) {
-            LEDMSG(SWLED1, LEDON);
+            TSKAPI_LED_LEDMSG(SWLED1, LEDON);
             return;
         }
         if (ntlibc_strcmp(argv[2], "OFF") == 0) {
-            LEDMSG(SWLED1, LEDOFF);
+            TSKAPI_LED_LEDMSG(SWLED1, LEDOFF);
             return;
         }
     }
     if (ntlibc_strcmp(argv[1], "SWLED2") == 0) {
         if (ntlibc_strcmp(argv[2], "ON") == 0) {
-            LEDMSG(SWLED2, LEDON);
+            TSKAPI_LED_LEDMSG(SWLED2, LEDON);
             return;
         }
         if (ntlibc_strcmp(argv[2], "OFF") == 0) {
-            LEDMSG(SWLED2, LEDOFF);
+            TSKAPI_LED_LEDMSG(SWLED2, LEDOFF);
             return;
         }
     }
     if (ntlibc_strcmp(argv[1], "SWLED3") == 0) {
         if (ntlibc_strcmp(argv[2], "ON") == 0) {
-            LEDMSG(SWLED3, LEDON);
+            TSKAPI_LED_LEDMSG(SWLED3, LEDON);
             return;
         }
         if (ntlibc_strcmp(argv[2], "OFF") == 0) {
-            LEDMSG(SWLED3, LEDOFF);
+            TSKAPI_LED_LEDMSG(SWLED3, LEDOFF);
             return;
         }
     }
