@@ -10,10 +10,6 @@
 
 #include "kernel_cfg.h"
 #include "sys_init.h"
-#include "i2s_subsystem.h"
-#include "i2c_subsystem.h"
-#include "codec_subsystem.h"
-#include "task_audio.h"
 
 /**
  * @brief 初期化ルーチン
@@ -25,16 +21,5 @@
  */
 void sys_init(intptr_t exinf)
 {
-    /*
-     * オーディオコーデックを初期化する。
-     */
-    i2c_init();
-    codec_init();
-
-    /*
-     * ペリフェラルを初期化する。
-     */
-    i2s_init();
-    i2s_dma_init(get_audio_data());
 }
 

@@ -128,14 +128,22 @@ static const uint8_t font5x7_data[] = {
     0x08, 0x1C, 0x2A, 0x08, 0x08  // <-
 };
 
-display_bmpfile_t param_bmpfile;
+typedef struct {
+    FATFS fatfs[_VOLUMES];
+    DIR dir;
+    FIL fil;
+    FILINFO filinfo;
+} work_t;
+
+work_t work;
 
 void disp_clear(const uint8_t r, const uint8_t g, const uint8_t b)
 {
     VP vp;
     get_mpf(MPF_DISPLAY, &vp);
     ((display_msg_t*)vp)->cmd = DISPLAY_CMD_CLEAR;
-    display_clear_t *param = (display_clear_t *)((display_msg_t*)vp)->param;
+    display_clear_t *param =
+        (display_clear_t *)&(((display_msg_t*)vp)->param);
     param->r = r;
     param->g = g;
     param->b = b;
@@ -155,7 +163,7 @@ void disp_line(
     get_mpf(MPF_DISPLAY, &vp);
     ((display_msg_t*)vp)->cmd = DISPLAY_CMD_LINE;
     display_line_t *param =
-        (display_line_t *)((display_msg_t*)vp)->param;
+        (display_line_t *)&(((display_msg_t*)vp)->param);
     param->x1 = x1;
     param->y1 = y1;
     param->x2 = x2;
@@ -179,7 +187,7 @@ void disp_box(
     get_mpf(MPF_DISPLAY, &vp);
     ((display_msg_t*)vp)->cmd = DISPLAY_CMD_BOX;
     display_box_t *param =
-        (display_box_t *)((display_msg_t*)vp)->param;
+        (display_box_t *)&(((display_msg_t*)vp)->param);
     param->x1 = x1;
     param->y1 = y1;
     param->x2 = x2;
@@ -206,7 +214,7 @@ void disp_fillbox(
     get_mpf(MPF_DISPLAY, &vp);
     ((display_msg_t*)vp)->cmd = DISPLAY_CMD_FILLBOX;
     display_fillbox_t *param =
-        (display_fillbox_t *)((display_msg_t*)vp)->param;
+        (display_fillbox_t *)&(((display_msg_t*)vp)->param);
     param->x1 = x1;
     param->y1 = y1;
     param->x2 = x2;
@@ -234,7 +242,7 @@ void disp_text(
     get_mpf(MPF_DISPLAY, &vp);
     ((display_msg_t*)vp)->cmd = DISPLAY_CMD_TEXT;
     display_text_t *param =
-        (display_text_t *)((display_msg_t*)vp)->param;
+        (display_text_t *)&(((display_msg_t*)vp)->param);
     param->x = x;
     param->y = y;
     param->r = r;
@@ -254,19 +262,19 @@ void disp_text(
 void disp_bmpfile(const char *filename)
 {
     int i;
-    const char *strp;
+    char *strp;
     VP vp;
     get_mpf(MPF_DISPLAY, &vp);
     ((display_msg_t*)vp)->cmd = DISPLAY_CMD_BMPFILE;
-    strp = filename;
+    display_bmpfile_t *param =
+        (display_bmpfile_t *)&(((display_msg_t*)vp)->param);
+    strp = (char *)filename;
     i = 0;
     while (*strp) {
-        param_bmpfile.filename[i] = *strp;
-        i++;
+        param->filename[i++] = *strp;
         strp++;
     }
-    param_bmpfile.filename[i] = '\0';
-    ((display_msg_t*)vp)->param = &param_bmpfile;
+    param->filename[i++] = '\0';
     snd_mbx(MBX_DISPLAY, vp);
 }
 
@@ -276,7 +284,7 @@ void disp_audio_levelmeter(const int left, const int right)
     get_mpf(MPF_DISPLAY, &vp);
     ((display_msg_t*)vp)->cmd = DISPLAY_CMD_AUDIO_LEVELMETER;
     display_audio_levelmeter_t *param =
-        (display_audio_levelmeter_t *)((display_msg_t*)vp)->param;
+        (display_audio_levelmeter_t *)&(((display_msg_t*)vp)->param);
     param->left = left;
     param->right = right;
     snd_mbx(MBX_DISPLAY, vp);
@@ -368,16 +376,11 @@ void cmd_text(display_text_t *p)
     }
 }
 
-FATFS fatfs[_VOLUMES];
-DIR dir;
-FIL fil;
-FILINFO filinfo;
-
 int ff_getc(void)
 {
     uint8_t c;
     UINT n;
-    FRESULT fr = f_read(&fil, &c, 1, &n);
+    FRESULT fr = f_read(&work.fil, &c, 1, &n);
     return ((fr == FR_OK) ? c : -1);
 }
 
@@ -398,10 +401,11 @@ void cmd_bmpfile(display_bmpfile_t *p)
     bmp_info_t bmpinfo;
     bmp_rgbquad_t bmprgbquad;
 
-    int a = f_mount(0, &fatfs[0]);
-    int b = f_opendir(&dir, "");
+    int a = f_mount(0, &work.fatfs[0]);
+    int b = f_opendir(&work.dir, "");
     if ((a == 0) && (b == 0)) {
-        FRESULT res = f_open(&fil, p->filename, FA_OPEN_EXISTING|FA_READ);
+        FRESULT res = f_open(
+                &work.fil, p->filename, FA_OPEN_EXISTING|FA_READ);
         if (res == FR_OK) {
             bmplowio_header_read(ff_getc, &bmpfile, &bmpinfo);
             if (have_palette(&bmpinfo)) {

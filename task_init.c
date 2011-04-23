@@ -19,51 +19,19 @@
 #include "task_display.h"
 #include "config.h"
 
+#define TASK_START(TSKID,TSKNAME) act_tsk(TSKID); tslp_tsk(100); syslog(LOG_NOTICE, "[%s]", TSKNAME)
+
 void task_init(intptr_t exinf)
 {
-    act_tsk(TASK_DISPLAY);
-    act_tsk(TASK_LED);
-    act_tsk(TASK_NTSHELL);
-
-    tslp_tsk(500);
-
-    TSKAPI_DISPLAY_BMPFILE("0:LOGO.BMP");
-    tslp_tsk(2500);
-
-    TSKAPI_DISPLAY_CLEAR(0x00, 0x00, 0x00);
-    tslp_tsk(500);
-
-    static const int XOFS = 5;
-    static const int YOFS = 10;
-    static const int YSTP = 12;
-
-    TSKAPI_DISPLAY_TEXT(XOFS + 0, YOFS + YSTP * 0,
-            0xFF, 0xFF, 0xFF, "Special thanks to");
-    tslp_tsk(500);
-
-    TSKAPI_DISPLAY_TEXT(XOFS + 22, YOFS + YSTP * 2,
-            0xFF, 0xFF, 0xFF, "Horie-san");
-    tslp_tsk(500);
-
-    TSKAPI_DISPLAY_TEXT(XOFS + 20, YOFS + YSTP * 3,
-            0xFF, 0xFF, 0xFF, "Kaneko-san");
-    tslp_tsk(500);
-
-    tslp_tsk(2000);
-
-    act_tsk(TASK_MENU);
-    act_tsk(TASK_USERINPUT);
-    tslp_tsk(500);
+    TASK_START(TASK_AUDIO, "audio");
+    TASK_START(TASK_DISPLAY, "display");
+    TASK_START(TASK_LED, "led");
+    TASK_START(TASK_MENU, "menu");
+    TASK_START(TASK_USERINPUT, "userinput");
+    TASK_START(TASK_NTSHELL, "ntshell");
 
     if (TASK_AUDIO_ENABLED()) {
-        /*
-         * メニューが表示された頃合いを見てオーディオ処理を開始する。
-         */
-        act_tsk(TASK_AUDIO);
     } else {
-        /*
-         * オーディオ機能オフ.
-         */
         syslog(LOG_NOTICE, "task_audio disabled in this build.");
     }
 

@@ -45,7 +45,7 @@
 typedef struct {
     T_MSG header;
     uint8_t cmd;
-    void *param;
+    uint8_t param[64];
 } display_msg_t;
 
 typedef struct {
