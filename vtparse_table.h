@@ -6,6 +6,7 @@
  * This code is in the public domain.
  * @author Joshua Haberman <joshua@reverberate.org>
  */
+
 #ifndef VTPARSE_TABLE_H
 #define VTPARSE_TABLE_H
 

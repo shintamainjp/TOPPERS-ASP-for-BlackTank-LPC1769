@@ -13,6 +13,7 @@
 
 #include "vtparse.h"
 #include "vtparse_table.h"
+#include "ntlibc.h"
 
 void vtparse_init(vtparse_t *parser, vtparse_callback_t cb)
 {
@@ -49,7 +50,7 @@ static void do_action(vtparse_t *parser, vtparse_action_t action, char ch)
         case VTPARSE_ACTION_COLLECT:
         {
             /* Append the character to the intermediate params */
-            int num_intermediate_chars = strlen((char*)parser->intermediate_chars);
+            int num_intermediate_chars = ntlibc_strlen((char*)parser->intermediate_chars);
 
             if(num_intermediate_chars + 1 > MAX_INTERMEDIATE_CHARS)
                 parser->ignore_flagged = 1;

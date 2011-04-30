@@ -3,52 +3,52 @@
  Copyright(C) 2011 Shinichiro Nakamura
 ===============================================================
 
- Natural Tiny Shell (NT-Shell) $B$O>.5,LOAH$_9~$_%7%9%F%`MQ$N(B
- $B>.$5$J%7%'%k$G$9!#(B
+ Natural Tiny Shell (NT-Shell) は小規模組み込みシステム用の
+ 小さなシェルです。
 
-1. $B<U<-(B
+1. 謝辞
 
- Paul Williams$B$5$s(B
- - $BH`$O(BDEC$B8_49$N%9%F!<%H%^%7%s%Q!<%5$N?^$r:n$j$^$7$?!#(B
- Joshua Haberman$B$5$s(B
- - $BH`$O%9%F!<%H%^%7%s%Q!<%5$N<BAu$r(BC$B8@8l$G9T$J$$$^$7$?!#(B
-   $B$=$l$OAG@2$i$7$$%$%s%?!<%U%'!<%9$r;}$A!"%7%s%W%k$G8-$$$G$9!#(B
+ Paul Williamsさん
+ - 彼はDEC互換のステートマシンパーサの図を作りました。
+ Joshua Habermanさん
+ - 彼はステートマシンパーサの実装をC言語で行ないました。
+   それは素晴らしいインターフェースを持ち、シンプルで賢いです。
 
-2. $BGX7J(B
+2. 背景
 
- $B:#F|!"Bt;3$NM%$l$?(BMPU$B$,<j$KF~$j$^$9!#(B
- $B2f!9$O$=$l$i$r;H$C$F>.5,LOAH$_9~$_%7%9%F%`$r@_7W$9$k$3$H$,$G$-$^$9!#(B
- $B$=$l$OAG@2$i$7$$$3$H$G!"(B20$BG/A0$K$O9M$($i$l$J$+$C$?$3$H$G$9!#(B
+ 今日、沢山の優れたMPUが手に入ります。
+ 我々はそれらを使って小規模組み込みシステムを設計することができます。
+ それは素晴らしいことで、20年前には考えられなかったことです。
 
- $B%7%9%F%`$r@_7W<BAu$7$F$$$k;~E@$GM-8z$J%G%P%C%0<jCJ$N#1$D$K(BUART$B$r(B
- $B%$%s%?!<%U%'!<%9$H$7$FC<Kv$N$h$&$J$b$N$r<B8=$9$k<jCJ$,$"$j$^$9!#(B
- $B$3$l$O2f!9$,(BUNIX$BC<Kv>e$G%7%9%F%`$KBP$7$FMW5a$r=P$9$h$&$J7A<0$G(B
- MPU$B$r;H$C$?%7%9%F%`$KBP$7$FMW5a$r=P$9$3$H$,$G$-$^$9!#(B
+ システムを設計実装している時点で有効なデバッグ手段の１つにUARTを
+ インターフェースとして端末のようなものを実現する手段があります。
+ これは我々がUNIX端末上でシステムに対して要求を出すような形式で
+ MPUを使ったシステムに対して要求を出すことができます。
 
- $BBPOC7A<0$G%7%9%F%`$N>uBV$r4Q;!$7$?$j!">uBV$rJQ2=$5$;$k$?$a$N%Q%i%a!<%?$r(B
- $BF~NO$9$k$3$H$,$G$-$^$9$N$G!"%9%`!<%:$K:n6H$9$k$3$H$,$G$-$k$N$,FCD'$G$9!#(B
+ 対話形式でシステムの状態を観察したり、状態を変化させるためのパラメータを
+ 入力することができますので、スムーズに作業することができるのが特徴です。
 
- $B$7$+$7$J$,$i!"@$$NCf$KB8:_$9$kBt;3$N>.5,LOAH$_9~$_%7%9%F%`$NC<Kv$N<BAu$O(B
- $B$"$^$jNI$$$b$N$,$J$$$N$,8=>u$G$7$?!#(B
- $B0lIt$N@)8f%3!<%I$N$_$KBP1~$7$?7k2L!"MM!9$J%-!<F~NO$K$h$C$FI=<($dF~NOJ8;zNs(B
- $B$,GKC>$7$F$7$^$&$b$N$J$I$,BgB??t$G$9!#(B
+ しかしながら、世の中に存在する沢山の小規模組み込みシステムの端末の実装は
+ あまり良いものがないのが現状でした。
+ 一部の制御コードのみに対応した結果、様々なキー入力によって表示や入力文字列
+ が破綻してしまうものなどが大多数です。
 
- $B:#2s$O$3$l$i$N>u67$rBG3+$9$Y$/(BVT100$B$r%(%_%e%l!<%H$7$?>.$5$J%7%'%k$r(B
- $B<BAu$7$F$_$^$7$?!#(B
- $B$3$N%7%'%k$rAH$_9~$_5!4o$KEk:\$9$l$P!"%-!<F~NO$K?5=E$K$J$kI,MW$,$J$/!"(B
- $B%9%`!<%:$K%G%P%C%0$r9T$&$3$H$,$G$-$^$9!#(B
+ 今回はこれらの状況を打開すべくVT100をエミュレートした小さなシェルを
+ 実装してみました。
+ このシェルを組み込み機器に搭載すれば、キー入力に慎重になる必要がなく、
+ スムーズにデバッグを行うことができます。
 
- $B$3$N%7%'%k$K$OMzNr5!G=$b$"$j$^$9!#(B
- $B2a5n$KF~NO$7$?%3%^%s%I$rA*Br$7$FJT=8$7$?8e$G<B9T$9$k$3$H$b$G$-$^$9!#(B
+ このシェルには履歴機能もあります。
+ 過去に入力したコマンドを選択して編集した後で実行することもできます。
 
-3. $B4pK\%3%s%;%W%H(B
+3. 基本コンセプト
 
- * $B>.$5$$(B :)
- * $B%7%s%W%k(B :)
- * VT100$B8_49(B :)
- * C$B%i%s%?%$%`%i%$%V%i%j$,ITMW(B :)
+ * 小さい :)
+ * シンプル :)
+ * VT100互換 :)
+ * Cランタイムライブラリが不要 :)
 
-4. $B5!G=(B
+4. 機能
 
  CTRL+A : Head
  CTRL+E : Tail
@@ -58,33 +58,33 @@
  CTRL+P : History(Prev)
  CTRL+N : History(Next)
 
-5. $B9=B$(B
+5. 構造
 
- NT-Shell$B$O#5$D$NItIJ$+$i9=@.$5$l$F$$$^$9!#(B
+ NT-Shellは５つの部品から構成されています。
 
- * $B:G>e0L%$%s%?!<%U%'!<%9%b%8%e!<%k(B
+ * 最上位インターフェースモジュール
     ntshell.c
     ntshell.h
- * $B%f%F%#%j%F%#(B
+ * ユティリティ
     ntopt.c
     ntopt.h
- * VT100$B%Q!<%5(B
+ * VT100パーサ
     vtparse.c
     vtparse.h
     vtparse_table.c
     vtparse_table.h
- * $B%F%-%9%H%(%G%#%?(B
+ * テキストエディタ
     text_editor.c
     text_editor.h
- * $B%F%-%9%H%R%9%H%j(B
+ * テキストヒストリ
     text_history.c
     text_history.h
 
-6. $B%]!<%F%#%s%0%,%$%I(B
+6. ポーティングガイド
 
- NT-Shell$B$N%$%s%?!<%U%'!<%9$OHs>o$K%7%s%W%k$G$9!#(B
- UART$B$N$?$a$N#2$D$NF~=PNO%$%s%?!<%U%'!<%9$H%f!<%6MW5a$r<hF@$9$k$?$a$N(B
- $B#1$D$N%3!<%k%P%C%/%$%s%?!<%U%'!<%9$rI,MW$H$7$^$9!#(B
+ NT-Shellのインターフェースは非常にシンプルです。
+ UARTのための２つの入出力インターフェースとユーザ要求を取得するための
+ １つのコールバックインターフェースを必要とします。
 
  void ntshell(
         vtparse_t *parser,
@@ -96,28 +96,28 @@
 
  6-1. func_read
 
-  func_read$B$O%f!<%6%-!<F~NO$rFI$`$?$a$N%$%s%?!<%U%'!<%9$G$9!#(B
-  $B%-!<$rFI$_9~$`$^$G%V%m%C%/$9$k%$%s%?!<%U%'!<%9$H$7$F<BAu$5$l$F$$$k(B
-  $BI,MW$,$"$j$^$9!#(B
+  func_readはユーザキー入力を読むためのインターフェースです。
+  キーを読み込むまでブロックするインターフェースとして実装されている
+  必要があります。
 
  6-2. func_write
 
-  func_write$B$O%7%'%k=PNO$r=q$/$?$a$N%$%s%?!<%U%'!<%9$G$9!#(B
-  $B=q$-9~$_$,=*N;$9$k$^$G%V%m%C%/$9$k%$%s%?!<%U%'!<%9$H$7$F<BAu$5$l$F$$$k(B
-  $BI,MW$,$"$j$^$9!#(B
+  func_writeはシェル出力を書くためのインターフェースです。
+  書き込みが終了するまでブロックするインターフェースとして実装されている
+  必要があります。
 
  6-3. func_cb
 
-  func_cb$B$O%7%9%F%`$KBP$9$k%f!<%6MW5aJ8;zNs$r<hF@$9$k$?$a$N(B
-  $B%$%s%?!<%U%'!<%9$G$9!#(B
+  func_cbはシステムに対するユーザ要求文字列を取得するための
+  インターフェースです。
 
-7. $B%i%$%;%s%9(B
+7. ライセンス
 
- * vtparse and vtparse_table$B$O%Q%V%j%C%/%I%a%$%s$H$7$FDs6!$5$l$F$$$^$9!#(B
- * ntshell, text_editor, text_history$B$O(BMIT$B%i%$%;%s%9$H$7$FDs6!$7$^$9!#(B
+ * vtparse and vtparse_tableはパブリックドメインとして提供されています。
+ * ntshell, text_editor, text_historyはMITライセンスとして提供します。
 
  ===============================================================
- ntshell, text_editor, text_history$B8~$1$N(BMIT$B%i%$%;%s%9(B
+ ntshell, text_editor, text_history向けのMITライセンス
  ===============================================================
  Copyright (c) 2010-2011 Shinichiro Nakamura
 
@@ -143,19 +143,22 @@
  OTHER DEALINGS IN THE SOFTWARE.
  ===============================================================
 
- $B$h$C$F(BNatural Tiny Shell (NT-Shell)$B$OHs>&MQ!">&MQ$rLd$o$:@=IJ$K;HMQ$9$k(B
- $B$3$H$,$G$-$^$9!#(B
- $B$7$+$7$J$,$i!"L5J]>Z$G$9!#(B
+ よってNatural Tiny Shell (NT-Shell)は非商用、商用を問わず製品に使用する
+ ことができます。
+ しかしながら、無保証です。
 
- $B:FG[I[$9$k>l9g$K!"Cx:n8"J8;zNs$r<h$j=|$+$J$$$G2<$5$$!#(B
+ 再配布する場合に、著作権文字列を取り除かないで下さい。
 
-8. $B;29MJ88%(B
+8. 参考文献
 
- * A parser for DEC$B!G(Bs ANSI-compatible video terminal
+ * A parser for DEC’s ANSI-compatible video terminal
    http://vt100.net/emu/dec_ansi_parser
 
-9. $B%P!<%8%g%s(B
+9. バージョン
 
- * 2011/03/01   Version 0.0.1    $B=iHG(B
- * 2011/03/02   Version 0.0.2    $B%f%F%#%j%F%#%b%8%e!<%k$rDI2C(B
- * 2011/03/04   Version 0.0.3    $B%P%0=$@5(B
+ * 2011/03/01   Version 0.0.1    初版
+ * 2011/03/02   Version 0.0.2    ユティリティモジュールを追加
+ * 2011/03/04   Version 0.0.3    バグ修正
+ * 2011/04/30   Version 0.0.4    vtparseのテーブルがROMに配置されるようにした。
+                                 ntoptの欠落を修正した。
+                                 ntlibcを追加した。

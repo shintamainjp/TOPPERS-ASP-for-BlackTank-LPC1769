@@ -52,6 +52,8 @@
  * Utility
     ntopt.c
     ntopt.h
+    ntlibc.c
+    ntlibc.h
  * VT100 parser
     vtparse.c
     vtparse.h
@@ -131,7 +133,7 @@
 
 8. References
 
- * A parser for DEC$B!G(Bs ANSI-compatible video terminal
+ * A parser for DEC窶冱 ANSI-compatible video terminal
    http://vt100.net/emu/dec_ansi_parser
 
 9. Version
@@ -139,4 +141,6 @@
  * 2011/03/01   Version 0.0.1    Initial version.
  * 2011/03/02   Version 0.0.2    Added a utility module.
  * 2011/03/04   Version 0.0.3    Buf fixed.
-
+ * 2011/04/30   Version 0.0.4    Changed an implementation of the vtparse table.
+                                 Added ntopt.
+                                 Added ntlibc.
