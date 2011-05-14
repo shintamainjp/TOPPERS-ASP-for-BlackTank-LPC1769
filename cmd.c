@@ -229,10 +229,11 @@ void cmd_cd(int argc, char **argv) {
 
 void cmd_trace(int argc, char **argv) {
 #ifdef TOPPERS_ENABLE_TRACE
+    syslog(LOG_NOTICE, "trace started.");
+    tslp_tsk(250);
     trace_sta_log(TRACE_STOP);
     trace_sta_log(TRACE_CLEAR);
     trace_sta_log(TRACE_AUTOSTOP);
-    syslog(LOG_NOTICE, "trace started.");
 #else
     syslog(LOG_NOTICE, "trace disabled in this build.");
 #endif
