@@ -55,7 +55,7 @@ typedef struct {
 #define CALLBACK(vtp, text) \
     ((ntshell_user_data_t *)vtp->user_data)->func_cb(text)
 
-static void action_history_prev(
+static void actfunc_history_prev(
         vtparse_t *parser,
         vtparse_action_t action,
         unsigned char ch) {
@@ -72,7 +72,7 @@ static void action_history_prev(
     }
 }
 
-static void action_history_next(
+static void actfunc_history_next(
         vtparse_t *parser,
         vtparse_action_t action,
         unsigned char ch) {
@@ -89,7 +89,7 @@ static void action_history_next(
     }
 }
 
-static void action_cursor_left(
+static void actfunc_cursor_left(
         vtparse_t *parser,
         vtparse_action_t action,
         unsigned char ch) {
@@ -98,7 +98,7 @@ static void action_cursor_left(
     }
 }
 
-static void action_cursor_right(
+static void actfunc_cursor_right(
         vtparse_t *parser,
         vtparse_action_t action,
         unsigned char ch) {
@@ -107,7 +107,7 @@ static void action_cursor_right(
     }
 }
 
-static void action_execute(
+static void actfunc_enter(
         vtparse_t *parser,
         vtparse_action_t action,
         unsigned char ch) {
@@ -119,7 +119,7 @@ static void action_execute(
     SERIAL_WRITE(parser, "\r\n>", 3);
 }
 
-static void action_cancel(
+static void actfunc_cancel(
         vtparse_t *parser,
         vtparse_action_t action,
         unsigned char ch) {
@@ -128,7 +128,7 @@ static void action_cancel(
     SERIAL_WRITE(parser, ">", 1);
 }
 
-static void action_insert(
+static void actfunc_insert(
         vtparse_t *parser,
         vtparse_action_t action,
         unsigned char ch) {
@@ -148,7 +148,7 @@ static void action_insert(
     }
 }
 
-static void action_backspace(
+static void actfunc_backspace(
         vtparse_t *parser,
         vtparse_action_t action,
         unsigned char ch) {
@@ -172,61 +172,72 @@ static void action_backspace(
     }
 }
 
+// @todo 後で名前を変更する。
+static void actfunc_hokan(
+        vtparse_t *parser,
+        vtparse_action_t action,
+        unsigned char ch) {
+    // @todo 実装を追加する。
+}
+
+static void actfunc_text_head(
+        vtparse_t *parser,
+        vtparse_action_t action,
+        unsigned char ch) {
+    // @todo 実装を追加する。
+}
+
+static void actfunc_text_tail(
+        vtparse_t *parser,
+        vtparse_action_t action,
+        unsigned char ch) {
+    // @todo 実装を追加する。
+}
+
+typedef struct {
+    vtparse_action_t action;
+    unsigned char ch;
+    void (*func)(
+            vtparse_t *parser,
+            vtparse_action_t action,
+            unsigned char ch);
+} ntshell_action_table_t;
+
+static const ntshell_action_table_t action_table[] = {
+    {VTPARSE_ACTION_PRINT, 0x7f, actfunc_backspace},
+    {VTPARSE_ACTION_EXECUTE, 0x0d, actfunc_enter},
+    {VTPARSE_ACTION_EXECUTE, 0x08, actfunc_backspace},
+    {VTPARSE_ACTION_EXECUTE, 0x03, actfunc_cancel},
+    {VTPARSE_ACTION_EXECUTE, 0x02, actfunc_cursor_left},
+    {VTPARSE_ACTION_EXECUTE, 0x06, actfunc_cursor_right},
+    {VTPARSE_ACTION_EXECUTE, 0x10, actfunc_history_prev},
+    {VTPARSE_ACTION_EXECUTE, 0x0e, actfunc_history_next},
+    {VTPARSE_ACTION_EXECUTE, 0x09, actfunc_hokan},
+    {VTPARSE_ACTION_CSI_DISPATCH, 0x44, actfunc_cursor_left},
+    {VTPARSE_ACTION_CSI_DISPATCH, 0x43, actfunc_cursor_right},
+    {VTPARSE_ACTION_CSI_DISPATCH, 0x41, actfunc_history_prev},
+    {VTPARSE_ACTION_CSI_DISPATCH, 0x42, actfunc_history_next}
+};
+
 void parser_callback(
         vtparse_t *parser,
         vtparse_action_t action,
         unsigned char ch) {
-    switch (action) {
-        case VTPARSE_ACTION_PRINT:
-            if (ch == 0x7f) {
-                action_backspace(parser, action, ch);
-            } else {
-                action_insert(parser, action, ch);
-            }
-            break;
-        case VTPARSE_ACTION_EXECUTE:
-            switch (ch) {
-                case 0x0d:
-                    action_execute(parser, action, ch);
-                    break;
-                case 0x08:
-                    action_backspace(parser, action, ch);
-                    break;
-                case 0x03:
-                    action_cancel(parser, action, ch);
-                    break;
-                case 0x02:
-                    action_cursor_left(parser, action, ch);
-                    break;
-                case 0x06:
-                    action_cursor_right(parser, action, ch);
-                    break;
-                case 0x10:
-                    action_history_prev(parser, action, ch);
-                    break;
-                case 0x0e:
-                    action_history_next(parser, action, ch);
-                    break;
-            }
-            break;
-        case VTPARSE_ACTION_CSI_DISPATCH:
-            switch (ch) {
-                case 0x44:
-                    action_cursor_left(parser, action, ch);
-                    break;
-                case 0x43:
-                    action_cursor_right(parser, action, ch);
-                    break;
-                case 0x41:
-                    action_history_prev(parser, action, ch);
-                    break;
-                case 0x42:
-                    action_history_next(parser, action, ch);
-                    break;
-            }
-            break;
-        default:
-            break;
+    ntshell_action_table_t *p;
+    int i;
+    const int ACTTBLSIZ = sizeof(action_table) / sizeof(action_table[0]);
+
+    p = (ntshell_action_table_t *)action_table;
+    for (i = 0; i < ACTTBLSIZ; i++) {
+        if ((p->action == action) && (p->ch == ch)) {
+            p->func(parser, action, ch);
+            return;
+        }
+        p++;
+    }
+
+    if ((VTPARSE_ACTION_PRINT == action) && (ch != 0x7f)) {
+        actfunc_insert(parser, action, ch);
     }
 }
 

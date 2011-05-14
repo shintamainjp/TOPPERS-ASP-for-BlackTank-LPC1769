@@ -10,6 +10,7 @@
 
  Mr.Paul Williams
  - He created a draw of DEC compatible state machine parser.
+
  Mr.Joshua Haberman
  - He implemented the state machine parser with C language.
    And it has great interface. It's really simple and smart!
