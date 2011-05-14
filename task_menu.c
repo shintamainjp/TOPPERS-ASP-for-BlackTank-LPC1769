@@ -92,9 +92,9 @@ void page_top(ACTION act)
     if (act == PAGE_TICK) {
         int i;
         for (i = 0; i < 4; i++) {
-            static const int MAXVAL = (1024/ 32);
+            static const int MAXVAL = (1023/ 32);
             static const int XOFS = 10;
-            static const int YOFS = 15;
+            static const int YOFS = 18;
             int val = MAXVAL - (menu_work.val[i] / 32);
             TSKAPI_DISPLAY_FILLBOX(
                     XOFS + i * 20, YOFS + 0,
@@ -220,9 +220,12 @@ void splash(void)
     tslp_tsk(2000);
 }
 
+#define SCREEN_SAVE_COUNTER_INIT 100
+
 void task_menu(intptr_t exinf)
 {
     uint16_t msg;
+    uint16_t screen_save = SCREEN_SAVE_COUNTER_INIT;
 
     splash();
 
@@ -230,17 +233,51 @@ void task_menu(intptr_t exinf)
     while(1)
     {
         /*
-         * ページにティックを与える。
+         * 有機ELディスプレイは焼き付けを起こしやすい。
+         * スクリーンを保護する意味で一定時間の操作がなければ
+         * 表示を消去することにした。
          */
-        execute_pagefunc(curr_page, PAGE_TICK);
+        if (screen_save == 0) {
+            /*
+             * スクリーン焼き付けを防止するための描画を実行する。
+             */
+            static uint32_t color = 0;
+            TSKAPI_DISPLAY_CLEAR(
+                    (color >> 16) & 0xff,
+                    (color >>  8) & 0xff,
+                    (color >>  0) & 0xff);
+            color++;
+        } else {
+            /*
+             * ページにティックを与える。
+             * 各ページは自身が必要とする再描画を行うだろう。
+             */
+            execute_pagefunc(curr_page, PAGE_TICK);
+            /*
+             * スクリーンセーバ起動カウンタをデクリメントする。
+             */
+            screen_save--;
+        }
 
         /*
          * データキューの受信状態を見る。
          * ここではポーリングして、データがなければスルーする。
          */
         while (prcv_dtq(DTQ_USERINPUT, (intptr_t *)&msg) == E_OK) {
+            /*
+             * スイッチイベントの受信。
+             */
             if ((DEVICE_SW0 <= MSG_DEVICE(msg))
                     && (MSG_DEVICE(msg) <= DEVICE_SW3)) {
+                /*
+                 * スイッチ入力がある時にはスクリーンセーバカウンタを
+                 * 初期値にする。
+                 */
+                if (screen_save == 0) {
+                    execute_pagefunc(curr_page, PAGE_IN);
+                }
+                screen_save = SCREEN_SAVE_COUNTER_INIT;
+
                 /*
                  * スイッチがONエッジならばページの遷移処理を実行。
                  */
@@ -271,6 +308,9 @@ void task_menu(intptr_t exinf)
                         break;
                 }
             }
+            /*
+             * ボリュームイベントの受信。
+             */
             if ((DEVICE_VOL0 <= MSG_DEVICE(msg))
                     && (MSG_DEVICE(msg) <= DEVICE_VOL3)) {
                 /*
@@ -305,6 +345,7 @@ void task_menu(intptr_t exinf)
                 }
             }
         }
+
         tslp_tsk(100);
     }
 }
