@@ -19,11 +19,16 @@
 #include "task_display.h"
 #include "config.h"
 
-#define TASK_START(TSKID,TSKNAME) act_tsk(TSKID); tslp_tsk(100); syslog(LOG_NOTICE, "[%s]", TSKNAME)
+#define TASK_START(TSKID,TSKNAME) \
+    act_tsk(TSKID); \
+    tslp_tsk(100); \
+    syslog(LOG_NOTICE, "[%d:%s]", TSKID,TSKNAME)
 
 void task_init(intptr_t exinf)
 {
-    TASK_START(TASK_AUDIO, "audio");
+    if (TASK_AUDIO_ENABLED()) {
+        TASK_START(TASK_AUDIO, "audio");
+    }
     TASK_START(TASK_DISPLAY, "display");
     TASK_START(TASK_LED, "led");
     TASK_START(TASK_MENU, "menu");
