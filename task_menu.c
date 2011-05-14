@@ -224,8 +224,8 @@ void splash(void)
 
 void task_menu(intptr_t exinf)
 {
-    uint16_t msg;
-    uint16_t screen_save = SCREEN_SAVE_COUNTER_INIT;
+    volatile uint16_t msg;
+    volatile uint16_t screen_save = SCREEN_SAVE_COUNTER_INIT;
 
     splash();
 
