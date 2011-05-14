@@ -60,7 +60,7 @@
  *  トレースログバッファのサイズ
  */
 #ifndef TCNT_TRACE_BUFFER
-#define TCNT_TRACE_BUFFER	512
+#define TCNT_TRACE_BUFFER	256
 #endif /* TCNT_TRACE_BUFFER */
 
 /*
