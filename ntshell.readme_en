@@ -97,11 +97,11 @@
 
 7. The license
 
- * vtparse and vtparse_table is in the public domain.
- * ntshell, text_editor, text_history is in the MIT license.
+ * vtparse and vtparse_table are in the public domain.
+ * ntshell, ntopt, ntlibc, text_editor, text_history are in the MIT license.
 
  ===============================================================
- The MIT license for ntshell, text_editor, text_history
+ The MIT license for Natural Tiny Shell (NT-Shell)
  ===============================================================
  Copyright (c) 2010-2011 Shinichiro Nakamura
 
@@ -134,7 +134,7 @@
 
 8. References
 
- * A parser for DEC窶冱 ANSI-compatible video terminal
+ * A parser for DEC’s ANSI-compatible video terminal
    http://vt100.net/emu/dec_ansi_parser
 
 9. Version
@@ -145,3 +145,4 @@
  * 2011/04/30   Version 0.0.4    Changed an implementation of the vtparse table.
                                  Added ntopt.
                                  Added ntlibc.
+ * 2011/05/16   Version 0.0.5    Added some features.

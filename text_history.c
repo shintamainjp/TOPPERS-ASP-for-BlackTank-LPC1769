@@ -1,8 +1,10 @@
 /**
  * @file text_history.c
  * @author Shinichiro Nakamura
- * @brief
- * NT-Shell用テキストヒストリモジュールの実装。
+ * @brief NT-Shell用テキストヒストリモジュールの実装。
+ * @details
+ * 文字列の入力履歴を論理的に扱うためのモジュール。
+ * このモジュールはビューに関して一切感知しない。
  */
 
 /*
@@ -37,6 +39,11 @@
 
 #include "text_history.h"
 
+/**
+ * @brief 初期化する。
+ *
+ * @param p テキストヒストリ構造体。
+ */
 void text_history_init(text_history_t *p)
 {
     p->rp = 0;
@@ -47,6 +54,12 @@ void text_history_init(text_history_t *p)
     }
 }
 
+/**
+ * @brief テキストヒストリに対して書き込みを実行する。
+ *
+ * @param p テキストヒストリ構造体。
+ * @param buf バッファ。
+ */
 int text_history_write(text_history_t *p, unsigned char *buf)
 {
     if (buf[0] == '\0') {
@@ -64,7 +77,17 @@ int text_history_write(text_history_t *p, unsigned char *buf)
     return 1;
 }
 
-int text_history_read(text_history_t *p, unsigned char *buf, int siz)
+/**
+ * @brief テキストヒストリから読み出しを実行する。
+ * @details
+ * 得られる文字列が与えられたバッファサイズよりも大きい場合、
+ * バッファに格納される文字列は途中で途切れるものとする。
+ *
+ * @param p テキストヒストリ構造体。
+ * @param buf バッファ。
+ * @param siz バッファサイズ。
+ */
+int text_history_read(text_history_t *p, unsigned char *buf, const int siz)
 {
     unsigned char *sp = p->history + (TEXTHISTORY_MAXLEN * p->rp);
     int n = 0;
@@ -81,6 +104,11 @@ int text_history_read(text_history_t *p, unsigned char *buf, int siz)
     return n;
 }
 
+/**
+ * @brief 読み出しポインタを次に進める。
+ *
+ * @param p テキストヒストリ構造体。
+ */
 int text_history_read_point_next(text_history_t *p)
 {
     int n = (p->rp + 1) % TEXTHISTORY_DEPTH;
@@ -91,6 +119,11 @@ int text_history_read_point_next(text_history_t *p)
     return 0;
 }
 
+/**
+ * @brief 読み出しポインタを前に戻す。
+ *
+ * @param p テキストヒストリ構造体。
+ */
 int text_history_read_point_prev(text_history_t *p)
 {
     int n = (p->rp == 0) ? (TEXTHISTORY_DEPTH - 1) : (p->rp - 1);
@@ -102,5 +135,26 @@ int text_history_read_point_prev(text_history_t *p)
         }
     }
     return 0;
+}
+
+/**
+ * @brief 与えられたテキストで始まる文字列を探す。
+ * @details このインターフェースはテキスト入力補完のために作られた。
+ *
+ * @param p テキストヒストリオブジェクト。
+ * @param index ヒストリ中で見つかる文字列のindex個目。
+ * @param text 検索する文字列。
+ * @param buf 格納先バッファ。
+ * @param siz 格納先バッファサイズ。
+ *
+ * @retval 0 成功。
+ * @retval 0以外 失敗。
+ */
+int text_history_find(text_history_t *p,
+        const int index, const unsigned char *text,
+        unsigned char *buf, const int siz)
+{
+    // @todo
+    return -1;
 }
 

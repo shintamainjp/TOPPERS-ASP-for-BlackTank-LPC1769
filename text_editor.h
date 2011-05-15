@@ -1,8 +1,10 @@
 /**
  * @file text_editor.h
  * @author Shinichiro Nakamura
- * @brief
- * NT-Shell用テキストエディタモジュールの定義。
+ * @brief NT-Shell用テキストエディタモジュールの定義。
+ * @details
+ * 文字列の編集を論理的に扱うためのモジュール。
+ * このモジュールはビューに関して一切感知しない。
  */
 
 /*

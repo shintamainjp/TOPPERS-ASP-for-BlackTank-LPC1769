@@ -41,7 +41,7 @@
 #include "text_editor.h"
 #include "text_history.h"
 
-void ntshell_version(int *major, int *minor, int *build);
+void ntshell_version(int *major, int *minor, int *release);
 void ntshell_execute(
         vtparse_t *parser,
         text_editor_t *editor,

@@ -1,8 +1,10 @@
 /**
  * @file text_editor.c
  * @author Shinichiro Nakamura
- * @brief
- * NT-Shell用テキストエディタモジュールの実装。
+ * @brief NT-Shell用テキストエディタモジュールの実装。
+ * @details
+ * 文字列の編集を論理的に扱うためのモジュール。
+ * このモジュールはビューに関して一切感知しない。
  */
 
 /*
@@ -37,6 +39,11 @@
 
 #include "text_editor.h"
 
+/**
+ * @brief テキストエディタを初期化する。
+ *
+ * @param p テキストエディタ構造体。
+ */
 void text_editor_init(text_editor_t *p)
 {
     p->pos = 0;
@@ -44,6 +51,12 @@ void text_editor_init(text_editor_t *p)
     p->buffer[p->len] = '\0';
 }
 
+/**
+ * @brief 文字を挿入する。
+ *
+ * @param p テキストエディタ構造体。
+ * @param c 文字。
+ */
 int text_editor_insert(text_editor_t *p, unsigned char c)
 {
     if (p->len < sizeof(p->buffer) - 1) {
@@ -66,6 +79,11 @@ int text_editor_insert(text_editor_t *p, unsigned char c)
     return 0;
 }
 
+/**
+ * @brief 文字を削除する。
+ *
+ * @param p テキストエディタ構造体。
+ */
 int text_editor_backspace(text_editor_t *p)
 {
     if (0 < p->pos) {
@@ -86,11 +104,21 @@ int text_editor_backspace(text_editor_t *p)
     return 0;
 }
 
+/**
+ * @brief カーソル位置を取得する。
+ *
+ * @param p テキストエディタ構造体。
+ */
 int text_editor_cursor_get_position(text_editor_t *p)
 {
     return p->pos;
 }
 
+/**
+ * @brief カーソルを先頭に移動させる。
+ *
+ * @param p テキストエディタ構造体。
+ */
 int text_editor_cursor_head(text_editor_t *p)
 {
     if (0 < p->pos) {
@@ -100,6 +128,11 @@ int text_editor_cursor_head(text_editor_t *p)
     return 0;
 }
 
+/**
+ * @brief カーソルを最後尾に移動させる。
+ *
+ * @param p テキストエディタ構造体。
+ */
 int text_editor_cursor_tail(text_editor_t *p)
 {
     if (p->pos < p->len - 1) {
@@ -109,6 +142,11 @@ int text_editor_cursor_tail(text_editor_t *p)
     return 0;
 }
 
+/**
+ * @brief カーソルを左へ移動させる。
+ *
+ * @param p テキストエディタ構造体。
+ */
 int text_editor_cursor_left(text_editor_t *p)
 {
     if (0 < p->pos) {
@@ -118,6 +156,11 @@ int text_editor_cursor_left(text_editor_t *p)
     return 0;
 }
 
+/**
+ * @brief カーソルを右へ移動させる。
+ *
+ * @param p テキストエディタ構造体。
+ */
 int text_editor_cursor_right(text_editor_t *p)
 {
     if (p->pos < p->len) {
@@ -127,6 +170,12 @@ int text_editor_cursor_right(text_editor_t *p)
     return 0;
 }
 
+/**
+ * @brief 文字列を設定する。
+ *
+ * @param p テキストエディタ構造体。
+ * @param buf 文字列が格納されたバッファ。
+ */
 int text_editor_set_text(text_editor_t *p, unsigned char *buf)
 {
     unsigned char *src = buf;
@@ -147,6 +196,13 @@ int text_editor_set_text(text_editor_t *p, unsigned char *buf)
     return n;
 }
 
+/**
+ * @brief 文字列を取得する。
+ *
+ * @param p テキストエディタ構造体。
+ * @param buf 文字列を格納するバッファ。
+ * @param siz バッファサイズ。
+ */
 int text_editor_get_text(text_editor_t *p, unsigned char *buf, int siz)
 {
     unsigned char *src = p->buffer;
@@ -163,6 +219,11 @@ int text_editor_get_text(text_editor_t *p, unsigned char *buf, int siz)
     return n;
 }
 
+/**
+ * @brief 文字列を消去する。
+ *
+ * @param p テキストエディタ構造体。
+ */
 void text_editor_clear(text_editor_t *p)
 {
     p->pos = 0;
