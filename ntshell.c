@@ -50,10 +50,17 @@
 typedef struct {
     text_editor_t *editor;
     text_history_t *history;
+    int suggest_index;
+    char suggest_source[TEXTEDITOR_MAXLEN];
     int (*func_read)(void *buf, int cnt);
     int (*func_write)(const void *buf, int cnt);
     int (*func_cb)(const unsigned char *text);
 } ntshell_user_data_t;
+
+#define SUGGEST_INDEX(vtp) \
+    ((ntshell_user_data_t *)(vtp)->user_data)->suggest_index
+#define SUGGEST_SOURCE(vtp) \
+    ((ntshell_user_data_t *)(vtp)->user_data)->suggest_source
 
 /**
  * @brief テキストエディタを取得する。
@@ -278,6 +285,9 @@ static void actfunc_backspace(
     }
 }
 
+#include <kernel.h> // @todo Remove this!
+#include <t_syslog.h>   // @todo Remove this!
+
 /**
  * @brief 入力補完処理を実行する。
  *
@@ -289,7 +299,65 @@ static void actfunc_suggest(
         vtparse_t *parser,
         vtparse_action_t action,
         unsigned char ch) {
-    // @todo 実装を追加する。
+    unsigned char buf[TEXTEDITOR_MAXLEN];
+    if (SUGGEST_INDEX(parser) < 0) {
+        /*
+         * 入力補完モードにこれから入る場合。
+         * 現在の入力文字列を元に補完候補を取得する。
+         */
+        if (text_editor_get_text(
+                    GET_EDITOR(parser),
+                    SUGGEST_SOURCE(parser),
+                    sizeof(SUGGEST_SOURCE(parser))) > 0) {
+            SUGGEST_INDEX(parser) = 0;
+            if (text_history_find(
+                        GET_HISTORY(parser),
+                        SUGGEST_INDEX(parser),
+                        SUGGEST_SOURCE(parser),
+                        buf,
+                        sizeof(buf)) == 0) {
+                // 候補が見つかればテキストを設定して、インデックスをメモする。
+                int n = ntlibc_strlen(buf);
+                SERIAL_WRITE(parser, "\x1b[2K", 4);
+                SERIAL_WRITE(parser, "\x1b[80D", 5);
+                SERIAL_WRITE(parser, ">", 1);
+                SERIAL_WRITE(parser, buf, n);
+                text_editor_set_text(GET_EDITOR(parser), buf);
+            } else {
+                // 候補がなければ入力補完モードから抜ける。
+                SUGGEST_INDEX(parser) = -1;
+            }
+        }
+    } else {
+        /*
+         * 既に入力補完モードに入っている場合、
+         * 次の候補を探して見つかればテキストとして設定する。
+         */
+        SUGGEST_INDEX(parser) = SUGGEST_INDEX(parser) + 1;
+        if (text_history_find(
+                    GET_HISTORY(parser),
+                    SUGGEST_INDEX(parser),
+                    SUGGEST_SOURCE(parser),
+                    buf,
+                    sizeof(buf)) == 0) {
+            // 候補が見つかればテキストを設定する。
+            int n = ntlibc_strlen(buf);
+            SERIAL_WRITE(parser, "\x1b[2K", 4);
+            SERIAL_WRITE(parser, "\x1b[80D", 5);
+            SERIAL_WRITE(parser, ">", 1);
+            SERIAL_WRITE(parser, buf, n);
+            text_editor_set_text(GET_EDITOR(parser), buf);
+        } else {
+            // 候補が見つからなければ元の入力文字列に戻し、入力補完モードから抜ける。
+            int n = ntlibc_strlen(SUGGEST_SOURCE(parser));
+            SERIAL_WRITE(parser, "\x1b[2K", 4);
+            SERIAL_WRITE(parser, "\x1b[80D", 5);
+            SERIAL_WRITE(parser, ">", 1);
+            SERIAL_WRITE(parser, SUGGEST_SOURCE(parser), n);
+            text_editor_set_text(GET_EDITOR(parser), SUGGEST_SOURCE(parser));
+            SUGGEST_INDEX(parser) = -1;
+        }
+    }
 }
 
 static void actfunc_text_head(
@@ -448,6 +516,7 @@ void ntshell_execute(
     vtparse_init(&(p->parser), parser_callback);
     text_editor_init(GET_EDITOR(&(p->parser)));
     text_history_init(GET_HISTORY(&(p->parser)));
+    SUGGEST_INDEX(&(p->parser)) = -1;
 
     /*
      * ユーザ入力ループ。

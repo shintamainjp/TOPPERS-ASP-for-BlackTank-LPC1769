@@ -38,6 +38,7 @@
  */
 
 #include "text_history.h"
+#include "ntlibc.h"
 
 /**
  * @brief 初期化する。
@@ -154,7 +155,22 @@ int text_history_find(text_history_t *p,
         const int index, const unsigned char *text,
         unsigned char *buf, const int siz)
 {
-    // @todo
+    const int text_len = ntlibc_strlen((const char *)text);
+    int found = 0;
+    int i;
+    for (i = 0; i < TEXTHISTORY_DEPTH; i++) {
+        int target = (p->rp + i) % TEXTHISTORY_DEPTH;
+        unsigned char *txtp = p->history + (TEXTHISTORY_MAXLEN * target);
+        if (ntlibc_strncmp(
+                    (const char *)txtp,
+                    (const char *)text, text_len) == 0) {
+            if (found == index) {
+                ntlibc_strcpy((char *)buf, (char *)txtp);
+                return 0;
+            }
+            found++;
+        }
+    }
     return -1;
 }
 
