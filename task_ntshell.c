@@ -25,9 +25,7 @@
 #include "ntlibc.h"
 #include "cmd.h"
 
-vtparse_t parser;
-text_editor_t editor;
-text_history_t history;
+ntshell_t ntshell;
 
 int func_read(void *buf, int cnt);
 int func_write(const void *buf, int cnt);
@@ -117,8 +115,6 @@ void task_ntshell(intptr_t exinf)
 {
     serial_opn_por(SIO_PORTID);
 
-    ntshell_execute(&parser,
-            &editor, &history,
-            func_read, func_write, func_ntshell);
+    ntshell_execute(&ntshell, func_read, func_write, func_ntshell);
 }
 

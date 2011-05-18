@@ -41,11 +41,15 @@
 #include "text_editor.h"
 #include "text_history.h"
 
+typedef struct {
+    vtparse_t parser;
+    text_editor_t editor;
+    text_history_t history;
+} ntshell_t;
+
 void ntshell_version(int *major, int *minor, int *release);
 void ntshell_execute(
-        vtparse_t *parser,
-        text_editor_t *editor,
-        text_history_t *history,
+        ntshell_t *p,
         int (*func_read)(void *buf, int cnt),
         int (*func_write)(const void *buf, int cnt),
         int (*func_cb)(const unsigned char *text));

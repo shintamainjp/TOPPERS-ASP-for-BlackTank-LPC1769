@@ -61,7 +61,7 @@ typedef struct {
  * @param vtp vtparse構造体。
  */
 #define GET_EDITOR(vtp) \
-    ((ntshell_user_data_t *)vtp->user_data)->editor
+    ((ntshell_user_data_t *)(vtp)->user_data)->editor
 
 /**
  * @brief テキストヒストリを取得する。
@@ -69,7 +69,7 @@ typedef struct {
  * @param vtp vtparse構造体。
  */
 #define GET_HISTORY(vtp) \
-    ((ntshell_user_data_t *)vtp->user_data)->history
+    ((ntshell_user_data_t *)(vtp)->user_data)->history
 
 /**
  * @brief シリアルポートから読み込む。
@@ -79,7 +79,7 @@ typedef struct {
  * @param cnt 読み込み文字数。
  */
 #define SERIAL_READ(vtp,buf,cnt) \
-    ((ntshell_user_data_t *)vtp->user_data)->func_read(buf, cnt)
+    ((ntshell_user_data_t *)(vtp)->user_data)->func_read(buf, cnt)
 
 /**
  * @brief シリアルポートへ書き込む。
@@ -89,7 +89,7 @@ typedef struct {
  * @param cnt 書き込み文字数。
  */
 #define SERIAL_WRITE(vtp,buf,cnt) \
-    ((ntshell_user_data_t *)vtp->user_data)->func_write(buf, cnt)
+    ((ntshell_user_data_t *)(vtp)->user_data)->func_write(buf, cnt)
 
 /**
  * @brief コールバックを呼び出す。
@@ -98,7 +98,7 @@ typedef struct {
  * @param text コールバック関数へ渡す文字列。
  */
 #define CALLBACK(vtp, text) \
-    ((ntshell_user_data_t *)vtp->user_data)->func_cb(text)
+    ((ntshell_user_data_t *)(vtp)->user_data)->func_cb(text)
 
 /**
  * @brief テキストヒストリで１つ後ろを辿る。
@@ -421,9 +421,7 @@ void ntshell_version(int *major, int *minor, int *release)
  * @param func_cb コールバック関数。
  */
 void ntshell_execute(
-        vtparse_t *parser,
-        text_editor_t *editor,
-        text_history_t *history,
+        ntshell_t *p,
         int (*func_read)(void *buf, int cnt),
         int (*func_write)(const void *buf, int cnt),
         int (*func_cb)(const unsigned char *text))
@@ -436,30 +434,30 @@ void ntshell_execute(
      */
     ntshell_user_data_t user_data;
 
-    user_data.editor = editor;
-    user_data.history = history;
+    user_data.editor = &(p->editor);
+    user_data.history = &(p->history);
     user_data.func_read = func_read;
     user_data.func_write = func_write;
     user_data.func_cb = func_cb;
 
-    parser->user_data = &user_data;
+    p->parser.user_data = &user_data;
 
     /*
      * 各モジュールを初期化する。
      */
-    vtparse_init(parser, parser_callback);
-    text_editor_init(GET_EDITOR(parser));
-    text_history_init(GET_HISTORY(parser));
+    vtparse_init(&(p->parser), parser_callback);
+    text_editor_init(GET_EDITOR(&(p->parser)));
+    text_history_init(GET_HISTORY(&(p->parser)));
 
     /*
      * ユーザ入力ループ。
      */
-    SERIAL_WRITE(parser, ">", 1);
+    SERIAL_WRITE(&(p->parser), ">", 1);
     while(1)
     {
         unsigned char c;
-        SERIAL_READ(parser, &c, sizeof(c));
-        vtparse(parser, &c, sizeof(c));
+        SERIAL_READ(&(p->parser), &c, sizeof(c));
+        vtparse(&(p->parser), &c, sizeof(c));
     }
 }
 
