@@ -238,6 +238,15 @@ static void actfunc_insert(
         vtparse_t *parser,
         vtparse_action_t action,
         unsigned char ch) {
+
+    /*
+     * 入力があった場合、入力補完状態から抜ける。
+     */
+    SUGGEST_INDEX(parser) = -1;
+
+    /*
+     * テキストエディタを使って文字を文字列に挿入する。
+     */
     if (text_editor_insert(GET_EDITOR(parser), ch)) {
         unsigned char txt[TEXTEDITOR_MAXLEN];
         int len = text_editor_get_text(GET_EDITOR(parser), &txt[0], sizeof(txt));
@@ -284,9 +293,6 @@ static void actfunc_backspace(
         }
     }
 }
-
-#include <kernel.h> // @todo Remove this!
-#include <t_syslog.h>   // @todo Remove this!
 
 /**
  * @brief 入力補完処理を実行する。
