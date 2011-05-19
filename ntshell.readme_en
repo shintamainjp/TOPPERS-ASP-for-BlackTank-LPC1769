@@ -42,6 +42,7 @@
  CTRL+C : Cancel
  CTRL+P : History(Prev)
  CTRL+N : History(Next)
+ TAB    : Suggestion
 
 5. The structure
 
@@ -74,9 +75,6 @@
  for getting a user request.
 
  void ntshell(
-        vtparse_t *parser,
-        text_editor_t *editor,
-        text_history_t *history,
         int (*func_read)(void *buf, int cnt),
         int (*func_write)(const void *buf, int cnt),
         int (*func_cb)(const unsigned char *text));
@@ -134,7 +132,7 @@
 
 8. References
 
- * A parser for DEC’s ANSI-compatible video terminal
+ * A parser for DEC's ANSI-compatible video terminal
    http://vt100.net/emu/dec_ansi_parser
 
 9. Version
@@ -145,4 +143,5 @@
  * 2011/04/30   Version 0.0.4    Changed an implementation of the vtparse table.
                                  Added ntopt.
                                  Added ntlibc.
- * 2011/05/16   Version 0.0.5    Added some features.
+ * 2011/05/16   Version 0.0.5    Added input suggestion features.
+                                 Changed the interface of the ntshell.
