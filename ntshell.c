@@ -35,6 +35,7 @@
  */
 
 #include "ntshell.h"
+#include "ntlibc.h"
 
 #define VERSION_MAJOR 0     /**< メジャー番号。 */
 #define VERSION_MINOR 0     /**< マイナー番号。 */
@@ -52,9 +53,9 @@ typedef struct {
     text_history_t *history;
     int suggest_index;
     char suggest_source[TEXTEDITOR_MAXLEN];
-    int (*func_read)(void *buf, int cnt);
-    int (*func_write)(const void *buf, int cnt);
-    int (*func_cb)(const unsigned char *text);
+    int (*func_read)(char *buf, int cnt);
+    int (*func_write)(const char *buf, int cnt);
+    int (*func_cb)(const char *text);
 } ntshell_user_data_t;
 
 #define SUGGEST_INDEX(vtp) \
@@ -119,7 +120,7 @@ static void actfunc_history_prev(
         vtparse_action_t action,
         unsigned char ch) {
     if (text_history_read_point_prev(GET_HISTORY(parser))) {
-        unsigned char txt[TEXTHISTORY_MAXLEN];
+        char txt[TEXTHISTORY_MAXLEN];
         int n = text_history_read(GET_HISTORY(parser), &txt[0], sizeof(txt));
         if (0 < n) {
             SERIAL_WRITE(parser, "\x1b[2K", 4);
@@ -143,7 +144,7 @@ static void actfunc_history_next(
         vtparse_action_t action,
         unsigned char ch) {
     if (text_history_read_point_next(GET_HISTORY(parser))) {
-        unsigned char txt[TEXTHISTORY_MAXLEN];
+        char txt[TEXTHISTORY_MAXLEN];
         int n = text_history_read(GET_HISTORY(parser), &txt[0], sizeof(txt));
         if (0 < n) {
             SERIAL_WRITE(parser, "\x1b[2K", 4);
@@ -198,7 +199,7 @@ static void actfunc_enter(
         vtparse_t *parser,
         vtparse_action_t action,
         unsigned char ch) {
-    unsigned char txt[TEXTEDITOR_MAXLEN];
+    char txt[TEXTEDITOR_MAXLEN];
     text_editor_get_text(GET_EDITOR(parser), &txt[0], sizeof(txt));
     text_editor_clear(GET_EDITOR(parser));
     text_history_write(GET_HISTORY(parser), txt);
@@ -248,10 +249,10 @@ static void actfunc_insert(
      * テキストエディタを使って文字を文字列に挿入する。
      */
     if (text_editor_insert(GET_EDITOR(parser), ch)) {
-        unsigned char txt[TEXTEDITOR_MAXLEN];
+        char txt[TEXTEDITOR_MAXLEN];
         int len = text_editor_get_text(GET_EDITOR(parser), &txt[0], sizeof(txt));
         int pos = text_editor_cursor_get_position(GET_EDITOR(parser));
-        SERIAL_WRITE(parser, &ch, sizeof(ch));
+        SERIAL_WRITE(parser, (char *)&ch, sizeof(ch));
         int n = len - pos;
         if (n > 0) {
             int i;
@@ -275,7 +276,7 @@ static void actfunc_backspace(
         vtparse_action_t action,
         unsigned char ch) {
     if (text_editor_backspace(GET_EDITOR(parser))) {
-        unsigned char txt[TEXTEDITOR_MAXLEN];
+        char txt[TEXTEDITOR_MAXLEN];
         SERIAL_WRITE(parser, "\x1b[1D", 4);
         int len = text_editor_get_text(GET_EDITOR(parser), &txt[0], sizeof(txt));
         int pos = text_editor_cursor_get_position(GET_EDITOR(parser));
@@ -305,7 +306,7 @@ static void actfunc_suggest(
         vtparse_t *parser,
         vtparse_action_t action,
         unsigned char ch) {
-    unsigned char buf[TEXTEDITOR_MAXLEN];
+    char buf[TEXTEDITOR_MAXLEN];
     if (SUGGEST_INDEX(parser) < 0) {
         /*
          * 入力補完モードにこれから入る場合。
@@ -323,7 +324,7 @@ static void actfunc_suggest(
                         buf,
                         sizeof(buf)) == 0) {
                 // 候補が見つかればテキストを設定して、インデックスをメモする。
-                int n = ntlibc_strlen(buf);
+                int n = ntlibc_strlen((const char *)buf);
                 SERIAL_WRITE(parser, "\x1b[2K", 4);
                 SERIAL_WRITE(parser, "\x1b[80D", 5);
                 SERIAL_WRITE(parser, ">", 1);
@@ -347,7 +348,7 @@ static void actfunc_suggest(
                     buf,
                     sizeof(buf)) == 0) {
             // 候補が見つかればテキストを設定する。
-            int n = ntlibc_strlen(buf);
+            int n = ntlibc_strlen((const char *)buf);
             SERIAL_WRITE(parser, "\x1b[2K", 4);
             SERIAL_WRITE(parser, "\x1b[80D", 5);
             SERIAL_WRITE(parser, ">", 1);
@@ -496,9 +497,9 @@ void ntshell_version(int *major, int *minor, int *release)
  */
 void ntshell_execute(
         ntshell_t *p,
-        int (*func_read)(void *buf, int cnt),
-        int (*func_write)(const void *buf, int cnt),
-        int (*func_cb)(const unsigned char *text))
+        int (*func_read)(char *buf, int cnt),
+        int (*func_write)(const char *buf, int cnt),
+        int (*func_cb)(const char *text))
 {
     /*
      * vtparseはユーザデータへのポインタを設定できるようになっている。
@@ -530,9 +531,9 @@ void ntshell_execute(
     SERIAL_WRITE(&(p->parser), ">", 1);
     while(1)
     {
-        unsigned char c;
-        SERIAL_READ(&(p->parser), &c, sizeof(c));
-        vtparse(&(p->parser), &c, sizeof(c));
+        unsigned char ch;
+        SERIAL_READ(&(p->parser), (char *)&ch, sizeof(ch));
+        vtparse(&(p->parser), &ch, sizeof(ch));
     }
 }
 

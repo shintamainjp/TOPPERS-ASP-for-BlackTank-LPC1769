@@ -47,9 +47,9 @@ typedef enum {
 
 typedef unsigned char state_change_t;
 
-const state_change_t GET_STATE_TABLE(const int state, const int ch);
-const vtparse_action_t GET_ENTRY_ACTIONS(const int state);
-const vtparse_action_t GET_EXIT_ACTIONS(const int state);
+state_change_t GET_STATE_TABLE(const int state, const int ch);
+vtparse_action_t GET_ENTRY_ACTIONS(const int state);
+vtparse_action_t GET_EXIT_ACTIONS(const int state);
 const char *GET_ACTION_NAMES(const int n);
 const char *GET_STATE_NAMES(const int n);
 

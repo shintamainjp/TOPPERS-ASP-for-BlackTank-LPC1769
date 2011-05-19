@@ -57,13 +57,13 @@ void text_editor_init(text_editor_t *p)
  * @param p テキストエディタ構造体。
  * @param c 文字。
  */
-int text_editor_insert(text_editor_t *p, unsigned char c)
+int text_editor_insert(text_editor_t *p, char c)
 {
     if (p->len < sizeof(p->buffer) - 1) {
         int n = p->len - p->pos + 1;
         int i;
-        unsigned char *src = p->buffer + p->len + 0;
-        unsigned char *des = p->buffer + p->len + 1;
+        char *src = p->buffer + p->len + 0;
+        char *des = p->buffer + p->len + 1;
         for (i = 0; i < n; i++) {
             *des = *src;
             des--;
@@ -89,8 +89,8 @@ int text_editor_backspace(text_editor_t *p)
     if (0 < p->pos) {
         int n = p->len - p->pos;
         int i;
-        unsigned char *src = p->buffer + p->pos - 0;
-        unsigned char *des = p->buffer + p->pos - 1;
+        char *src = p->buffer + p->pos - 0;
+        char *des = p->buffer + p->pos - 1;
         p->pos--;
         p->len--;
         for (i = 0; i < n; i++) {
@@ -176,10 +176,10 @@ int text_editor_cursor_right(text_editor_t *p)
  * @param p テキストエディタ構造体。
  * @param buf 文字列が格納されたバッファ。
  */
-int text_editor_set_text(text_editor_t *p, unsigned char *buf)
+int text_editor_set_text(text_editor_t *p, char *buf)
 {
-    unsigned char *src = buf;
-    unsigned char *des = p->buffer;
+    char *src = buf;
+    char *des = p->buffer;
     int n = 0;
     while (*src) {
         *des = *src;
@@ -203,10 +203,10 @@ int text_editor_set_text(text_editor_t *p, unsigned char *buf)
  * @param buf 文字列を格納するバッファ。
  * @param siz バッファサイズ。
  */
-int text_editor_get_text(text_editor_t *p, unsigned char *buf, int siz)
+int text_editor_get_text(text_editor_t *p, char *buf, int siz)
 {
-    unsigned char *src = p->buffer;
-    unsigned char *des = buf;
+    char *src = p->buffer;
+    char *des = buf;
     int n = 0;
     while (*src) {
         *des++ = *src++;

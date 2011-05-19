@@ -47,19 +47,19 @@
  * @brief テキストヒストリ構造体。
  */
 typedef struct {
-    unsigned char history[TEXTHISTORY_MAXLEN * TEXTHISTORY_DEPTH];
+    char history[TEXTHISTORY_MAXLEN * TEXTHISTORY_DEPTH];
     int rp;
     int wp;
 } text_history_t;
 
 void text_history_init(text_history_t *p);
-int text_history_write(text_history_t *p, unsigned char *buf);
-int text_history_read(text_history_t *p, unsigned char *buf, const int siz);
+int text_history_write(text_history_t *p, char *buf);
+int text_history_read(text_history_t *p, char *buf, const int siz);
 int text_history_read_point_next(text_history_t *p);
 int text_history_read_point_prev(text_history_t *p);
 int text_history_find(text_history_t *p,
-        const int index, const unsigned char *text,
-        unsigned char *buf, const int siz);
+        const int index, const char *text,
+        char *buf, const int siz);
 
 #endif
 

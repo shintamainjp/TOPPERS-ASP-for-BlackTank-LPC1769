@@ -1,5 +1,5 @@
 #!/bin/sh
-VERSION="0.0.5"
+VERSION="0.0.6"
 FILELIST="ntshell.c ntshell.h ntopt.c ntopt.h ntlibc.c ntlibc.h vtparse.c vtparse.h vtparse_table.c vtparse_table.h text_editor.c text_editor.h text_history.c text_history.h ntshell.readme_en ntshell.readme_ja"
 RELFILE="ntshell-$VERSION.tar.gz"
 

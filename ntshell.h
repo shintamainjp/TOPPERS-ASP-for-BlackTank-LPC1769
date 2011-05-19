@@ -50,9 +50,9 @@ typedef struct {
 void ntshell_version(int *major, int *minor, int *release);
 void ntshell_execute(
         ntshell_t *p,
-        int (*func_read)(void *buf, int cnt),
-        int (*func_write)(const void *buf, int cnt),
-        int (*func_cb)(const unsigned char *text));
+        int (*func_read)(char *buf, int cnt),
+        int (*func_write)(const char *buf, int cnt),
+        int (*func_cb)(const char *text));
 
 #endif
 

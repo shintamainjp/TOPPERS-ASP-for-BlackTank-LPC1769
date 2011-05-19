@@ -61,12 +61,12 @@ void text_history_init(text_history_t *p)
  * @param p テキストヒストリ構造体。
  * @param buf バッファ。
  */
-int text_history_write(text_history_t *p, unsigned char *buf)
+int text_history_write(text_history_t *p, char *buf)
 {
     if (buf[0] == '\0') {
         return 0;
     }
-    unsigned char *sp = p->history + (TEXTHISTORY_MAXLEN * p->wp);
+    char *sp = p->history + (TEXTHISTORY_MAXLEN * p->wp);
     while (*buf) {
         *sp = *buf;
         sp++;
@@ -88,9 +88,9 @@ int text_history_write(text_history_t *p, unsigned char *buf)
  * @param buf バッファ。
  * @param siz バッファサイズ。
  */
-int text_history_read(text_history_t *p, unsigned char *buf, const int siz)
+int text_history_read(text_history_t *p, char *buf, const int siz)
 {
-    unsigned char *sp = p->history + (TEXTHISTORY_MAXLEN * p->rp);
+    char *sp = p->history + (TEXTHISTORY_MAXLEN * p->rp);
     int n = 0;
     while (*sp) {
         *buf = *sp;
@@ -129,7 +129,7 @@ int text_history_read_point_prev(text_history_t *p)
 {
     int n = (p->rp == 0) ? (TEXTHISTORY_DEPTH - 1) : (p->rp - 1);
     if (n != p->wp) {
-        unsigned char *sp = p->history + (TEXTHISTORY_MAXLEN * n);
+        char *sp = p->history + (TEXTHISTORY_MAXLEN * n);
         if (*sp != '\0') {
             p->rp = n;
             return 1;
@@ -152,15 +152,15 @@ int text_history_read_point_prev(text_history_t *p)
  * @retval 0以外 失敗。
  */
 int text_history_find(text_history_t *p,
-        const int index, const unsigned char *text,
-        unsigned char *buf, const int siz)
+        const int index, const char *text,
+        char *buf, const int siz)
 {
     const int text_len = ntlibc_strlen((const char *)text);
     int found = 0;
     int i;
     for (i = 0; i < TEXTHISTORY_DEPTH; i++) {
         int target = (p->rp + i) % TEXTHISTORY_DEPTH;
-        unsigned char *txtp = p->history + (TEXTHISTORY_MAXLEN * target);
+        char *txtp = p->history + (TEXTHISTORY_MAXLEN * target);
         const int target_len = ntlibc_strlen((const char *)txtp);
         int comp_len = (target_len < text_len) ? target_len : text_len;
         if ((ntlibc_strncmp(

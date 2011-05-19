@@ -2211,17 +2211,17 @@ static const vtparse_action_t EXIT_ACTIONS[] = {
    (vtparse_action_t)0  /* none for SOS_PM_APC_STRING */,
 };
 
-const state_change_t GET_STATE_TABLE(const int state, const int ch)
+state_change_t GET_STATE_TABLE(const int state, const int ch)
 {
     return STATE_TABLE[state][ch];
 }
 
-const vtparse_action_t GET_ENTRY_ACTIONS(const int state)
+vtparse_action_t GET_ENTRY_ACTIONS(const int state)
 {
     return ENTRY_ACTIONS[state];
 }
 
-const vtparse_action_t GET_EXIT_ACTIONS(const int state)
+vtparse_action_t GET_EXIT_ACTIONS(const int state)
 {
     return EXIT_ACTIONS[state];
 }

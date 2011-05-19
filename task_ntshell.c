@@ -27,8 +27,8 @@
 
 ntshell_t ntshell;
 
-int func_read(void *buf, int cnt);
-int func_write(const void *buf, int cnt);
+int func_read(char *buf, int cnt);
+int func_write(const char *buf, int cnt);
 void func_ntopt(int argc, char **argv);
 int func_ntshell(const unsigned char *text);
 
@@ -64,12 +64,12 @@ void cmd_help(void) {
     }
 }
 
-int func_read(void *buf, int cnt)
+int func_read(char *buf, int cnt)
 {
     return serial_rea_dat(SIO_PORTID, buf, cnt);
 }
 
-int func_write(const void *buf, int cnt)
+int func_write(const char *buf, int cnt)
 {
     return serial_wri_dat(SIO_PORTID, buf, cnt);
 }

@@ -89,9 +89,9 @@
  １つのコールバックインターフェースを必要とします。
 
  void ntshell(
-        int (*func_read)(void *buf, int cnt),
-        int (*func_write)(const void *buf, int cnt),
-        int (*func_cb)(const unsigned char *text));
+        int (*func_read)(char *buf, int cnt),
+        int (*func_write)(const char *buf, int cnt),
+        int (*func_cb)(const char *text));
 
  6-1. func_read
 
