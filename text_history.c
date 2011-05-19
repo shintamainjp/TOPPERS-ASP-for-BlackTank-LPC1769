@@ -161,9 +161,11 @@ int text_history_find(text_history_t *p,
     for (i = 0; i < TEXTHISTORY_DEPTH; i++) {
         int target = (p->rp + i) % TEXTHISTORY_DEPTH;
         unsigned char *txtp = p->history + (TEXTHISTORY_MAXLEN * target);
-        if (ntlibc_strncmp(
+        const int target_len = ntlibc_strlen((const char *)txtp);
+        int comp_len = (target_len < text_len) ? target_len : text_len;
+        if ((ntlibc_strncmp(
                     (const char *)txtp,
-                    (const char *)text, text_len) == 0) {
+                    (const char *)text, comp_len) == 0) && (comp_len > 0)) {
             if (found == index) {
                 ntlibc_strcpy((char *)buf, (char *)txtp);
                 return 0;
