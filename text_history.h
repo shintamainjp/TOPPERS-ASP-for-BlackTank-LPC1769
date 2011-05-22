@@ -40,7 +40,7 @@
 #ifndef TEXT_HISTORY_H
 #define TEXT_HISTORY_H
 
-#define TEXTHISTORY_MAXLEN 32   /**< テキストヒストリあたりの最大文字列長。 */
+#define TEXTHISTORY_MAXLEN 64   /**< テキストヒストリあたりの最大文字列長。 */
 #define TEXTHISTORY_DEPTH 8     /**< テキストヒストリのヒストリ数。 */
 
 /**

@@ -203,8 +203,9 @@ static void actfunc_enter(
     text_editor_get_text(GET_EDITOR(parser), &txt[0], sizeof(txt));
     text_editor_clear(GET_EDITOR(parser));
     text_history_write(GET_HISTORY(parser), txt);
+    SERIAL_WRITE(parser, "\r\n", 2);
     CALLBACK(parser, txt);
-    SERIAL_WRITE(parser, "\r\n>", 3);
+    SERIAL_WRITE(parser, ">", 1);
 }
 
 /**
@@ -367,18 +368,27 @@ static void actfunc_suggest(
     }
 }
 
-static void actfunc_text_head(
+static void actfunc_cursor_head(
         vtparse_t *parser,
         vtparse_action_t action,
         unsigned char ch) {
-    // @todo 実装を追加する。
+    SERIAL_WRITE(parser, "\x1b[80D", 5);
+    SERIAL_WRITE(parser, ">", 1);
+    text_editor_cursor_head(GET_EDITOR(parser));
 }
 
-static void actfunc_text_tail(
+static void actfunc_cursor_tail(
         vtparse_t *parser,
         vtparse_action_t action,
         unsigned char ch) {
-    // @todo 実装を追加する。
+    char buf[TEXTEDITOR_MAXLEN];
+    int len;
+    text_editor_get_text(GET_EDITOR(parser), buf, sizeof(buf));
+    len = ntlibc_strlen((const char *)buf);
+    SERIAL_WRITE(parser, "\x1b[80D", 5);
+    SERIAL_WRITE(parser, ">", 1);
+    SERIAL_WRITE(parser, buf, len);
+    text_editor_cursor_tail(GET_EDITOR(parser));
 }
 
 /**
@@ -418,19 +428,21 @@ typedef struct {
  * </table>
  */
 static const ntshell_action_table_t action_table[] = {
-    {VTPARSE_ACTION_PRINT, 0x7f, actfunc_backspace},
-    {VTPARSE_ACTION_EXECUTE, 0x0d, actfunc_enter},
-    {VTPARSE_ACTION_EXECUTE, 0x08, actfunc_backspace},
-    {VTPARSE_ACTION_EXECUTE, 0x03, actfunc_cancel},
+    {VTPARSE_ACTION_EXECUTE, 0x01, actfunc_cursor_head},
     {VTPARSE_ACTION_EXECUTE, 0x02, actfunc_cursor_left},
+    {VTPARSE_ACTION_EXECUTE, 0x03, actfunc_cancel},
+    {VTPARSE_ACTION_EXECUTE, 0x05, actfunc_cursor_tail},
     {VTPARSE_ACTION_EXECUTE, 0x06, actfunc_cursor_right},
-    {VTPARSE_ACTION_EXECUTE, 0x10, actfunc_history_prev},
-    {VTPARSE_ACTION_EXECUTE, 0x0e, actfunc_history_next},
+    {VTPARSE_ACTION_EXECUTE, 0x08, actfunc_backspace},
     {VTPARSE_ACTION_EXECUTE, 0x09, actfunc_suggest},
-    {VTPARSE_ACTION_CSI_DISPATCH, 0x44, actfunc_cursor_left},
-    {VTPARSE_ACTION_CSI_DISPATCH, 0x43, actfunc_cursor_right},
+    {VTPARSE_ACTION_EXECUTE, 0x0d, actfunc_enter},
+    {VTPARSE_ACTION_EXECUTE, 0x0e, actfunc_history_next},
+    {VTPARSE_ACTION_EXECUTE, 0x10, actfunc_history_prev},
     {VTPARSE_ACTION_CSI_DISPATCH, 0x41, actfunc_history_prev},
-    {VTPARSE_ACTION_CSI_DISPATCH, 0x42, actfunc_history_next}
+    {VTPARSE_ACTION_CSI_DISPATCH, 0x42, actfunc_history_next},
+    {VTPARSE_ACTION_CSI_DISPATCH, 0x43, actfunc_cursor_right},
+    {VTPARSE_ACTION_CSI_DISPATCH, 0x44, actfunc_cursor_left},
+    {VTPARSE_ACTION_PRINT, 0x7f, actfunc_backspace},
 };
 
 /**

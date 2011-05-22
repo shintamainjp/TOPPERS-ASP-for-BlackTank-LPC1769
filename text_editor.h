@@ -40,7 +40,7 @@
 #ifndef _TEXT_EDITOR_H_
 #define _TEXT_EDITOR_H_
 
-#define TEXTEDITOR_MAXLEN 32
+#define TEXTEDITOR_MAXLEN 64
 
 typedef struct {
     char buffer[TEXTEDITOR_MAXLEN];

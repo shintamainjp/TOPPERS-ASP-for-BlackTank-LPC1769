@@ -135,8 +135,8 @@ int text_editor_cursor_head(text_editor_t *p)
  */
 int text_editor_cursor_tail(text_editor_t *p)
 {
-    if (p->pos < p->len - 1) {
-        p->pos = p->len - 1;
+    if (p->pos < p->len) {
+        p->pos = p->len;
         return 1;
     }
     return 0;

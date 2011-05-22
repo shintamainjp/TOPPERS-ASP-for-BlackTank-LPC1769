@@ -30,7 +30,7 @@ ntshell_t ntshell;
 int func_read(char *buf, int cnt);
 int func_write(const char *buf, int cnt);
 void func_ntopt(int argc, char **argv);
-int func_ntshell(const unsigned char *text);
+int func_ntshell(const char *text);
 
 typedef struct {
     char *command;
@@ -66,12 +66,12 @@ void cmd_help(void) {
 
 int func_read(char *buf, int cnt)
 {
-    return serial_rea_dat(SIO_PORTID, buf, cnt);
+    return serial_rea_dat(SIO_PORTID, (char_t *)buf, cnt);
 }
 
 int func_write(const char *buf, int cnt)
 {
-    return serial_wri_dat(SIO_PORTID, buf, cnt);
+    return serial_wri_dat(SIO_PORTID, (const char_t *)buf, cnt);
 }
 
 void func_ntopt(int argc, char **argv)
@@ -84,7 +84,6 @@ void func_ntopt(int argc, char **argv)
     const command_table_t *p = &table[0];
     while (p->command != NULL) {
         if (ntlibc_strcmp((const char *)argv[0], p->command) == 0) {
-            syslog(LOG_NOTICE, "");
             p->func(argc, argv);
             execnt++;
         }
@@ -92,16 +91,17 @@ void func_ntopt(int argc, char **argv)
     }
     if (execnt == 0) {
         if (argc > 0) {
-            syslog(LOG_NOTICE, "");
             cmd_help();
         } else {
             syslog(LOG_NOTICE,
                     "Found unknown command. (help: display help.)");
         }
     }
+
+    tslp_tsk(250);
 }
 
-int func_ntshell(const unsigned char *text)
+int func_ntshell(const char *text)
 {
     return ntopt_parse((const char *)text, func_ntopt);
 }
