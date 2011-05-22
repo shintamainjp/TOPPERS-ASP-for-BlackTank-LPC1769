@@ -145,3 +145,4 @@
                                  Added ntlibc.
  * 2011/05/16   Version 0.0.5    Added input suggestion features.
                                  Changed the interface of the ntshell.
+ * 2011/05/22   Version 0.0.6    Added cursor head and tail feautures.

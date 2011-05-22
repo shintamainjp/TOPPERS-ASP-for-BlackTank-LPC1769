@@ -7,7 +7,7 @@
 /*
  * ===============================================================
  *  Natural Tiny Shell (NT-Shell)
- *  Version 0.0.5
+ *  Version 0.0.6
  * ===============================================================
  * Copyright (c) 2010-2011 Shinichiro Nakamura
  *
@@ -39,7 +39,7 @@
 
 #define VERSION_MAJOR 0     /**< メジャー番号。 */
 #define VERSION_MINOR 0     /**< マイナー番号。 */
-#define VERSION_RELEASE 5       /**< リリース番号。 */
+#define VERSION_RELEASE 6   /**< リリース番号。 */
 
 /**
  * @brief 処理で用いるデータ構造体。
