@@ -29,7 +29,7 @@ ntshell_t ntshell;
 
 int func_read(char *buf, int cnt);
 int func_write(const char *buf, int cnt);
-void func_ntopt(int argc, char **argv);
+int func_ntopt(int argc, char **argv, void *extobj);
 int func_ntshell(const char *text);
 
 typedef struct {
@@ -74,10 +74,10 @@ int func_write(const char *buf, int cnt)
     return serial_wri_dat(SIO_PORTID, (const char_t *)buf, cnt);
 }
 
-void func_ntopt(int argc, char **argv)
+int func_ntopt(int argc, char **argv, void *extobj)
 {
     if (argc == 0) {
-        return;
+        return 0;
     }
 
     int execnt = 0;
@@ -99,11 +99,12 @@ void func_ntopt(int argc, char **argv)
     }
 
     tslp_tsk(250);
+    return 0;
 }
 
 int func_ntshell(const char *text)
 {
-    return ntopt_parse((const char *)text, func_ntopt);
+    return ntopt_parse((const char *)text, NULL, func_ntopt);
 }
 
 /**

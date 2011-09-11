@@ -7,7 +7,7 @@
 /*
  * ===============================================================
  *  Natural Tiny Shell (NT-Shell)
- *  Version 0.0.6
+ *  Version 0.0.7
  * ===============================================================
  * Copyright (c) 2010-2011 Shinichiro Nakamura
  *
@@ -42,7 +42,7 @@
 static int ntopt_get_count(const char *str);
 static char *ntopt_get_text(const char *str, const int n, char *buf, int siz);
 
-int ntopt_get_count(const char *str)
+static int ntopt_get_count(const char *str)
 {
     int cnt = 0;
     int wc = 0;
@@ -61,7 +61,7 @@ int ntopt_get_count(const char *str)
     return cnt;
 }
 
-char *ntopt_get_text(const char *str, const int n, char *buf, int siz)
+static char *ntopt_get_text(const char *str, const int n, char *buf, int siz)
 {
     int cnt = 0;
     int wc = 0;
@@ -95,7 +95,10 @@ char *ntopt_get_text(const char *str, const int n, char *buf, int siz)
     return '\0';
 }
 
-int ntopt_parse(const char *str, void (*func)(int argc, char **argv))
+int ntopt_parse(
+        const char *str,
+        void *extobj,
+        int (*func)(int argc, char **argv, void *extobj))
 {
     int argc;
     char argv[NTOPT_MAXCNT_ARGC][NTOPT_MAXLEN_ARGV];
@@ -104,52 +107,13 @@ int ntopt_parse(const char *str, void (*func)(int argc, char **argv))
 
     argc = ntopt_get_count(str);
     if (NTOPT_MAXCNT_ARGC <= argc) {
-        return -1;
+        argc = NTOPT_MAXCNT_ARGC;
     }
 
     for (i = 0; i < argc; i++) {
         argvp[i] = ntopt_get_text(str, i, argv[i], sizeof(argv[i]));
     }
-    func(argc, &argvp[0]);
 
-    return argc;
+    return func(argc, &argvp[0], extobj);
 }
-
-#if 0
-#include <stdio.h>
-void callback(int argc, char **argv)
-{
-    int i;
-    for (i = 0; i < argc; i++) {
-        printf("%d: %s\n", i, argv[i]);
-    }
-}
-
-int main(int argc, char **argv)
-{
-    char *str1 = "  This is a test.\n   ";
-    char *str2 = "This is a test.\t  \r  \n  \t  It's good for you.  \n \n The important thing is LIFE-IS-SO-MUCH-BEAUTIFUL.";
-    int i;
-    int n1, n2;
-
-    n1 = ntopt_get_count(str1);
-    for (i = 0; i < n1; i++) {
-        char buf[64];
-        printf("%d: %s\n", i, ntopt_get_text(str1, i, buf, sizeof(buf)));
-    }
-    printf("\n");
-
-    n2 = ntopt_get_count(str2);
-    for (i = 0; i < n2; i++) {
-        char buf[64];
-        printf("%d: %s\n", i, ntopt_get_text(str2, i, buf, sizeof(buf)));
-    }
-    printf("\n");
-
-    ntopt_parse(str1, callback);
-    ntopt_parse(str2, callback);
-
-    return 0;
-}
-#endif
 

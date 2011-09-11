@@ -7,7 +7,7 @@
 /*
  * ===============================================================
  *  Natural Tiny Shell (NT-Shell)
- *  Version 0.0.6
+ *  Version 0.0.7
  * ===============================================================
  * Copyright (c) 2010-2011 Shinichiro Nakamura
  *
@@ -40,7 +40,7 @@
 #define NTOPT_MAXCNT_ARGC  32
 #define NTOPT_MAXLEN_ARGV  32
 
-int ntopt_parse(const char *str, void (*func)(int argc, char **argv));
+int ntopt_parse(const char *str, void *extobj, int (*func)(int argc, char **argv, void *extobj));
 
 #endif
 

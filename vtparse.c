@@ -7,10 +7,6 @@
  * @author Joshua Haberman <joshua@reverberate.org>
  */
 
-#include <string.h>
-#include <stdlib.h>
-#include <stdio.h>
-
 #include "vtparse.h"
 #include "vtparse_table.h"
 #include "ntlibc.h"
